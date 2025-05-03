@@ -1,8 +1,11 @@
 #pragma once
 
+#include "REX/REX/Singleton.h"
+
 namespace REL
 {
-	class IDDB
+	class IDDB :
+		public REX::Singleton<IDDB>
 	{
 	private:
 		struct mapping_t
@@ -12,24 +15,11 @@ namespace REL
 		};
 
 	public:
-		IDDB(const IDDB&) = delete;
-		IDDB(IDDB&&) = delete;
+		IDDB() = default;
 
-		IDDB& operator=(const IDDB&) = delete;
-		IDDB& operator=(IDDB&&) = delete;
-
-		[[nodiscard]] static IDDB& get()
-		{
-			static IDDB singleton;
-			return singleton;
-		}
+		void load(std::string_view a_fileName);
 
 		[[nodiscard]] std::size_t id2offset(std::uint64_t a_id) const;
-
-		static void set_info(std::string_view a_fileName)
-		{
-			FILENAME = a_fileName;
-		}
 
 	protected:
 		friend class Offset2ID;
@@ -37,11 +27,6 @@ namespace REL
 		[[nodiscard]] std::span<const mapping_t> get_id2offset() const noexcept { return _id2offset; }
 
 	private:
-		IDDB();
-		~IDDB() = default;
-
-		static inline std::string FILENAME;
-
 		mmio::mapped_file_source   _mmap;
 		std::span<const mapping_t> _id2offset;
 	};

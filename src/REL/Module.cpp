@@ -4,14 +4,14 @@
 
 namespace REL
 {
-	Module::Module()
+	void Module::load(std::wstring_view a_fileName, std::wstring_view a_environment)
 	{
-		assert(FILENAME.size() > 0);
-		assert(ENVIRONMENT.size() > 0);
+		assert(a_fileName.size() > 0);
+		assert(a_environment.size() > 0);
 
 		const auto getFilename = [&]() {
 			return REX::W32::GetEnvironmentVariableW(
-				ENVIRONMENT.data(),
+				a_environment.data(),
 				_filename.data(),
 				static_cast<std::uint32_t>(_filename.size()));
 		};
@@ -20,7 +20,7 @@ namespace REL
 		if (const auto result = getFilename();
 			result != _filename.size() - 1 ||
 			result == 0) {
-			_filename = FILENAME;
+			_filename = a_fileName;
 		}
 
 		auto handle = REX::W32::GetModuleHandleW(_filename.c_str());

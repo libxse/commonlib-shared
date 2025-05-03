@@ -19,12 +19,18 @@ namespace REL
 			return *this;
 		}
 
-		[[nodiscard]] std::uintptr_t        address() const { return base() + offset(); }
-		[[nodiscard]] constexpr std::size_t offset() const noexcept { return _offset; }
+		[[nodiscard]] std::uintptr_t address() const
+		{
+			const auto mod = Module::GetSingleton();
+			return mod->base() + offset();
+		}
+
+		[[nodiscard]] constexpr std::size_t offset() const noexcept
+		{
+			return _offset;
+		}
 
 	private:
-		[[nodiscard]] static std::uintptr_t base() { return Module::get().base(); }
-
 		std::size_t _offset{ 0 };
 	};
 }

@@ -3,22 +3,17 @@
 #include "REL/Segment.h"
 #include "REL/Version.h"
 
+#include "REX/REX/Singleton.h"
+
 namespace REL
 {
-	class Module
+	class Module :
+		public REX::Singleton<Module>
 	{
 	public:
-		Module(const Module&) = delete;
-		Module(Module&&) = delete;
+		Module() = default;
 
-		Module& operator=(const Module&) = delete;
-		Module& operator=(Module&&) = delete;
-
-		[[nodiscard]] static Module& get()
-		{
-			static Module singleton;
-			return singleton;
-		}
+		void load(std::wstring_view a_fileName, std::wstring_view a_environment);
 
 		[[nodiscard]] constexpr std::uintptr_t base() const noexcept { return _base; }
 		[[nodiscard]] stl::zwstring            filename() const noexcept { return _filename; }
@@ -33,21 +28,9 @@ namespace REL
 			return static_cast<T*>(pointer());
 		}
 
-		static void set_info(std::wstring_view a_environment, std::wstring_view a_fileName)
-		{
-			ENVIRONMENT = a_environment;
-			FILENAME = a_fileName;
-		}
-
 	private:
-		Module();
-		~Module() noexcept = default;
-
 		void load_segments();
 		void load_version();
-
-		static inline std::wstring ENVIRONMENT;
-		static inline std::wstring FILENAME;
 
 		static constexpr std::array SEGMENTS{
 			".text"sv,

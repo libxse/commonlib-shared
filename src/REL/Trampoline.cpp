@@ -100,7 +100,8 @@ namespace REL
 		}
 
 		if (!a_module) {
-			const auto text = REL::Module::get().segment(REL::Segment::text);
+			const auto mod = Module::GetSingleton();
+			const auto text = mod->segment(REL::Segment::text);
 			a_module = text.pointer<std::byte>() + text.size();
 		}
 

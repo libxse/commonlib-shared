@@ -71,12 +71,13 @@ namespace REL
 
 namespace REL
 {
-	IDDB::IDDB()
+	void IDDB::load(std::string_view a_fileName)
 	{
-		assert(FILENAME.size() > 0);
+		assert(a_fileName.size() > 0);
 
-		const auto version = Module::get().version().string("-"sv);
-		const auto path = std::vformat(FILENAME, std::make_format_args(version));
+		const auto mod = Module::GetSingleton();
+		const auto version = mod->version().string("-"sv);
+		const auto path = std::vformat(a_fileName, std::make_format_args(version));
 		if (!_mmap.open(path)) {
 			stl::report_and_fail(std::format("failed to open: {}", path));
 		}
@@ -102,7 +103,8 @@ namespace REL
                 return a_lhs.id < a_rhs.id;
             });
 		if (it == _id2offset.end()) {
-			const auto version = Module::get().version();
+			const auto mod = Module::GetSingleton();
+			const auto version = mod->version();
 			const auto str = std::format("id {} not found!\ngame version: {}"sv, a_id, version.string());
 			stl::report_and_fail(str);
 		}

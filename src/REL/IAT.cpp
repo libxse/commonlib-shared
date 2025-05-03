@@ -18,8 +18,9 @@ namespace REL
 
 	void* GetIATPtr(std::string_view a_dll, std::string_view a_function)
 	{
-		const auto mod = static_cast<REX::W32::HMODULE>(REL::Module::get().pointer());
-		return GetIATPtr(mod, std::move(a_dll), std::move(a_function));
+		const auto mod = Module::GetSingleton();
+		const auto ptr = static_cast<REX::W32::HMODULE>(mod->pointer());
+		return GetIATPtr(ptr, std::move(a_dll), std::move(a_function));
 	}
 
 	// https://guidedhacking.com/attachments/pe_imptbl_headers-jpg.2241/

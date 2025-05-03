@@ -17,7 +17,8 @@ namespace REL
 		explicit Offset2ID(ExecutionPolicy&& a_policy)  // NOLINT(bugprone-forwarding-reference-overload)
 			requires(std::is_execution_policy_v<std::decay_t<ExecutionPolicy>>)
 		{
-			const auto id2offset = IDDB::get().get_id2offset();
+			const auto iddb = IDDB::GetSingleton();
+			const auto id2offset = iddb->get_id2offset();
 			_offset2id.reserve(id2offset.size());
 			_offset2id.insert(_offset2id.begin(), id2offset.begin(), id2offset.end());
 			std::sort(a_policy, _offset2id.begin(), _offset2id.end(), [](auto&& a_lhs, auto&& a_rhs) {
