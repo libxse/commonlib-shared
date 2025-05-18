@@ -3,6 +3,7 @@
 #include "REX/W32/BASE.h"
 
 #include "REX/W32/ADVAPI32.h"
+#include "REX/W32/BCRYPT.h"
 #include "REX/W32/COM.h"
 #include "REX/W32/COMPTR.h"
 #include "REX/W32/D3D.h"
@@ -23,6 +24,8 @@
 #include "REX/W32/KERNEL32.h"
 #include "REX/W32/NT.h"
 #include "REX/W32/OLE32.h"
+#include "REX/W32/SHELL32.h"
 #include "REX/W32/USER32.h"
 #include "REX/W32/VERSION.h"
+#include "REX/W32/WS2_32.h"
 #include "REX/W32/XINPUT.h"

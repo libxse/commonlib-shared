@@ -485,6 +485,8 @@ namespace REX::W32
 	bool                  FreeLibrary(HMODULE a_module) noexcept;
 	bool                  GetComputerNameA(char* a_buffer, std::uint32_t* a_size) noexcept;
 	bool                  GetComputerNameW(wchar_t* a_buffer, std::uint32_t* a_size) noexcept;
+	std::uint32_t         GetCurrentDirectoryA(std::uint32_t a_size, char* a_buffer) noexcept;
+	std::uint32_t         GetCurrentDirectoryW(std::uint32_t a_size, wchar_t* a_buffer) noexcept;
 	HMODULE               GetCurrentModule() noexcept;
 	HANDLE                GetCurrentProcess() noexcept;
 	std::uint32_t         GetCurrentThreadId() noexcept;

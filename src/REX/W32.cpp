@@ -10,6 +10,7 @@
 #include "REX/W32/SHELL32.h"
 #include "REX/W32/USER32.h"
 #include "REX/W32/VERSION.h"
+#include "REX/W32/WS2_32.h"
 
 // ADVAPI32
 
@@ -314,6 +315,8 @@ REX_W32_IMPORT(REX::W32::BOOL, FlushInstructionCache, REX::W32::HANDLE, const vo
 REX_W32_IMPORT(REX::W32::BOOL, FreeLibrary, REX::W32::HMODULE);
 REX_W32_IMPORT(REX::W32::BOOL, GetComputerNameA, char*, std::uint32_t*);
 REX_W32_IMPORT(REX::W32::BOOL, GetComputerNameW, wchar_t*, std::uint32_t*);
+REX_W32_IMPORT(std::uint32_t, GetCurrentDirectoryA, std::uint32_t, char*);
+REX_W32_IMPORT(std::uint32_t, GetCurrentDirectoryW, std::uint32_t, wchar_t*);
 REX_W32_IMPORT(REX::W32::HANDLE, GetCurrentProcess);
 REX_W32_IMPORT(std::uint32_t, GetCurrentThreadId);
 REX_W32_IMPORT(std::uint32_t, GetEnvironmentVariableA, const char*, char*, std::uint32_t);
@@ -501,6 +504,16 @@ namespace REX::W32
 	bool GetComputerNameW(wchar_t* a_buffer, std::uint32_t* a_size) noexcept
 	{
 		return ::W32_IMPL_GetComputerNameW(a_buffer, a_size);
+	}
+
+	std::uint32_t GetCurrentDirectoryA(std::uint32_t a_size, char* a_buffer) noexcept
+	{
+		return ::W32_IMPL_GetCurrentDirectoryA(a_size, a_buffer);
+	}
+
+	std::uint32_t GetCurrentDirectoryW(std::uint32_t a_size, wchar_t* a_buffer) noexcept
+	{
+		return ::W32_IMPL_GetCurrentDirectoryW(a_size, a_buffer);
 	}
 
 	HMODULE GetCurrentModule() noexcept
@@ -1004,5 +1017,29 @@ namespace REX::W32
 	bool VerQueryValueW(const void* a_block, const wchar_t* a_subBlock, void** a_buf, std::uint32_t* a_bufLen) noexcept
 	{
 		return ::W32_IMPL_VerQueryValueW(a_block, a_subBlock, a_buf, a_bufLen);
+	}
+}
+
+// WS2_32
+
+REX_W32_IMPORT(std::uint16_t, htons, std::uint16_t);
+REX_W32_IMPORT(std::uint32_t, ntohl, std::uint32_t);
+REX_W32_IMPORT(std::int32_t, WSAGetLastError);
+
+namespace REX::W32
+{
+	std::uint16_t htons(std::uint16_t a_host) noexcept
+	{
+		return ::W32_IMPL_htons(a_host);
+	}
+
+	std::uint32_t ntohl(std::uint32_t a_net) noexcept
+	{
+		return ::W32_IMPL_ntohl(a_net);
+	}
+
+	std::int32_t WSAGetLastError() noexcept
+	{
+		return ::W32_IMPL_WSAGetLastError();
 	}
 }
