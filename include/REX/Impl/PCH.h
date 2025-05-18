@@ -148,7 +148,7 @@ namespace XSE
 				template <std::size_t POS = 0, std::size_t COUNT = npos>
 				consteval auto substr() const noexcept
 				{
-					return string < CharT, COUNT != npos ? COUNT : N - POS >(this->data() + POS);
+					return string < CharT, COUNT != npos ? COUNT : N - POS > (this->data() + POS);
 				}
 
 				char_type c[N] = {};

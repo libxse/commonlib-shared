@@ -10,12 +10,12 @@ namespace REL
 
 		const mapping_t elem{ a_id, 0 };
 		const auto      it = std::lower_bound(
-			_id2offset.begin(),
-			_id2offset.end(),
-			elem,
-			[](auto&& a_lhs, auto&& a_rhs) {
-				return a_lhs.id < a_rhs.id;
-			});
+            _id2offset.begin(),
+            _id2offset.end(),
+            elem,
+            [](auto&& a_lhs, auto&& a_rhs) {
+                return a_lhs.id < a_rhs.id;
+            });
 
 		if (it == _id2offset.end()) {
 			const auto mod = Module::GetSingleton();
@@ -153,11 +153,11 @@ namespace REL
 		const auto version = mod->version().wstring(L"-"sv);
 		const auto filename = std::vformat(a_filename, std::make_wformat_args(version));
 		const auto mmapname = std::vformat(a_mmapname, std::make_wformat_args(version));
-		
+
 		try {
 			istream_t in(filename.data(), std::ios::in | std::ios::binary);
 			header_t  header;
-			
+
 			header.read(in, a_version);
 			if (header.version() != mod->version()) {
 				stl::report_and_fail(
@@ -172,8 +172,7 @@ namespace REL
 			const auto byteSize = static_cast<std::size_t>(header.address_count()) * sizeof(mapping_t);
 			if (_mmap.open(mmapname, byteSize)) {
 				_id2offset = { static_cast<mapping_t*>(_mmap.data()), header.address_count() };
-			}
-			else if (_mmap.create(mmapname, byteSize)) {
+			} else if (_mmap.create(mmapname, byteSize)) {
 				_id2offset = { static_cast<mapping_t*>(_mmap.data()), header.address_count() };
 				unpack_file(in, header);
 				std::sort(
@@ -182,12 +181,10 @@ namespace REL
 					[](auto&& a_lhs, auto&& a_rhs) {
 						return a_lhs.id < a_rhs.id;
 					});
-			}
-			else {
+			} else {
 				stl::report_and_fail("failed to create shared mapping"sv);
 			}
-		}
-		catch (const std::system_error&) {
+		} catch (const std::system_error&) {
 			stl::report_and_fail("uh-oh! 2");
 		}
 	}
@@ -205,63 +202,63 @@ namespace REL
 			const auto hi = static_cast<std::uint8_t>(type >> 4);
 
 			switch (lo) {
-			case 0:
-				a_in.readin(id);
-				break;
-			case 1:
-				id = prevID + 1;
-				break;
-			case 2:
-				id = prevID + a_in.readout<std::uint8_t>();
-				break;
-			case 3:
-				id = prevID - a_in.readout<std::uint8_t>();
-				break;
-			case 4:
-				id = prevID + a_in.readout<std::uint16_t>();
-				break;
-			case 5:
-				id = prevID - a_in.readout<std::uint16_t>();
-				break;
-			case 6:
-				id = a_in.readout<std::uint16_t>();
-				break;
-			case 7:
-				id = a_in.readout<std::uint32_t>();
-				break;
-			default:
-				stl::report_and_fail("unhandled type"sv);
+				case 0:
+					a_in.readin(id);
+					break;
+				case 1:
+					id = prevID + 1;
+					break;
+				case 2:
+					id = prevID + a_in.readout<std::uint8_t>();
+					break;
+				case 3:
+					id = prevID - a_in.readout<std::uint8_t>();
+					break;
+				case 4:
+					id = prevID + a_in.readout<std::uint16_t>();
+					break;
+				case 5:
+					id = prevID - a_in.readout<std::uint16_t>();
+					break;
+				case 6:
+					id = a_in.readout<std::uint16_t>();
+					break;
+				case 7:
+					id = a_in.readout<std::uint32_t>();
+					break;
+				default:
+					stl::report_and_fail("unhandled type"sv);
 			}
 
 			const std::uint64_t tmp = (hi & 8) != 0 ? (prevOffset / a_header.pointer_size()) : prevOffset;
 
 			switch (hi & 7) {
-			case 0:
-				a_in.readin(offset);
-				break;
-			case 1:
-				offset = tmp + 1;
-				break;
-			case 2:
-				offset = tmp + a_in.readout<std::uint8_t>();
-				break;
-			case 3:
-				offset = tmp - a_in.readout<std::uint8_t>();
-				break;
-			case 4:
-				offset = tmp + a_in.readout<std::uint16_t>();
-				break;
-			case 5:
-				offset = tmp - a_in.readout<std::uint16_t>();
-				break;
-			case 6:
-				offset = a_in.readout<std::uint16_t>();
-				break;
-			case 7:
-				offset = a_in.readout<std::uint32_t>();
-				break;
-			default:
-				stl::report_and_fail("unhandled type"sv);
+				case 0:
+					a_in.readin(offset);
+					break;
+				case 1:
+					offset = tmp + 1;
+					break;
+				case 2:
+					offset = tmp + a_in.readout<std::uint8_t>();
+					break;
+				case 3:
+					offset = tmp - a_in.readout<std::uint8_t>();
+					break;
+				case 4:
+					offset = tmp + a_in.readout<std::uint16_t>();
+					break;
+				case 5:
+					offset = tmp - a_in.readout<std::uint16_t>();
+					break;
+				case 6:
+					offset = a_in.readout<std::uint16_t>();
+					break;
+				case 7:
+					offset = a_in.readout<std::uint32_t>();
+					break;
+				default:
+					stl::report_and_fail("unhandled type"sv);
 			}
 
 			if ((hi & 8) != 0) {
