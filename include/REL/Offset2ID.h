@@ -33,7 +33,7 @@ namespace REL
 		[[nodiscard]] std::uint64_t operator()(std::size_t a_offset) const
 		{
 			if (_offset2id.empty()) {
-				stl::report_and_fail("No Address Library has been loaded."sv);
+				stl::report_and_fail("No Address Library has been loaded!"sv);
 			}
 
 			const IDDB::mapping_t elem{ 0, a_offset };
@@ -45,7 +45,14 @@ namespace REL
                     return a_lhs.offset < a_rhs.offset;
                 });
 			if (it == _offset2id.end()) {
-				stl::report_and_fail("offset not found"sv);
+				const auto mod = Module::GetSingleton();
+				const auto version = mod->version();
+				const auto str = std::format(
+					"Failed to find Address Library ID for offset!\n"
+					"Invalid offset: 0x{:08X}\n"
+					"Game Version: {}"sv,
+					a_offset, version.string());
+				stl::report_and_fail(str);
 			}
 
 			return it->id;

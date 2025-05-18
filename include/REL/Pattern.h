@@ -139,16 +139,15 @@ namespace REL
 				const noexcept
 			{
 				if (!this->match(a_address)) {
-					const auto version = Module::get().version();
+					const auto mod = Module::GetSingleton();
+					const auto version = mod->version();
 					stl::report_and_fail(
 						std::format(
 							"A pattern has failed to match.\n"
 							"This means the plugin is incompatible with either the "
-							"current version of the game ({}.{}.{}), or another "
+							"current version of the game ({}), or another "
 							"installed mod."sv,
-							version[0],
-							version[1],
-							version[2]),
+							version.string()),
 						a_loc);
 				}
 			}

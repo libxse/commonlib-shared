@@ -21,7 +21,7 @@ namespace REL
 			const auto mod = Module::GetSingleton();
 			const auto version = mod->version();
 			const auto str = std::format(
-				"Failed to find Address Library ID!\n"
+				"Failed to find offset for Address Library ID!\n"
 				"Invalid ID: {}\n"
 				"Game Version: {}"sv,
 				a_id, version.string());
@@ -164,10 +164,9 @@ namespace REL
 			if (header.version() != mod->version()) {
 				const auto str = std::format(
 					"Address Library version mismatch!\n"
-					"Expected Version: {}\n",
+					"Expected Version: {}\n"
 					"Actual Version: {}"sv,
-					mod->version().string(),
-					header.version().string());
+					mod->version().string(), header.version().string());
 				stl::report_and_fail(str);
 			}
 
@@ -187,7 +186,10 @@ namespace REL
 				stl::report_and_fail("Failed to create shared mapping!"sv);
 			}
 		} catch (const std::system_error&) {
-			stl::report_and_fail("Failed to find Address Library file!"sv);
+			const auto str = std::format(
+				L"Failed to open Address Library file!\nPath: {}"sv,
+				filename);
+			stl::report_and_fail(str);
 		}
 	}
 
@@ -229,7 +231,7 @@ namespace REL
 					id = a_in.readout<std::uint32_t>();
 					break;
 				default:
-					stl::report_and_fail("Unhandled type while loading Address Library."sv);
+					stl::report_and_fail("Unhandled type while loading Address Library!"sv);
 			}
 
 			const std::uint64_t tmp = (hi & 8) != 0 ? (prevOffset / a_header.pointer_size()) : prevOffset;
@@ -260,7 +262,7 @@ namespace REL
 					offset = a_in.readout<std::uint32_t>();
 					break;
 				default:
-					stl::report_and_fail("Unhandled type while loading Address Library."sv);
+					stl::report_and_fail("Unhandled type while loading Address Library!"sv);
 			}
 
 			if ((hi & 8) != 0) {
@@ -285,7 +287,8 @@ namespace REL
 		const auto version = mod->version().string("-"sv);
 		const auto path = std::vformat(a_filename, std::make_format_args(version));
 		if (!_mmap.open(path)) {
-			stl::report_and_fail(std::format("failed to open: {}", path));
+			const auto str = std::format("Failed to open Address Library file!\nPath: {}"sv, path);
+			stl::report_and_fail(str);
 		}
 
 		_id2offset = std::span{

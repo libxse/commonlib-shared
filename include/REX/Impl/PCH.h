@@ -543,6 +543,68 @@ namespace XSE
 			REX::W32::TerminateProcess(REX::W32::GetCurrentProcess(), EXIT_FAILURE);
 		}
 
+		[[noreturn]] inline void report_and_fail(std::wstring_view a_msg, std::source_location a_loc = std::source_location::current())
+		{
+			const auto body = [&]() {
+				constexpr std::array directories{
+					L"include/"sv,
+					L"src/"sv,
+				};
+
+				const std::filesystem::path p = a_loc.file_name();
+				const auto                  filename = p.generic_wstring();
+				std::wstring_view           fileview = filename;
+
+				constexpr auto npos = std::wstring::npos;
+				std::size_t    pos = npos;
+				std::size_t    off = 0;
+				for (const auto& dir : directories) {
+					pos = fileview.find(dir);
+					if (pos != npos) {
+						off = dir.length();
+						break;
+					}
+				}
+
+				if (pos != npos) {
+					fileview = fileview.substr(pos + off);
+				}
+
+				return std::format(L"{}({}): {}", fileview, a_loc.line(), a_msg);
+			}();
+
+			const auto caption = []() -> std::wstring {
+				std::vector<char> buf;
+				buf.reserve(REX::W32::MAX_PATH);
+				buf.resize(REX::W32::MAX_PATH / 2);
+				std::uint32_t result = 0;
+				do {
+					buf.resize(buf.size() * 2);
+					result = REX::W32::GetModuleFileNameA(
+						REX::W32::GetCurrentModule(),
+						buf.data(),
+						static_cast<std::uint32_t>(buf.size()));
+				} while (result && result == buf.size() && buf.size() <= std::numeric_limits<std::uint32_t>::max());
+
+				if (result && result != buf.size()) {
+					std::filesystem::path p(buf.begin(), buf.begin() + result);
+					return p.filename().wstring();
+				} else {
+					return {};
+				}
+			}();
+
+			spdlog::log(
+				spdlog::source_loc{
+					a_loc.file_name(),
+					static_cast<int>(a_loc.line()),
+					a_loc.function_name() },
+				spdlog::level::critical,
+				a_msg);
+			REX::W32::MessageBoxW(nullptr, body.c_str(), (caption.empty() ? nullptr : caption.c_str()), 0);
+			REX::W32::TerminateProcess(REX::W32::GetCurrentProcess(), EXIT_FAILURE);
+		}
+
 		template <class To, class From>
 		[[nodiscard]] To unrestricted_cast(From a_from)
 		{

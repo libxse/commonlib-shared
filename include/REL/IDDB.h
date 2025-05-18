@@ -79,7 +79,10 @@ namespace REL
 				_stream(a_filename.data(), a_mode)
 			{
 				if (!_stream.is_open()) {
-					stl::report_and_fail("failed to open address library file"sv);
+					const auto str = std::format(
+						L"Failed to open Address Library file!\nPath: {}"sv,
+						a_filename);
+					stl::report_and_fail(str);
 				}
 
 				_stream.exceptions(std::ios::badbit | std::ios::failbit | std::ios::eofbit);
