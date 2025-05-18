@@ -4,45 +4,24 @@
 
 namespace REL
 {
-	void Module::load(std::wstring_view a_fileName, std::wstring_view a_environment)
+	Module::Module() :
+		_base(reinterpret_cast<std::uintptr_t>(REX::W32::GetModuleHandleA(nullptr)))
 	{
-		assert(a_fileName.size() > 0);
-		assert(a_environment.size() > 0);
-
-		const auto getFilename = [&]() {
-			return REX::W32::GetEnvironmentVariableW(
-				a_environment.data(),
-				_filename.data(),
-				static_cast<std::uint32_t>(_filename.size()));
-		};
-
-		_filename.resize(getFilename());
-		if (const auto result = getFilename();
-			result != _filename.size() - 1 ||
-			result == 0) {
-			_filename = a_fileName;
-		}
-
-		auto handle = REX::W32::GetModuleHandleW(_filename.c_str());
-		if (handle == nullptr) {
-			stl::report_and_fail("failed to obtain module handle"sv);
-		}
-
-		_base = reinterpret_cast<std::uintptr_t>(handle);
 		_natvis = _base;
 
-		load_version();
-		load_segments();
-	}
+		char path[REX::W32::MAX_PATH];
+		if (!REX::W32::GetModuleFileNameA(reinterpret_cast<REX::W32::HMODULE>(_base), path, REX::W32::MAX_PATH))
+			stl::report_and_fail("failed to obtain file name"sv);
 
-	void Module::load_version()
-	{
-		const auto version = GetFileVersion(_filename);
-		if (version) {
+		_filename = std::filesystem::path(path).wstring();
+
+		if (const auto version = GetFileVersion(_filename)) {
 			_version = *version;
 		} else {
 			stl::report_and_fail("failed to obtain file version"sv);
 		}
+
+		load_segments();
 	}
 
 	void Module::load_segments()

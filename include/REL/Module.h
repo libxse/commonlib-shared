@@ -11,9 +11,7 @@ namespace REL
 		public REX::Singleton<Module>
 	{
 	public:
-		Module() = default;
-
-		void load(std::wstring_view a_fileName, std::wstring_view a_environment);
+		Module();
 
 		[[nodiscard]] constexpr std::uintptr_t base() const noexcept { return _base; }
 		[[nodiscard]] stl::zwstring            filename() const noexcept { return _filename; }
@@ -30,7 +28,6 @@ namespace REL
 
 	private:
 		void load_segments();
-		void load_version();
 
 		static constexpr std::array SEGMENTS{
 			".text"sv,
