@@ -42,9 +42,7 @@
 #include <variant>
 #include <vector>
 
-static_assert(
-	std::is_integral_v<std::time_t> && sizeof(std::time_t) == sizeof(std::size_t),
-	"wrap std::time_t instead");
+static_assert(std::is_integral_v<std::time_t> && sizeof(std::time_t) == sizeof(std::size_t), "wrap std::time_t instead");
 
 #include "REX/REX/Enum.h"
 #include "REX/REX/EnumSet.h"
@@ -53,7 +51,6 @@ static_assert(
 #include "REX/W32/USER32.h"
 
 #pragma warning(push, 0)
-#include <mmio/mmio.hpp>
 #include <spdlog/spdlog.h>
 #pragma warning(pop)
 

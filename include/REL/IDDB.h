@@ -129,7 +129,7 @@ namespace REL
 	public:
 		IDDB() = default;
 
-		void load(std::wstring_view a_filename, std::wstring_view a_mmapname, DatabaseVersion a_version = kLatest);
+		void load(std::wstring_view a_filename, DatabaseVersion a_version = kLatest);
 
 		[[nodiscard]] std::size_t id2offset(std::uint64_t a_id) const;
 
@@ -146,6 +146,8 @@ namespace REL
 	};
 }
 #else
+#include <mmio/mmio.hpp>
+
 namespace REL
 {
 	class IDDB :

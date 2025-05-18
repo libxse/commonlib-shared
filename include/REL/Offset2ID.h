@@ -33,7 +33,7 @@ namespace REL
 		[[nodiscard]] std::uint64_t operator()(std::size_t a_offset) const
 		{
 			if (_offset2id.empty()) {
-				stl::report_and_fail("data is empty"sv);
+				stl::report_and_fail("No Address Library has been loaded."sv);
 			}
 
 			const IDDB::mapping_t elem{ 0, a_offset };

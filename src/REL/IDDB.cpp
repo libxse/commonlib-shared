@@ -5,7 +5,7 @@ namespace REL
 	std::size_t IDDB::id2offset(std::uint64_t a_id) const
 	{
 		if (_id2offset.empty()) {
-			stl::report_and_fail("data is empty"sv);
+			stl::report_and_fail("No Address Library has been loaded!"sv);
 		}
 
 		const mapping_t elem{ a_id, 0 };
@@ -20,7 +20,11 @@ namespace REL
 		if (it == _id2offset.end()) {
 			const auto mod = Module::GetSingleton();
 			const auto version = mod->version();
-			const auto str = std::format("id {} not found!\ngame version: {}"sv, a_id, version.string());
+			const auto str = std::format(
+				"Failed to find Address Library ID!\n"
+				"Invalid ID: {}\n"
+				"Game Version: {}"sv,
+				a_id, version.string());
 			stl::report_and_fail(str);
 		}
 
@@ -120,12 +124,12 @@ namespace REL
 	{
 		const auto format = a_in.readout<std::uint32_t>();
 		if (format != a_version) {
-			stl::report_and_fail(std::format(
-				"Unsupported address library format: {}\n"
-				"Compiled IDDatabase version: {}\n"
-				"This means this script extender plugin is incompatible with the address "
-				"library available for this version of the game, and thus does not support it."sv,
-				format, std::to_underlying(a_version)));
+			const auto str = std::format(
+				"Unsupported Address Library format!\n"
+				"Expected version: {}\n"
+				"Actual version: {}"sv,
+				std::to_underlying(a_version), format);
+			stl::report_and_fail(str);
 		}
 
 		std::uint32_t version[4]{};
@@ -144,15 +148,13 @@ namespace REL
 		a_in.readin(_addressCount);
 	}
 
-	void IDDB::load(std::wstring_view a_filename, std::wstring_view a_mmapname, const DatabaseVersion a_version)
+	void IDDB::load(std::wstring_view a_filename, const DatabaseVersion a_version)
 	{
 		assert(a_filename.size() > 0);
-		assert(a_mmapname.size() > 0);
 
 		const auto mod = Module::GetSingleton();
 		const auto version = mod->version().wstring(L"-"sv);
 		const auto filename = std::vformat(a_filename, std::make_wformat_args(version));
-		const auto mmapname = std::vformat(a_mmapname, std::make_wformat_args(version));
 
 		try {
 			istream_t in(filename.data(), std::ios::in | std::ios::binary);
@@ -160,19 +162,19 @@ namespace REL
 
 			header.read(in, a_version);
 			if (header.version() != mod->version()) {
-				stl::report_and_fail(
-					std::format(
-						"Address Library version mismatch!\n"
-						"Expected Version: {}\n",
-						"Actual Version: {}"sv,
-						mod->version().string(),
-						header.version().string()));
+				const auto str = std::format(
+					"Address Library version mismatch!\n"
+					"Expected Version: {}\n",
+					"Actual Version: {}"sv,
+					mod->version().string(),
+					header.version().string());
+				stl::report_and_fail(str);
 			}
 
 			const auto byteSize = static_cast<std::size_t>(header.address_count()) * sizeof(mapping_t);
-			if (_mmap.open(mmapname, byteSize)) {
+			if (_mmap.open(L"XSEOffsets"sv, byteSize)) {
 				_id2offset = { static_cast<mapping_t*>(_mmap.data()), header.address_count() };
-			} else if (_mmap.create(mmapname, byteSize)) {
+			} else if (_mmap.create(L"XSEOffsets"sv, byteSize)) {
 				_id2offset = { static_cast<mapping_t*>(_mmap.data()), header.address_count() };
 				unpack_file(in, header);
 				std::sort(
@@ -182,10 +184,10 @@ namespace REL
 						return a_lhs.id < a_rhs.id;
 					});
 			} else {
-				stl::report_and_fail("failed to create shared mapping"sv);
+				stl::report_and_fail("Failed to create shared mapping!"sv);
 			}
 		} catch (const std::system_error&) {
-			stl::report_and_fail("uh-oh! 2");
+			stl::report_and_fail("Failed to find Address Library file!"sv);
 		}
 	}
 
@@ -227,7 +229,7 @@ namespace REL
 					id = a_in.readout<std::uint32_t>();
 					break;
 				default:
-					stl::report_and_fail("unhandled type"sv);
+					stl::report_and_fail("Unhandled type while loading Address Library."sv);
 			}
 
 			const std::uint64_t tmp = (hi & 8) != 0 ? (prevOffset / a_header.pointer_size()) : prevOffset;
@@ -258,7 +260,7 @@ namespace REL
 					offset = a_in.readout<std::uint32_t>();
 					break;
 				default:
-					stl::report_and_fail("unhandled type"sv);
+					stl::report_and_fail("Unhandled type while loading Address Library."sv);
 			}
 
 			if ((hi & 8) != 0) {
