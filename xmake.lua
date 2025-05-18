@@ -62,7 +62,7 @@ target("commonlib-shared", function()
     add_options("rex_ini", "rex_json", "rex_toml", "xse_xbyak", { public = true })
 
     -- add system links
-    add_syslinks("advapi32", "bcrypt", "d3d11", "d3dcompiler", "dbghelp", "dxgi", "ole32", "shell32", "user32", "version")
+    add_syslinks("advapi32", "bcrypt", "d3d11", "d3dcompiler", "dbghelp", "dxgi", "ole32", "shell32", "user32", "version", "ws2_32")
 
     -- add source files
     add_files("src/**.cpp")
