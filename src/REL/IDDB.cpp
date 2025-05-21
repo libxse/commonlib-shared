@@ -115,7 +115,7 @@ namespace REL
 			m_loader = Loader::F4SE;
 		} else if (loader.filename() == L"SFSE") {
 			m_loader = Loader::SFSE;
-		}// else if (loader.filename() == L"OBSE") {
+		}  // else if (loader.filename() == L"OBSE") {
 		//	m_loader = Loader::OBSE;
 		//}
 

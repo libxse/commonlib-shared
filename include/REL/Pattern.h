@@ -147,11 +147,11 @@ namespace REL
 					const auto mod = Module::GetSingleton();
 					const auto version = mod->version();
 					REX::FAIL(
-							"A pattern has failed to match.\n"
-							"This means the plugin is incompatible with either the "
-							"current version of the game ({}), or another "
-							"installed mod."sv,
-							version.string(), a_loc);
+						"A pattern has failed to match.\n"
+						"This means the plugin is incompatible with either the "
+						"current version of the game ({}), or another "
+						"installed mod."sv,
+						version.string(), a_loc);
 				}
 			}
 		};
