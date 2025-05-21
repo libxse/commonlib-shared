@@ -1,5 +1,8 @@
 #pragma once
 
+#include "REX/BASE.h"
+#include "REX/REX/CAST.h"
+
 #ifdef XSE_SUPPORT_XBYAK
 namespace Xbyak
 {
@@ -82,7 +85,7 @@ namespace REL
 		template <std::size_t N, class F>
 		std::uintptr_t write_call(const std::uintptr_t a_src, F a_dst)
 		{
-			return write_call<N>(a_src, stl::unrestricted_cast<std::uintptr_t>(a_dst));
+			return write_call<N>(a_src, REX::UNRESTRICTED_CAST<std::uintptr_t>(a_dst));
 		}
 
 		template <std::size_t N>
@@ -99,7 +102,7 @@ namespace REL
 		template <std::size_t N, class F>
 		std::uintptr_t write_jmp(const std::uintptr_t a_src, F a_dst)
 		{
-			return write_jmp<N>(a_src, stl::unrestricted_cast<std::uintptr_t>(a_dst));
+			return write_jmp<N>(a_src, REX::UNRESTRICTED_CAST<std::uintptr_t>(a_dst));
 		}
 
 		std::uintptr_t write_call5(const std::uintptr_t a_src, const std::uintptr_t a_dst);

@@ -1,11 +1,15 @@
 #pragma once
 
+#include "REX/BASE.h"
+
 #include "REL/ASM.h"
 #include "REL/HookObject.h"
 #include "REL/ID.h"
 #include "REL/Offset.h"
 #include "REL/Trampoline.h"
 #include "REL/Utility.h"
+
+#include "REX/REX/LOG.h"
 
 namespace REL
 {

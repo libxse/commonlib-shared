@@ -1,5 +1,7 @@
 #pragma once
 
+#include "REX/BASE.h"
+
 #include "REL/IDDB.h"
 #include "REL/Module.h"
 

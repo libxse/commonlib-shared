@@ -1,5 +1,7 @@
 #pragma once
 
+#include "REX/BASE.h"
+
 namespace REX::PS4
 {
 	enum SCE_PAD_BUTTON : std::uint32_t

@@ -1,5 +1,7 @@
 #pragma once
 
+#include "REX/BASE.h"
+
 #include "REL/Segment.h"
 #include "REL/Version.h"
 
@@ -14,9 +16,18 @@ namespace REL
 		Module();
 
 		[[nodiscard]] constexpr std::uintptr_t base() const noexcept { return _base; }
-		[[nodiscard]] stl::zwstring            filename() const noexcept { return _filename; }
+		[[nodiscard]] std::wstring_view        filename() const noexcept { return _filename; }
 		[[nodiscard]] constexpr Segment        segment(Segment::Name a_segment) const noexcept { return _segments[a_segment]; }
-		[[nodiscard]] constexpr Version        version() const noexcept { return _version; }
+
+		[[nodiscard]] constexpr Version version() const noexcept
+		{
+			return _version;
+		}
+
+		constexpr void version(Version a_version) noexcept
+		{
+			_version = a_version;
+		}
 
 		[[nodiscard]] void* pointer() const noexcept { return reinterpret_cast<void*>(base()); }
 

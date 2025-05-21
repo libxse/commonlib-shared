@@ -1,5 +1,7 @@
 #pragma once
 
+#include "REX/BASE.h"
+
 #ifdef _INC_WINAPIFAMILY
 #	error Windows API detected. Please move any Windows API includes after CommonLib, or remove them.
 #endif

@@ -1,5 +1,7 @@
 #pragma once
 
+#include "REX/BASE.h"
+
 namespace REL
 {
 	class Segment

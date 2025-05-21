@@ -1,5 +1,7 @@
 #pragma once
 
+#include "REX/BASE.h"
+
 namespace REL
 {
 	void Write(void* a_dst, const void* a_src, const std::size_t a_size);

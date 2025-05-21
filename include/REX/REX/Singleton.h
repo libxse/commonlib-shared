@@ -1,5 +1,7 @@
 #pragma once
 
+#include "REX/BASE.h"
+
 namespace REX
 {
 	template <class T>

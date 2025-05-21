@@ -1,5 +1,10 @@
 #pragma once
 
+#include "REX/BASE.h"
+
+#include "REX/REX/CAST.h"
+#include "REX/W32/BASE.h"
+
 namespace REL
 {
 	[[nodiscard]] std::uintptr_t GetIATAddr(std::string_view a_dll, std::string_view a_function);
@@ -26,6 +31,6 @@ namespace REL
 	template <class F>
 	std::uintptr_t PatchIAT(F a_newFunc, std::string_view a_dll, std::string_view a_function)
 	{
-		return PatchIAT(stl::unrestricted_cast<std::uintptr_t>(a_newFunc), a_dll, a_function);
+		return PatchIAT(REX::UNRESTRICTED_CAST<std::uintptr_t>(a_newFunc), a_dll, a_function);
 	}
 }

@@ -1,11 +1,15 @@
 #pragma once
 
+#include "REX/BASE.h"
+
 #include "REL/ASM.h"
 #include "REL/ID.h"
 #include "REL/Module.h"
 #include "REL/Offset.h"
 #include "REL/Trampoline.h"
 #include "REL/Utility.h"
+
+#include "REX/REX/CAST.h"
 
 #define REL_MAKE_MEMBER_FUNCTION_POD_TYPE_HELPER_IMPL(a_nopropQual, a_propQual, ...)              \
 	template <                                                                                    \
@@ -156,7 +160,7 @@ namespace REL
 			std::aligned_storage_t<sizeof(result_t), alignof(result_t)> result;
 
 			using func_t = member_function_non_pod_type_t<F>;
-			auto func = stl::unrestricted_cast<func_t*>(std::forward<F>(a_func));
+			auto func = REX::UNRESTRICTED_CAST<func_t*>(std::forward<F>(a_func));
 
 			return func(std::forward<First>(a_first), std::addressof(result), std::forward<Rest>(a_rest)...);
 		}
@@ -174,7 +178,7 @@ namespace REL
 		if constexpr (std::is_member_function_pointer_v<std::decay_t<F>>) {
 			if constexpr (detail::is_x64_pod_v<std::invoke_result_t<F, Args...>>) {  // member functions == free functions in x64
 				using func_t = detail::member_function_pod_type_t<std::decay_t<F>>;
-				auto func = stl::unrestricted_cast<func_t*>(std::forward<F>(a_func));
+				auto func = REX::UNRESTRICTED_CAST<func_t*>(std::forward<F>(a_func));
 				return func(std::forward<Args>(a_args)...);
 			} else {  // shift args to insert result
 				return detail::invoke_member_function_non_pod(std::forward<F>(a_func), std::forward<Args>(a_args)...);
@@ -268,7 +272,7 @@ namespace REL
 			noexcept(std::is_nothrow_copy_constructible_v<value_type>)
 		{
 			assert(_impl != 0);
-			return stl::unrestricted_cast<value_type>(_impl);
+			return REX::UNRESTRICTED_CAST<value_type>(_impl);
 		}
 
 		template <std::ptrdiff_t O = 0>
@@ -285,7 +289,7 @@ namespace REL
 		void replace_func(const std::size_t a_count, const F a_dst)
 			requires(std::same_as<value_type, std::uintptr_t>)
 		{
-			replace_func<O>(a_count, stl::unrestricted_cast<std::uintptr_t>(a_dst));
+			replace_func<O>(a_count, REX::UNRESTRICTED_CAST<std::uintptr_t>(a_dst));
 		}
 
 		template <std::ptrdiff_t O = 0>
@@ -327,7 +331,7 @@ namespace REL
 		std::uintptr_t write_jmp(const F a_dst)
 			requires(std::same_as<value_type, std::uintptr_t>)
 		{
-			return GetTrampoline().write_jmp<N>(address() + O, stl::unrestricted_cast<std::uintptr_t>(a_dst));
+			return GetTrampoline().write_jmp<N>(address() + O, REX::UNRESTRICTED_CAST<std::uintptr_t>(a_dst));
 		}
 
 		template <std::size_t N, std::ptrdiff_t O = 0>
@@ -341,7 +345,7 @@ namespace REL
 		std::uintptr_t write_call(const F a_dst)
 			requires(std::same_as<value_type, std::uintptr_t>)
 		{
-			return GetTrampoline().write_call<N>(address() + O, stl::unrestricted_cast<std::uintptr_t>(a_dst));
+			return GetTrampoline().write_call<N>(address() + O, REX::UNRESTRICTED_CAST<std::uintptr_t>(a_dst));
 		}
 
 		template <std::ptrdiff_t O = 0>
@@ -365,7 +369,7 @@ namespace REL
 		std::uintptr_t write_vfunc(std::size_t a_idx, F a_newFunc)
 			requires(std::same_as<value_type, std::uintptr_t>)
 		{
-			return write_vfunc(a_idx, stl::unrestricted_cast<std::uintptr_t>(a_newFunc));
+			return write_vfunc(a_idx, REX::UNRESTRICTED_CAST<std::uintptr_t>(a_newFunc));
 		}
 
 	private:

@@ -1,5 +1,7 @@
 #pragma once
 
+#include "REX/BASE.h"
+
 #pragma pack(push, 1)
 
 namespace REL::ASM

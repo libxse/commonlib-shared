@@ -1,5 +1,7 @@
 #pragma once
 
+#include "REX/BASE.h"
+
 namespace REL
 {
 	using HOOK_HANDLE = std::uint32_t;

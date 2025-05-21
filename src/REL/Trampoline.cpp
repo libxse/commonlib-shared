@@ -1,8 +1,10 @@
 #include "REL/Trampoline.h"
 
 #include "REL/ASM.h"
+#include "REL/Relocation.h"
 #include "REL/Utility.h"
 
+#include "REX/REX/LOG.h"
 #include "REX/W32/KERNEL32.h"
 
 // xbyak brings in <Windows.h>
@@ -96,7 +98,7 @@ namespace REL
 	void Trampoline::create(const std::size_t a_size, void* a_module)
 	{
 		if (a_size == 0) {
-			stl::report_and_fail("cannot create a trampoline with a zero size"sv);
+			REX::FAIL("cannot create a trampoline with a zero size");
 		}
 
 		if (!a_module) {
@@ -107,7 +109,7 @@ namespace REL
 
 		auto mem = Impl::AllocTrampoline(a_size, reinterpret_cast<std::uintptr_t>(a_module));
 		if (!mem) {
-			stl::report_and_fail("failed to create trampoline"sv);
+			REX::FAIL("failed to create trampoline");
 		}
 
 		set_trampoline(mem, a_size, [](void* a_mem, std::size_t) {
@@ -134,7 +136,7 @@ namespace REL
 	void* Trampoline::allocate(const std::size_t a_size)
 	{
 		if (a_size > free_size()) {
-			stl::report_and_fail(std::format("Failed to handle allocation request\nAllocate Size: {}\nFree Size: {}", a_size, free_size()));
+			REX::FAIL("Failed to handle allocation request\nAllocate Size: {}\nFree Size: {}", a_size, free_size());
 		}
 
 		auto mem = m_data + m_size;

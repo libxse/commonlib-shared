@@ -1,5 +1,7 @@
 #pragma once
 
+#include "REX/BASE.h"
+
 namespace REX
 {
 	enum class LOG_LEVEL
@@ -261,4 +263,64 @@ namespace REX
 	CRITICAL(const std::wformat_string<T...>, T&&...) -> CRITICAL<T...>;
 	CRITICAL(const std::string_view) -> CRITICAL<void>;
 	CRITICAL(const std::wstring_view) -> CRITICAL<void>;
+}
+
+namespace REX
+{
+	namespace IMPL
+	{
+		void FAIL(const std::source_location a_loc, const std::string_view a_fmt);
+		void FAIL(const std::source_location a_loc, const std::wstring_view a_fmt);
+
+		template <class... T>
+		void FAIL(const std::source_location a_loc, const std::format_string<T...> a_fmt, T&&... a_args)
+		{
+			FAIL(a_loc, std::vformat(a_fmt.get(), std::make_format_args(a_args...)));
+		}
+
+		template <class... T>
+		void FAIL(const std::source_location a_loc, const std::wformat_string<T...> a_fmt, T&&... a_args)
+		{
+			FAIL(a_loc, std::vformat(a_fmt.get(), std::make_wformat_args(a_args...)));
+		}
+	}
+
+	template <class... T>
+	struct FAIL
+	{
+		FAIL() = delete;
+
+		explicit FAIL(const std::format_string<T...> a_fmt, T&&... a_args, const std::source_location a_loc = std::source_location::current())
+		{
+			IMPL::FAIL(a_loc, a_fmt, std::forward<T>(a_args)...);
+		}
+
+		explicit FAIL(const std::wformat_string<T...> a_fmt, T&&... a_args, const std::source_location a_loc = std::source_location::current())
+		{
+			IMPL::FAIL(a_loc, a_fmt, std::forward<T>(a_args)...);
+		}
+	};
+
+	template <>
+	struct FAIL<void>
+	{
+		FAIL() = delete;
+
+		explicit FAIL(const std::string_view a_fmt, const std::source_location a_loc = std::source_location::current())
+		{
+			IMPL::FAIL(a_loc, a_fmt);
+		}
+
+		explicit FAIL(const std::wstring_view a_fmt, const std::source_location a_loc = std::source_location::current())
+		{
+			IMPL::FAIL(a_loc, a_fmt);
+		}
+	};
+
+	template <class... T>
+	FAIL(const std::format_string<T...>, T&&...) -> FAIL<T...>;
+	template <class... T>
+	FAIL(const std::wformat_string<T...>, T&&...) -> FAIL<T...>;
+	FAIL(const std::string_view) -> FAIL<void>;
+	FAIL(const std::wstring_view) -> FAIL<void>;
 }

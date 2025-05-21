@@ -1,7 +1,5 @@
 #pragma once
 
-#include "REX/W32/BASE.h"
-
 #include "REX/W32/ADVAPI32.h"
 #include "REX/W32/BCRYPT.h"
 #include "REX/W32/COM.h"

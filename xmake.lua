@@ -29,12 +29,6 @@ option("rex_toml", function()
     add_defines("REX_OPTION_TOML=1")
 end)
 
-option("xse_mmio", function()
-    set_default(false)
-    set_description("enable mmio based Address Library support")
-    add_defines("XSE_MMIO_ADDRESSLIB=1")
-end)
-
 option("xse_xbyak", function()
     set_default(false)
     set_description("enable xbyak support for Trampoline")
@@ -48,7 +42,6 @@ add_requires("spdlog", { configs = { header_only = false, wchar = true, std_form
 if has_config("rex_ini") then add_requires("simpleini") end
 if has_config("rex_json") then add_requires("nlohmann_json") end
 if has_config("rex_toml") then add_requires("toml11") end
-if has_config("xse_mmio") then add_requires("rsm-mmio") end
 if has_config("xse_xbyak") then add_requires("xbyak") end
 
 target("commonlib-shared", function()
@@ -62,11 +55,10 @@ target("commonlib-shared", function()
     if has_config("rex_ini") then add_packages("simpleini", { public = true }) end
     if has_config("rex_json") then add_packages("nlohmann_json", { public = true }) end
     if has_config("rex_toml") then add_packages("toml11", { public = true }) end
-    if has_config("xse_mmio") then add_packages("rsm-mmio", { public = true }) end
     if has_config("xse_xbyak") then add_packages("xbyak", { public = true }) end
 
     -- add options
-    add_options("rex_ini", "rex_json", "rex_toml", "xse_mmio", "xse_xbyak", { public = true })
+    add_options("rex_ini", "rex_json", "rex_toml", "xse_xbyak", { public = true })
 
     -- add system links
     add_syslinks("advapi32", "bcrypt", "d3d11", "d3dcompiler", "dbghelp", "dxgi", "ole32", "shell32", "user32", "version", "ws2_32")
@@ -82,7 +74,7 @@ target("commonlib-shared", function()
     )
 
     -- set precompiled header
-    set_pcxxheader("include/REX/Impl/PCH.h")
+    set_pcxxheader("src/REX/PCH.h")
 
     -- add flags
     add_cxxflags("/EHsc", "/permissive-", { public = true })

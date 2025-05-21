@@ -1,196 +1,200 @@
 #include "REL/IDDB.h"
+#include "REL/Module.h"
+
+#include "REX/REX/LOG.h"
+#include "REX/W32/KERNEL32.h"
 
 namespace REL
 {
-	std::size_t IDDB::id2offset(std::uint64_t a_id) const
+	class IDDB::istream_t
 	{
-		if (_id2offset.empty()) {
-			stl::report_and_fail("No Address Library has been loaded!"sv);
+	public:
+		using stream_type = std::ifstream;
+		using pointer = stream_type*;
+		using const_pointer = const stream_type*;
+		using reference = stream_type&;
+		using const_reference = const stream_type&;
+
+		istream_t(const std::filesystem::path a_path, const std::ios_base::openmode a_mode) :
+			_stream(a_path, a_mode)
+		{
+			if (!_stream.is_open())
+				REX::FAIL(L"Failed to open Address Library file!\nPath: {}", a_path.wstring());
+
+			_stream.exceptions(std::ios::badbit | std::ios::failbit | std::ios::eofbit);
 		}
 
-		const mapping_t elem{ a_id, 0 };
-		const auto      it = std::lower_bound(
-            _id2offset.begin(),
-            _id2offset.end(),
-            elem,
-            [](auto&& a_lhs, auto&& a_rhs) {
-                return a_lhs.id < a_rhs.id;
-            });
-
-		if (it == _id2offset.end()) {
-			const auto mod = Module::GetSingleton();
-			const auto version = mod->version();
-			const auto str = std::format(
-				"Failed to find offset for Address Library ID!\n"
-				"Invalid ID: {}\n"
-				"Game Version: {}"sv,
-				a_id, version.string());
-			stl::report_and_fail(str);
+		void ignore(const std::streamsize a_count)
+		{
+			_stream.ignore(a_count);
 		}
 
-		return static_cast<std::size_t>(it->offset);
-	}
+		template <class T>
+		void readin(T& a_val)
+		{
+			_stream.read(std::bit_cast<char*>(std::addressof(a_val)), sizeof(T));
+		}
+
+		template <class T>
+			requires(std::is_arithmetic_v<T>)
+		T readout()
+		{
+			T val{};
+			readin(val);
+			return val;
+		}
+
+	private:
+		stream_type _stream;
+	};
+
+	class IDDB::header_t
+	{
+	public:
+		void read(IDDB::istream_t& a_in)
+		{
+			const auto format = a_in.readout<std::uint32_t>();
+			if (format > std::to_underlying(IDDB::Format::V2))
+				REX::FAIL("Unsupported Address Library format: {}", format);
+
+			std::uint32_t version[4]{};
+			a_in.readin(version);
+			for (std::size_t i = 0; i < 4; i++) {
+				_version[i] = static_cast<std::uint16_t>(version[i]);
+			}
+
+			const auto nameLen = a_in.readout<std::uint32_t>();
+			for (std::uint32_t i = 0; i < nameLen; i++) {
+				a_in.readin(_name[i]);
+			}
+			_name[nameLen] = '\0';
+
+			a_in.readin(_pointerSize);
+			a_in.readin(_addressCount);
+		}
+
+		[[nodiscard]] std::size_t      address_count() const noexcept { return static_cast<std::size_t>(_addressCount); }
+		[[nodiscard]] std::uint64_t    pointer_size() const noexcept { return static_cast<std::uint64_t>(_pointerSize); }
+		[[nodiscard]] std::string_view name() const noexcept { return _name; }
+		[[nodiscard]] Version          version() const noexcept { return _version; }
+
+	private:
+		char         _name[260]{};
+		Version      _version;
+		std::int32_t _pointerSize{ 0 };
+		std::int32_t _addressCount{ 0 };
+	};
 }
 
-#ifndef XSE_MMIO_ADDRESSLIB
 namespace REL
 {
-	bool IDDB::memory_map::open(stl::zwstring a_name, std::size_t a_size)
+	IDDB::IDDB()
 	{
-		close();
+		std::unordered_map<IDDB::Loader, std::vector<std::wstring>> g_rootMap{
+			{ IDDB::Loader::SKSE, { L"versionlib", L"version" } },
+			{ IDDB::Loader::F4SE, { L"version" } },
+			{ IDDB::Loader::SFSE, { L"versionlib" } },
+			//{ IDDB::Loader::OBSE, { L"versionlib" } }
+		};
 
-		REX::W32::ULARGE_INTEGER bytes;
-		bytes.value = a_size;
+		std::unordered_map<IDDB::Loader, std::string> g_loaderMap{
+			{ IDDB::Loader::SKSE, "SKSE" },
+			{ IDDB::Loader::F4SE, "F4SE" },
+			{ IDDB::Loader::SFSE, "SFSE" },
+			//{ IDDB::Loader::OBSE, "OBSE" }
+		};
 
-		_mapping = REX::W32::OpenFileMappingW(
-			REX::W32::FILE_MAP_READ | REX::W32::FILE_MAP_WRITE,
-			false,
-			a_name.data());
+		wchar_t buffer[REX::W32::MAX_PATH];
+		REX::W32::GetModuleFileNameW(REX::W32::GetCurrentModule(), buffer, REX::W32::MAX_PATH);
+		std::filesystem::path plugin(buffer);
 
-		if (!_mapping) {
-			close();
-			return false;
-		}
+		auto loader = plugin.parent_path().parent_path();
+		if (loader.filename() == L"SKSE") {
+			m_loader = Loader::SKSE;
+		} else if (loader.filename() == L"F4SE") {
+			m_loader = Loader::F4SE;
+		} else if (loader.filename() == L"SFSE") {
+			m_loader = Loader::SFSE;
+		}// else if (loader.filename() == L"OBSE") {
+		//	m_loader = Loader::OBSE;
+		//}
 
-		_view = REX::W32::MapViewOfFile(
-			_mapping,
-			REX::W32::FILE_MAP_READ | REX::W32::FILE_MAP_WRITE,
-			0,
-			0,
-			bytes.value);
-
-		if (!_view) {
-			close();
-			return false;
-		}
-
-		return true;
-	}
-
-	bool IDDB::memory_map::create(stl::zwstring a_name, std::size_t a_size)
-	{
-		close();
-
-		REX::W32::ULARGE_INTEGER bytes;
-		bytes.value = a_size;
-
-		_mapping = REX::W32::OpenFileMappingW(
-			REX::W32::FILE_MAP_READ | REX::W32::FILE_MAP_WRITE,
-			false,
-			a_name.data());
-
-		if (!_mapping) {
-			_mapping = REX::W32::CreateFileMappingW(
-				REX::W32::INVALID_HANDLE_VALUE,
-				nullptr,
-				REX::W32::PAGE_READWRITE,
-				bytes.hi,
-				bytes.lo,
-				a_name.data());
-
-			if (!_mapping) {
-				return false;
-			}
-		}
-
-		_view = REX::W32::MapViewOfFile(
-			_mapping,
-			REX::W32::FILE_MAP_READ | REX::W32::FILE_MAP_WRITE,
-			0,
-			0,
-			bytes.value);
-
-		if (!_view) {
-			return false;
-		}
-
-		return true;
-	}
-
-	void IDDB::memory_map::close()
-	{
-		if (_view) {
-			REX::W32::UnmapViewOfFile(static_cast<const void*>(_view));
-			_view = nullptr;
-		}
-
-		if (_mapping) {
-			REX::W32::CloseHandle(_mapping);
-			_mapping = nullptr;
-		}
-	}
-
-	void IDDB::header_t::read(istream_t& a_in, const DatabaseVersion a_version)
-	{
-		const auto format = a_in.readout<std::uint32_t>();
-		if (format != a_version) {
-			const auto str = std::format(
-				"Unsupported Address Library format!\n"
-				"Expected version: {}\n"
-				"Actual version: {}"sv,
-				std::to_underlying(a_version), format);
-			stl::report_and_fail(str);
-		}
-
-		std::uint32_t version[4]{};
-		a_in.readin(version);
-		for (std::size_t i = 0; i < 4; i++) {
-			_version[i] = static_cast<std::uint16_t>(version[i]);
-		}
-
-		const auto nameLen = a_in.readout<std::uint32_t>();
-		for (std::uint32_t i = 0; i < nameLen; i++) {
-			a_in.readin(_name[i]);
-		}
-		_name[nameLen] = '\0';
-
-		a_in.readin(_pointerSize);
-		a_in.readin(_addressCount);
-	}
-
-	void IDDB::load(std::wstring_view a_filename, const DatabaseVersion a_version)
-	{
-		assert(a_filename.size() > 0);
+		if (m_loader == Loader::None)
+			REX::FAIL("Failed to determine Address Library loader!");
 
 		const auto mod = Module::GetSingleton();
-		const auto version = mod->version().wstring(L"-"sv);
-		const auto filename = std::vformat(a_filename, std::make_wformat_args(version));
+		const auto version = mod->version().wstring(L"-");
+		for (const auto& root : g_rootMap[m_loader]) {
+			const auto name = std::format(L"{}-{}.bin", root, version);
+			const auto path = plugin.parent_path() / name;
+			if (std::filesystem::exists(path)) {
+				if (m_loader == Loader::F4SE && root == L"version")
+					m_format = Format::V0;
 
+				m_path = path;
+				break;
+			}
+		}
+
+		if (m_path.empty())
+			REX::FAIL("Failed to determine Address Library path!\nLoader: {}", g_loaderMap[m_loader]);
+
+		if (m_format == Format::V0)
+			load_v0();
+		else
+			load();
+	}
+
+	void IDDB::load()
+	{
 		try {
-			istream_t in(filename.data(), std::ios::in | std::ios::binary);
+			istream_t in(m_path, std::ios::in | std::ios::binary);
 			header_t  header;
 
-			header.read(in, a_version);
+			header.read(in);
+			const auto mod = Module::GetSingleton();
 			if (header.version() != mod->version()) {
-				const auto str = std::format(
+				REX::FAIL(
 					"Address Library version mismatch!\n"
 					"Expected Version: {}\n"
-					"Actual Version: {}"sv,
+					"Actual Version: {}",
 					mod->version().string(), header.version().string());
-				stl::report_and_fail(str);
 			}
 
+			const auto mapName = std::format("COMMONLIB_IDDB_OFFSETS_{}", mod->version().string("_"));
 			const auto byteSize = static_cast<std::size_t>(header.address_count()) * sizeof(mapping_t);
-			if (_mmap.open(L"XSEOffsets"sv, byteSize)) {
-				_id2offset = { static_cast<mapping_t*>(_mmap.data()), header.address_count() };
-			} else if (_mmap.create(L"XSEOffsets"sv, byteSize)) {
-				_id2offset = { static_cast<mapping_t*>(_mmap.data()), header.address_count() };
-				unpack_file(in, header);
-				std::sort(
-					_id2offset.begin(),
-					_id2offset.end(),
-					[](auto&& a_lhs, auto&& a_rhs) {
-						return a_lhs.id < a_rhs.id;
-					});
+			if (m_mmap.create(mapName, byteSize)) {
+				m_id2offset = { reinterpret_cast<mapping_t*>(m_mmap.data()), header.address_count() };
+
+				if (m_mmap.is_owner()) {
+					unpack_file(in, header);
+					std::sort(
+						m_id2offset.begin(),
+						m_id2offset.end(),
+						[](auto&& a_lhs, auto&& a_rhs) {
+							return a_lhs.id < a_rhs.id;
+						});
+				}
 			} else {
-				stl::report_and_fail("Failed to create shared mapping!"sv);
+				REX::FAIL("Failed to create shared mapping!");
 			}
 		} catch (const std::system_error&) {
-			const auto str = std::format(
-				L"Failed to open Address Library file!\nPath: {}"sv,
-				filename);
-			stl::report_and_fail(str);
+			REX::FAIL(L"Failed to open Address Library file!\nPath: {}", m_path.wstring());
 		}
+	}
+
+	void IDDB::load_v0()
+	{
+		const auto mod = Module::GetSingleton();
+		const auto mapName = std::format("COMMONLIB_IDDB_OFFSETS_{}", mod->version().string("_"));
+		if (!m_mmap.create(m_path, mapName)) {
+			REX::FAIL(L"Failed to open Address Library file!\nPath: {}", m_path.wstring());
+		}
+
+		m_id2offset = {
+			reinterpret_cast<mapping_t*>(m_mmap.data() + sizeof(std::uint64_t)),
+			*reinterpret_cast<std::uint64_t*>(m_mmap.data())
+		};
 	}
 
 	void IDDB::unpack_file(istream_t& a_in, const header_t& a_header)
@@ -200,7 +204,7 @@ namespace REL
 		std::uint64_t offset = 0;
 		std::uint64_t prevID = 0;
 		std::uint64_t prevOffset = 0;
-		for (auto& mapping : _id2offset) {
+		for (auto& mapping : m_id2offset) {
 			a_in.readin(type);
 			const auto lo = static_cast<std::uint8_t>(type & 0xF);
 			const auto hi = static_cast<std::uint8_t>(type >> 4);
@@ -231,7 +235,7 @@ namespace REL
 					id = a_in.readout<std::uint32_t>();
 					break;
 				default:
-					stl::report_and_fail("Unhandled type while loading Address Library!"sv);
+					REX::FAIL("Unhandled type while loading Address Library!");
 			}
 
 			const std::uint64_t tmp = (hi & 8) != 0 ? (prevOffset / a_header.pointer_size()) : prevOffset;
@@ -262,7 +266,7 @@ namespace REL
 					offset = a_in.readout<std::uint32_t>();
 					break;
 				default:
-					stl::report_and_fail("Unhandled type while loading Address Library!"sv);
+					REX::FAIL("Unhandled type while loading Address Library!");
 			}
 
 			if ((hi & 8) != 0) {
@@ -275,26 +279,32 @@ namespace REL
 			prevID = id;
 		}
 	}
-}
-#else
-namespace REL
-{
-	void IDDB::load(std::string_view a_filename)
-	{
-		assert(a_filename.size() > 0);
 
-		const auto mod = Module::GetSingleton();
-		const auto version = mod->version().string("-"sv);
-		const auto path = std::vformat(a_filename, std::make_format_args(version));
-		if (!_mmap.open(path)) {
-			const auto str = std::format("Failed to open Address Library file!\nPath: {}"sv, path);
-			stl::report_and_fail(str);
+	std::size_t IDDB::id2offset(std::uint64_t a_id) const
+	{
+		if (m_id2offset.empty()) {
+			REX::FAIL("No Address Library has been loaded!");
 		}
 
-		_id2offset = std::span{
-			reinterpret_cast<const mapping_t*>(_mmap.data() + sizeof(std::uint64_t)),
-			*reinterpret_cast<const std::uint64_t*>(_mmap.data())
-		};
+		const mapping_t elem{ a_id, 0 };
+		const auto      it = std::lower_bound(
+            m_id2offset.begin(),
+            m_id2offset.end(),
+            elem,
+            [](auto&& a_lhs, auto&& a_rhs) {
+                return a_lhs.id < a_rhs.id;
+            });
+
+		if (it == m_id2offset.end()) {
+			const auto mod = Module::GetSingleton();
+			const auto version = mod->version();
+			REX::FAIL(
+				"Failed to find offset for Address Library ID!\n"
+				"Invalid ID: {}\n"
+				"Game Version: {}",
+				a_id, version.string());
+		}
+
+		return static_cast<std::size_t>(it->offset);
 	}
 }
-#endif

@@ -1,6 +1,11 @@
 #pragma once
 
+#include "REX/BASE.h"
+
 #include "REL/Module.h"
+
+#include "REX/REX/LOG.h"
+#include "REX/REX/StaticString.h"
 
 namespace REL
 {
@@ -141,21 +146,19 @@ namespace REL
 				if (!this->match(a_address)) {
 					const auto mod = Module::GetSingleton();
 					const auto version = mod->version();
-					stl::report_and_fail(
-						std::format(
+					REX::FAIL(
 							"A pattern has failed to match.\n"
 							"This means the plugin is incompatible with either the "
 							"current version of the game ({}), or another "
 							"installed mod."sv,
-							version.string()),
-						a_loc);
+							version.string(), a_loc);
 				}
 			}
 		};
 
 		void consteval_error(const char* a_error);
 
-		template <stl::nttp::string S, class... Rules>
+		template <REX::TStaticString S, class... Rules>
 		[[nodiscard]] constexpr auto do_make_pattern() noexcept
 		{
 			if constexpr (S.length() == 0) {
@@ -204,7 +207,7 @@ namespace REL
 		}
 	}
 
-	template <stl::nttp::string S>
+	template <REX::TStaticString S>
 	[[nodiscard]] constexpr auto Pattern() noexcept
 	{
 		return detail::do_make_pattern<S>();

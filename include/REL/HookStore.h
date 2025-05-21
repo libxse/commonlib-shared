@@ -1,5 +1,6 @@
 #pragma once
 
+#include "REX/BASE.h"
 #include "REL/HookObject.h"
 
 #include "REX/REX/Singleton.h"

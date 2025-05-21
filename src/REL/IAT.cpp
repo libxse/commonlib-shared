@@ -2,6 +2,7 @@
 #include "REL/Module.h"
 #include "REL/Utility.h"
 
+#include "REX/REX/LOG.h"
 #include "REX/W32/KERNEL32.h"
 
 namespace REL
@@ -33,26 +34,26 @@ namespace REL
 			return nullptr;
 		}
 
-		const auto  ntHeader = stl::adjust_pointer<REX::W32::IMAGE_NT_HEADERS64>(dosHeader, dosHeader->lfanew);
+		const auto  ntHeader = REX::ADJUST_POINTER<REX::W32::IMAGE_NT_HEADERS64>(dosHeader, dosHeader->lfanew);
 		const auto& dataDir = ntHeader->optionalHeader.dataDirectory[REX::W32::IMAGE_DIRECTORY_ENTRY_IMPORT];
-		const auto  importDesc = stl::adjust_pointer<REX::W32::IMAGE_IMPORT_DESCRIPTOR>(dosHeader, dataDir.virtualAddress);
+		const auto  importDesc = REX::ADJUST_POINTER<REX::W32::IMAGE_IMPORT_DESCRIPTOR>(dosHeader, dataDir.virtualAddress);
 
 		for (auto import = importDesc; import->characteristics != 0; ++import) {
-			auto name = stl::adjust_pointer<const char>(dosHeader, import->name);
+			auto name = REX::ADJUST_POINTER<const char>(dosHeader, import->name);
 			if (a_dll.size() == strlen(name) && _strnicmp(a_dll.data(), name, a_dll.size()) != 0) {
 				continue;
 			}
 
-			const auto thunk = stl::adjust_pointer<REX::W32::IMAGE_THUNK_DATA64>(dosHeader, import->firstThunkOriginal);
+			const auto thunk = REX::ADJUST_POINTER<REX::W32::IMAGE_THUNK_DATA64>(dosHeader, import->firstThunkOriginal);
 			for (std::size_t i = 0; thunk[i].ordinal; ++i) {
 				if (REX::W32::IMAGE_SNAP_BY_ORDINAL64(thunk[i].ordinal)) {
 					continue;
 				}
 
-				const auto importByName = stl::adjust_pointer<REX::W32::IMAGE_IMPORT_BY_NAME>(dosHeader, thunk[i].address);
+				const auto importByName = REX::ADJUST_POINTER<REX::W32::IMAGE_IMPORT_BY_NAME>(dosHeader, thunk[i].address);
 				if (a_function.size() == strlen(importByName->name) &&
 					_strnicmp(a_function.data(), importByName->name, a_function.size()) == 0) {
-					return stl::adjust_pointer<REX::W32::IMAGE_THUNK_DATA64>(dosHeader, import->firstThunk) + i;
+					return REX::ADJUST_POINTER<REX::W32::IMAGE_THUNK_DATA64>(dosHeader, import->firstThunk) + i;
 				}
 			}
 		}
