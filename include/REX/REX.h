@@ -1,5 +1,6 @@
 #pragma once
 
+#include "REX/REX/AtomicRef.h"
 #include "REX/REX/CAST.h"
 #include "REX/REX/CONVERT.h"
 #include "REX/REX/Enum.h"
@@ -8,6 +9,7 @@
 #include "REX/REX/JSON.h"
 #include "REX/REX/LOG.h"
 #include "REX/REX/MemoryMap.h"
+#include "REX/REX/ScopeExit.h"
 #include "REX/REX/Setting.h"
 #include "REX/REX/Singleton.h"
 #include "REX/REX/StaticString.h"
