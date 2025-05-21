@@ -5,7 +5,7 @@
 
 namespace REX
 {
-	bool UTF8_TO_UTF16(const std::string_view a_in, std::wstring& a_out) noexcept
+	inline bool UTF8_TO_UTF16(const std::string_view a_in, std::wstring& a_out) noexcept
 	{
 		const auto cvt = [&](wchar_t* a_dst, std::size_t a_length) {
 			return REX::W32::MultiByteToWideChar(
@@ -31,7 +31,7 @@ namespace REX
 		return true;
 	}
 
-	bool UTF16_TO_UTF8(const std::wstring_view a_in, std::string& a_out) noexcept
+	inline bool UTF16_TO_UTF8(const std::wstring_view a_in, std::string& a_out) noexcept
 	{
 		const auto cvt = [&](char* a_dst, std::size_t a_length) {
 			return REX::W32::WideCharToMultiByte(
