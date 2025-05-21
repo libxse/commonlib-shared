@@ -8,7 +8,7 @@
 #include "REX/W32/KERNEL32.h"
 
 // xbyak brings in <Windows.h>
-#ifdef XSE_SUPPORT_XBYAK
+#ifdef COMMONLIB_OPTION_XBYAK
 #	include <xbyak/xbyak.h>
 #	undef ERROR
 #	undef max
@@ -146,7 +146,7 @@ namespace REL
 		return mem;
 	}
 
-#ifdef XSE_SUPPORT_XBYAK
+#ifdef COMMONLIB_OPTION_XBYAK
 	void* Trampoline::allocate(const Xbyak::CodeGenerator& a_code)
 	{
 		auto mem = allocate(a_code.getSize());

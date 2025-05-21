@@ -2,7 +2,7 @@
 
 #include "REX/REX/Setting.h"
 
-#ifdef REX_OPTION_JSON
+#ifdef COMMONLIB_OPTION_JSON
 namespace REX::JSON
 {
 	using path_t = std::string_view;

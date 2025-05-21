@@ -3,7 +3,7 @@
 #include "REX/BASE.h"
 #include "REX/REX/CAST.h"
 
-#ifdef XSE_SUPPORT_XBYAK
+#ifdef COMMONLIB_OPTION_XBYAK
 namespace Xbyak
 {
 	class CodeGenerator;
@@ -55,7 +55,7 @@ namespace REL
 
 		[[nodiscard]] void* allocate(const std::size_t a_size);
 
-#ifdef XSE_SUPPORT_XBYAK
+#ifdef COMMONLIB_OPTION_XBYAK
 		[[nodiscard]] void* allocate(const Xbyak::CodeGenerator& a_code);
 #endif
 

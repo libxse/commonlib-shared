@@ -8,7 +8,7 @@
 
 #include <spdlog/spdlog.h>
 
-#ifdef REX_OPTION_INI
+#ifdef COMMONLIB_OPTION_INI
 #	include <SimpleIni.h>
 #	undef ERROR
 
@@ -118,7 +118,7 @@ namespace REX::INI
 }
 #endif
 
-#ifdef REX_OPTION_JSON
+#ifdef COMMONLIB_OPTION_JSON
 #	include <nlohmann/json.hpp>
 
 namespace REX::JSON
@@ -222,7 +222,7 @@ namespace REX::JSON
 }
 #endif
 
-#ifdef REX_OPTION_TOML
+#ifdef COMMONLIB_OPTION_TOML
 #	include <toml.hpp>
 
 namespace REX::TOML

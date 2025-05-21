@@ -2,7 +2,7 @@
 
 #include "REX/REX/Setting.h"
 
-#ifdef REX_OPTION_TOML
+#ifdef COMMONLIB_OPTION_TOML
 namespace REX::TOML
 {
 	using sec_t = std::vector<std::string>;

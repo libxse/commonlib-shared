@@ -2,7 +2,7 @@
 
 #include "REX/REX/Setting.h"
 
-#ifdef REX_OPTION_INI
+#ifdef COMMONLIB_OPTION_INI
 namespace REX::INI
 {
 	using sec_t = std::string_view;

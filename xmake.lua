@@ -11,38 +11,38 @@ set_encodings("utf-8")
 add_rules("mode.debug", "mode.releasedbg")
 
 -- add options
-option("rex_ini", function()
+option("commonlib_ini", function()
     set_default(false)
     set_description("enable REX::INI settings support")
-    add_defines("REX_OPTION_INI=1")
+    add_defines("COMMONLIB_OPTION_INI=1")
 end)
 
-option("rex_json", function()
+option("commonlib_json", function()
     set_default(false)
     set_description("enable REX::JSON settings support")
-    add_defines("REX_OPTION_JSON=1")
+    add_defines("COMMONLIB_OPTION_JSON=1")
 end)
 
-option("rex_toml", function()
+option("commonlib_toml", function()
     set_default(false)
     set_description("enable REX::TOML settings support")
-    add_defines("REX_OPTION_TOML=1")
+    add_defines("COMMONLIB_OPTION_TOML=1")
 end)
 
-option("xse_xbyak", function()
+option("commonlib_xbyak", function()
     set_default(false)
     set_description("enable xbyak support for Trampoline")
-    add_defines("XSE_SUPPORT_XBYAK=1")
+    add_defines("COMMONLIB_OPTION_XBYAK=1")
 end)
 
 -- add packages
 add_requires("spdlog", { configs = { header_only = false, wchar = true, std_format = true } })
 
 -- add config packages
-if has_config("rex_ini") then add_requires("simpleini") end
-if has_config("rex_json") then add_requires("nlohmann_json") end
-if has_config("rex_toml") then add_requires("toml11") end
-if has_config("xse_xbyak") then add_requires("xbyak") end
+if has_config("commonlib_ini") then add_requires("simpleini") end
+if has_config("commonlib_json") then add_requires("nlohmann_json") end
+if has_config("commonlib_toml") then add_requires("toml11") end
+if has_config("commonlib_xbyak") then add_requires("xbyak") end
 
 target("commonlib-shared", function()
     -- set target kind
@@ -52,13 +52,13 @@ target("commonlib-shared", function()
     add_packages("spdlog", { public = true })
 
     -- add config packages
-    if has_config("rex_ini") then add_packages("simpleini", { public = true }) end
-    if has_config("rex_json") then add_packages("nlohmann_json", { public = true }) end
-    if has_config("rex_toml") then add_packages("toml11", { public = true }) end
-    if has_config("xse_xbyak") then add_packages("xbyak", { public = true }) end
+    if has_config("commonlib_ini") then add_packages("simpleini", { public = true }) end
+    if has_config("commonlib_json") then add_packages("nlohmann_json", { public = true }) end
+    if has_config("commonlib_toml") then add_packages("toml11", { public = true }) end
+    if has_config("commonlib_xbyak") then add_packages("xbyak", { public = true }) end
 
     -- add options
-    add_options("rex_ini", "rex_json", "rex_toml", "xse_xbyak", { public = true })
+    add_options("commonlib_ini", "commonlib_json", "commonlib_toml", "commonlib_xbyak", { public = true })
 
     -- add system links
     add_syslinks("advapi32", "bcrypt", "d3d11", "d3dcompiler", "dbghelp", "dxgi", "ole32", "shell32", "user32", "version", "ws2_32")
