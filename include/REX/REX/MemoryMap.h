@@ -54,26 +54,28 @@ namespace REX
 			return m_file != REX::W32::INVALID_HANDLE_VALUE;
 		}
 
-		bool create(const std::string_view a_name, std::size_t a_size)
+		bool create(bool a_write, const std::string_view a_name, std::size_t a_size)
 		{
 			close();
 
-			if (create_impl(a_name, a_size))
+			if (create_impl(a_write, a_name, a_size))
 				return true;
 
 			close();
 			return false;
 		}
 
-		bool create(std::filesystem::path a_path, const std::string_view a_name, std::size_t a_size = DYNAMIC_SIZE)
+		bool create(bool a_write, std::filesystem::path a_path, const std::string_view a_name, std::size_t a_size = DYNAMIC_SIZE)
 		{
 			close();
 
-			m_file = REX::W32::CreateFileW(a_path.c_str(), REX::W32::GENERIC_READ | REX::W32::GENERIC_WRITE, REX::W32::FILE_SHARE_READ | REX::W32::FILE_SHARE_WRITE, nullptr, REX::W32::OPEN_EXISTING, REX::W32::FILE_ATTRIBUTE_READONLY, nullptr);
+			const auto access = a_write ? REX::W32::GENERIC_READ | REX::W32::GENERIC_WRITE : REX::W32::GENERIC_READ;
+			const auto share = a_write ? REX::W32::FILE_SHARE_READ | REX::W32::FILE_SHARE_WRITE : REX::W32::FILE_SHARE_READ;
+			m_file = REX::W32::CreateFileW(a_path.c_str(), access, share, nullptr, REX::W32::OPEN_EXISTING, REX::W32::FILE_ATTRIBUTE_READONLY, nullptr);
 			if (m_file == REX::W32::INVALID_HANDLE_VALUE)
 				return false;
 
-			if (create_impl(a_name, a_size))
+			if (create_impl(a_write, a_name, a_size))
 				return true;
 
 			close();
@@ -81,7 +83,7 @@ namespace REX
 		}
 
 	private:
-		bool create_impl(const std::string_view a_name, std::size_t a_size)
+		bool create_impl(bool a_write, const std::string_view a_name, std::size_t a_size)
 		{
 			REX::W32::LARGE_INTEGER size;
 			if (a_size == DYNAMIC_SIZE) {
@@ -90,21 +92,23 @@ namespace REX
 
 				if (REX::W32::GetFileSizeEx(m_file, &size) == 0)
 					return false;
+
 			} else {
 				size.value = a_size;
 			}
 
-			m_map = REX::W32::OpenFileMappingA(REX::W32::FILE_MAP_READ | REX::W32::FILE_MAP_WRITE, false, a_name.data());
+			const auto access = a_write ? REX::W32::FILE_MAP_READ | REX::W32::FILE_MAP_WRITE : REX::W32::FILE_MAP_READ;
+			m_map = REX::W32::OpenFileMappingA(access, false, a_name.data());
 			if (!m_map) {
-				m_map = REX::W32::CreateFileMappingA(m_file, nullptr, REX::W32::PAGE_READWRITE, size.hi, size.lo, a_name.data());
-				if (!m_map) {
+				const auto protect = a_write ? REX::W32::PAGE_READWRITE : REX::W32::PAGE_READONLY;
+				m_map = REX::W32::CreateFileMappingA(m_file, nullptr, protect, size.hi, size.lo, a_name.data());
+				if (!m_map)
 					return false;
-				}
 
 				m_owner = true;
 			}
 
-			m_mapView = REX::W32::MapViewOfFile(m_map, REX::W32::FILE_MAP_READ | REX::W32::FILE_MAP_WRITE, 0, 0, size.value);
+			m_mapView = REX::W32::MapViewOfFile(m_map, access, 0, 0, size.value);
 			if (!m_mapView)
 				return false;
 

@@ -163,20 +163,19 @@ namespace REL
 
 			const auto mapName = std::format("COMMONLIB_IDDB_OFFSETS_{}", mod->version().string("_"));
 			const auto byteSize = static_cast<std::size_t>(header.address_count()) * sizeof(mapping_t);
-			if (m_mmap.create(mapName, byteSize)) {
-				m_id2offset = { reinterpret_cast<mapping_t*>(m_mmap.data()), header.address_count() };
+			if (!m_mmap.create(true, mapName, byteSize))
+				REX::FAIL("Failed to create Address Library MemoryMap!\nError: {}", REX::W32::GetLastError());
 
-				if (m_mmap.is_owner()) {
-					unpack_file(in, header);
-					std::sort(
-						m_id2offset.begin(),
-						m_id2offset.end(),
-						[](auto&& a_lhs, auto&& a_rhs) {
-							return a_lhs.id < a_rhs.id;
-						});
-				}
-			} else {
-				REX::FAIL("Failed to create shared mapping!");
+			m_id2offset = { reinterpret_cast<mapping_t*>(m_mmap.data()), header.address_count() };
+
+			if (m_mmap.is_owner()) {
+				unpack_file(in, header);
+				std::sort(
+					m_id2offset.begin(),
+					m_id2offset.end(),
+					[](auto&& a_lhs, auto&& a_rhs) {
+						return a_lhs.id < a_rhs.id;
+					});
 			}
 		} catch (const std::system_error&) {
 			REX::FAIL(L"Failed to open Address Library file!\nPath: {}", m_path.wstring());
@@ -187,9 +186,8 @@ namespace REL
 	{
 		const auto mod = Module::GetSingleton();
 		const auto mapName = std::format("COMMONLIB_IDDB_OFFSETS_{}", mod->version().string("_"));
-		if (!m_mmap.create(m_path, mapName)) {
-			REX::FAIL(L"Failed to open Address Library file!\nPath: {}", m_path.wstring());
-		}
+		if (!m_mmap.create(false, m_path, mapName))
+			REX::FAIL(L"Failed to create Address Library MemoryMap!\nError: {}\nPath: {}", REX::W32::GetLastError(), m_path.wstring());
 
 		m_id2offset = {
 			reinterpret_cast<mapping_t*>(m_mmap.data() + sizeof(std::uint64_t)),
