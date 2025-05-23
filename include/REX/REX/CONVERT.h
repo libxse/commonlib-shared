@@ -5,6 +5,25 @@
 
 namespace REX
 {
+	template <class U, class... T>
+	U BITS_TO_VALUE(T... a_args)
+		requires(std::same_as<std::remove_cv_t<T>, bool> && ...)
+	{
+		constexpr auto ARGC = sizeof...(T);
+
+		std::bitset<ARGC> bits;
+		std::size_t       i = 0;
+		((bits[i++] = a_args), ...);
+
+		if constexpr (ARGC <= std::numeric_limits<std::uint32_t>::digits) {
+			static_cast<U>(return bits.to_ulong());
+		} else if constexpr (ARGC <= std::numeric_limits<std::uint64_t>::digits) {
+			static_cast<U>(return bits.to_ullong());
+		} else {
+			static_assert(false && sizeof...(T));
+		}
+	}
+
 	inline bool UTF8_TO_UTF16(const std::string_view a_in, std::wstring& a_out) noexcept
 	{
 		const auto cvt = [&](wchar_t* a_dst, std::size_t a_length) {

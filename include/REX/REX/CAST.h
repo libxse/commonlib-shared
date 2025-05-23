@@ -25,6 +25,12 @@ namespace REX
 		reinterpret_cast<std::uintptr_t*>(a_ptr)[0] = T::VTABLE[0].address();
 	}
 
+	template <class T>
+	void MEM_ZERO(volatile T* a_ptr, std::size_t a_size = sizeof(T))
+	{
+		std::fill_n(reinterpret_cast<volatile char*>(a_ptr), a_size, '\0');
+	}
+
 	template <class T1, class T2>
 	[[nodiscard]] T1 UNRESTRICTED_CAST(T2 a_from)
 	{
