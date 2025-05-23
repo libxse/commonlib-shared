@@ -16,9 +16,9 @@ namespace REX
 		((bits[i++] = a_args), ...);
 
 		if constexpr (ARGC <= std::numeric_limits<std::uint32_t>::digits) {
-			static_cast<U>(return bits.to_ulong());
+			return static_cast<U>(bits.to_ulong());
 		} else if constexpr (ARGC <= std::numeric_limits<std::uint64_t>::digits) {
-			static_cast<U>(return bits.to_ullong());
+			return static_cast<U>(bits.to_ullong());
 		} else {
 			static_assert(false && sizeof...(T));
 		}
