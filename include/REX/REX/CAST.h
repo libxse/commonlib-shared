@@ -26,7 +26,7 @@ namespace REX
 	}
 
 	template <class T>
-	void MEM_ZERO(volatile T* a_ptr, std::size_t a_size = sizeof(T))
+	void MEM_WRITE_ZERO(volatile T* a_ptr, std::size_t a_size = sizeof(T))
 	{
 		std::fill_n(reinterpret_cast<volatile char*>(a_ptr), a_size, '\0');
 	}
