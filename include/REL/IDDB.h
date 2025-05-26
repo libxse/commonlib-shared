@@ -2,8 +2,6 @@
 
 #include "REX/BASE.h"
 
-#include "REL/Version.h"
-
 #include "REX/REX/MemoryMap.h"
 #include "REX/REX/Singleton.h"
 
@@ -22,42 +20,41 @@ namespace REL
 			//OBSE,
 		};
 
-		enum class Format : std::uint32_t
+		enum class Format : std::int32_t
 		{
-			None = static_cast<std::uint32_t>(-1),
+			None = std::numeric_limits<std::int32_t>::max(),
 			V0 = 0,
 			V1 = 1,
 			V2 = 2,
+			V5 = 5
 		};
 
 		IDDB();
 
-		[[nodiscard]] std::size_t id2offset(std::uint64_t a_id) const;
+		std::uint64_t offset(std::uint64_t a_id) const;
 
 	private:
-		class istream_t;
-		class header_t;
+		class STREAM;
+		class HEADER_V2;
+		class HEADER_V5;
 
-		struct mapping_t
+		struct MAPPING
 		{
 			std::uint64_t id;
 			std::uint64_t offset;
 		};
 
-		void load();
 		void load_v0();
-		void unpack_file(istream_t& a_in, const header_t& a_header);
-
-	protected:
-		friend class Offset2ID;
-
-		[[nodiscard]] std::span<mapping_t> get_id2offset() const noexcept { return m_id2offset; }
+		void load_v2(STREAM& a_stream);
+		void load_v5(STREAM& a_stream);
+		void unpack_file(STREAM& a_stream, const HEADER_V2& a_header);
 
 	private:
-		Loader                m_loader{ Loader::None };
-		Format                m_format{ Format::None };
-		std::filesystem::path m_path;
-		REX::MemoryMap        m_mmap;
-		std::span<mapping_t>  m_id2offset;
+		std::filesystem::path    m_path;
+		Loader                   m_loader{ Loader::None };
+		Format                   m_format{ Format::None };
+		REX::MemoryMap           m_mmap;
+		std::span<MAPPING>       m_v0;
+		std::span<std::uint32_t> m_v5;
 	};
 }

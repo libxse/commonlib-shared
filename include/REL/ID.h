@@ -13,12 +13,12 @@ namespace REL
 		constexpr ID() noexcept = default;
 
 		explicit constexpr ID(std::uint64_t a_id) noexcept :
-			_id(a_id)
+			m_id(a_id)
 		{}
 
 		constexpr ID& operator=(std::uint64_t a_id) noexcept
 		{
-			_id = a_id;
+			m_id = a_id;
 			return *this;
 		}
 
@@ -30,16 +30,16 @@ namespace REL
 
 		[[nodiscard]] constexpr std::uint64_t id() const noexcept
 		{
-			return _id;
+			return m_id;
 		}
 
 		[[nodiscard]] std::size_t offset() const
 		{
 			const auto iddb = IDDB::GetSingleton();
-			return iddb->id2offset(_id);
+			return iddb->offset(m_id);
 		}
 
 	private:
-		std::uint64_t _id{ static_cast<std::uint64_t>(-1) };
+		std::uint64_t m_id{ 0 };
 	};
 }
