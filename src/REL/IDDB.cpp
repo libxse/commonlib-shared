@@ -178,7 +178,7 @@ namespace REL
 			return;
 		}
 
-		STREAM stream(m_path, std::ios::in | std::ios::binary);
+		STREAM     stream(m_path, std::ios::in | std::ios::binary);
 		const auto format = stream.readout<std::uint32_t>();
 		if (format < 1 || (format > 2 && format < 5) || format > 5)
 			REX::FAIL("Unsupported Address Library format: {}", format);
