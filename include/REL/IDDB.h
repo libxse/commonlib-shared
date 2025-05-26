@@ -29,6 +29,12 @@ namespace REL
 			V5 = 5
 		};
 
+		struct MAPPING
+		{
+			std::uint64_t id;
+			std::uint64_t offset;
+		};
+
 		IDDB();
 
 		std::uint64_t offset(std::uint64_t a_id) const;
@@ -38,16 +44,17 @@ namespace REL
 		class HEADER_V2;
 		class HEADER_V5;
 
-		struct MAPPING
-		{
-			std::uint64_t id;
-			std::uint64_t offset;
-		};
-
 		void load_v0();
 		void load_v2(STREAM& a_stream);
 		void load_v5(STREAM& a_stream);
 		void unpack_file(STREAM& a_stream, const HEADER_V2& a_header);
+
+	protected:
+		// clang-format off
+		template <class T> std::span<T>      get_id2offset() const noexcept;
+		template <> std::span<MAPPING>       get_id2offset() const noexcept { return m_v0; }
+		template <> std::span<std::uint32_t> get_id2offset() const noexcept { return m_v5; }
+		// clang-format on
 
 	private:
 		std::filesystem::path    m_path;
