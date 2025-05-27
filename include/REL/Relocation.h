@@ -374,7 +374,7 @@ namespace REL
 
 	private:
 		// clang-format off
-		[[nodiscard]] static std::uintptr_t base() { return Module::get().base(); }
+		[[nodiscard]] static std::uintptr_t base() { return Module::GetSingleton()->base(); }
 		// clang-format on
 
 		std::uintptr_t _impl{ 0 };

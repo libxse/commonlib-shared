@@ -6,32 +6,42 @@
 
 namespace REL
 {
-	template <class T>
-	class Offset2ID
+	class Offset2ID :
+		public REX::Singleton<Offset2ID>
 	{
 	public:
-		using value_type = T;
+		using value_type = IDDB::MAPPING;
 		using container_type = std::vector<value_type>;
 		using size_type = typename container_type::size_type;
 		using const_iterator = typename container_type::const_iterator;
 		using const_reverse_iterator = typename container_type::const_reverse_iterator;
 
-		template <class ExecutionPolicy>
-		explicit Offset2ID(ExecutionPolicy&& a_policy)  // NOLINT(bugprone-forwarding-reference-overload)
-			requires(std::is_execution_policy_v<std::decay_t<ExecutionPolicy>>)
+		void load(std::span<IDDB::MAPPING> a_span)
 		{
 			const auto iddb = IDDB::GetSingleton();
-			const auto id2offset = iddb->get_id2offset<T>();
+			const auto id2offset = iddb->get_id2offset<IDDB::MAPPING>();
 			_offset2id.reserve(id2offset.size());
 			_offset2id.insert(_offset2id.begin(), id2offset.begin(), id2offset.end());
-			std::sort(a_policy, _offset2id.begin(), _offset2id.end(), [](auto&& a_lhs, auto&& a_rhs) {
+			std::sort(std::execution::sequenced_policy{}, _offset2id.begin(), _offset2id.end(), [](auto&& a_lhs, auto&& a_rhs) {
 				return a_lhs.offset < a_rhs.offset;
 			});
 		}
 
-		Offset2ID() :
-			Offset2ID(std::execution::sequenced_policy{})
-		{}
+		void load(std::span<std::uint32_t> a_span)
+		{
+			const auto iddb = IDDB::GetSingleton();
+			const auto id2offset = iddb->get_id2offset<std::uint32_t>();
+			_offset2id.reserve(id2offset.size());
+
+			std::uint64_t id{ 0 };
+			for (auto offset : id2offset) {
+				value_type map{ id++, offset };
+				_offset2id.emplace_back(map);
+			}
+			std::sort(std::execution::sequenced_policy{}, _offset2id.begin(), _offset2id.end(), [](auto&& a_lhs, auto&& a_rhs) {
+				return a_lhs.offset < a_rhs.offset;
+			});
+		}
 
 		[[nodiscard]] std::uint64_t operator()(std::size_t a_offset) const
 		{
@@ -73,9 +83,6 @@ namespace REL
 		[[nodiscard]] const_reverse_iterator crend() const noexcept { return _offset2id.crend(); }
 
 		[[nodiscard]] size_type size() const noexcept { return _offset2id.size(); }
-
-	protected:
-		friend class IDDB;
 
 	private:
 		container_type _offset2id;

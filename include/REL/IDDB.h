@@ -50,6 +50,8 @@ namespace REL
 		void unpack_file(STREAM& a_stream, const HEADER_V2& a_header);
 
 	protected:
+		friend class Offset2ID;
+
 		// clang-format off
 		template <class T> std::span<T>      get_id2offset() const noexcept;
 		template <> std::span<MAPPING>       get_id2offset() const noexcept { return m_v0; }
