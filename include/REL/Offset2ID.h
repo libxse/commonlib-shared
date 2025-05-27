@@ -16,7 +16,7 @@ namespace REL
 		using const_iterator = typename container_type::const_iterator;
 		using const_reverse_iterator = typename container_type::const_reverse_iterator;
 
-		void load(std::span<IDDB::MAPPING> a_span)
+		void load_v2()
 		{
 			const auto iddb = IDDB::GetSingleton();
 			const auto id2offset = iddb->get_id2offset<IDDB::MAPPING>();
@@ -27,7 +27,7 @@ namespace REL
 			});
 		}
 
-		void load(std::span<std::uint32_t> a_span)
+		void load_v5()
 		{
 			const auto iddb = IDDB::GetSingleton();
 			const auto id2offset = iddb->get_id2offset<std::uint32_t>();
@@ -35,9 +35,9 @@ namespace REL
 
 			std::uint64_t id{ 0 };
 			for (auto offset : id2offset) {
-				value_type map{ id++, offset };
-				_offset2id.emplace_back(map);
+				_offset2id.emplace(_offset2id.end(), value_type{ id++, offset });
 			}
+
 			std::sort(std::execution::sequenced_policy{}, _offset2id.begin(), _offset2id.end(), [](auto&& a_lhs, auto&& a_rhs) {
 				return a_lhs.offset < a_rhs.offset;
 			});
