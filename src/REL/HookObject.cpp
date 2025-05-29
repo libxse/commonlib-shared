@@ -1,5 +1,4 @@
-#pragma once
-
+#include "REL/HookObject.h"
 #include "REL/HookStore.h"
 
 namespace REL
@@ -36,6 +35,12 @@ namespace REL
 	{
 		m_handle = HookStore::GetSingleton()->Add(this);
 		m_name = std::to_string(m_handle);
+	}
+
+	HookObject::HookObject(const std::uintptr_t a_address, const char* a_name, const HOOK_STEP a_step) :
+		m_address(a_address), m_name(a_name), m_step(a_step)
+	{
+		m_handle = HookStore::GetSingleton()->Add(this);
 	}
 
 	HookObject::HookObject(const std::uintptr_t a_address, const char* a_name, const HOOK_TYPE a_type) :

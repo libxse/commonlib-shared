@@ -60,7 +60,7 @@ namespace REX
 
 namespace REX::IMPL
 {
-	[[noreturn]] void FAIL(const std::source_location a_loc, const std::string_view a_fmt)
+	void FAIL(const std::source_location a_loc, const std::string_view a_fmt)
 	{
 		const auto body = [&]() {
 			constexpr std::array directories{
@@ -116,7 +116,7 @@ namespace REX::IMPL
 		REX::W32::TerminateProcess(REX::W32::GetCurrentProcess(), 1);
 	}
 
-	[[noreturn]] void FAIL(const std::source_location a_loc, const std::wstring_view a_fmt)
+	void FAIL(const std::source_location a_loc, const std::wstring_view a_fmt)
 	{
 		const auto body = [&]() {
 			constexpr std::array directories{

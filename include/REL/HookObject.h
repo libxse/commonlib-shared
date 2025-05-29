@@ -30,6 +30,7 @@ namespace REL
 		HookObject(const std::uintptr_t a_address, const HOOK_TYPE a_type);
 		HookObject(const std::uintptr_t a_address, const HOOK_TYPE a_type, const HOOK_STEP a_step);
 		HookObject(const std::uintptr_t a_address, const HOOK_STEP a_step);
+		HookObject(const std::uintptr_t a_address, const char* a_name, const HOOK_STEP a_step);
 		HookObject(const std::uintptr_t a_address, const char* a_name, const HOOK_TYPE a_type);
 		HookObject(const std::uintptr_t a_address, const char* a_name, const HOOK_TYPE a_type, const HOOK_STEP a_step);
 

@@ -105,4 +105,27 @@ target("commonlib-shared", function()
         "cl::/we4715", -- not all control paths return a value
         { public = true }
     )
+
+    -- add flags (clang-cl)
+    add_cxxflags(
+        "clang_cl::-fms-compatibility",
+        "clang_cl::-fms-extensions",
+        { public = true }
+    )
+
+    -- add flags (clang-cl: disable warnings)
+    add_cxxflags(
+        "clang_cl::-Wno-delete-non-abstract-non-virtual-dtor",
+        "clang_cl::-Wno-deprecated-volatile",
+        "clang_cl::-Wno-ignored-qualifiers",
+        "clang_cl::-Wno-inconsistent-missing-override",
+        "clang_cl::-Wno-invalid-offsetof",
+        "clang_cl::-Wno-microsoft-include",
+        "clang_cl::-Wno-overloaded-virtual",
+        "clang_cl::-Wno-pragma-system-header-outside-header",
+        "clang_cl::-Wno-reinterpret-base-class",
+        "clang_cl::-Wno-switch",
+        "clang_cl::-Wno-unused-private-field",
+        { public = true }
+    )
 end)
