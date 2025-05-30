@@ -5,7 +5,7 @@
 namespace REX
 {
 	template <class T>
-	class Singleton
+	class TSingleton
 	{
 	public:
 		static T* GetSingleton()
@@ -15,13 +15,16 @@ namespace REX
 		}
 
 	protected:
-		Singleton() = default;
-		~Singleton() = default;
+		TSingleton() = default;
+		~TSingleton() = default;
 
-		Singleton(const Singleton&) = delete;
-		Singleton(Singleton&&) = delete;
+		TSingleton(const TSingleton&) = delete;
+		TSingleton(TSingleton&&) = delete;
 
-		Singleton& operator=(const Singleton&) = delete;
-		Singleton& operator=(Singleton&&) = delete;
+		TSingleton& operator=(const TSingleton&) = delete;
+		TSingleton& operator=(TSingleton&&) = delete;
 	};
+
+	template <class T>
+	using Singleton = TSingleton<T>;
 }
