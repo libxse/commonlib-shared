@@ -1,5 +1,7 @@
 #include "REX/REX/JSON.h"
 
+#include "REX/REX/LOG.h"
+
 #ifdef COMMONLIB_OPTION_JSON
 #	include <nlohmann/json.hpp>
 
