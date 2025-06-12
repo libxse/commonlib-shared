@@ -16,8 +16,8 @@ namespace REL
 		using const_iterator = typename container_type::const_iterator;
 		using const_reverse_iterator = typename container_type::const_reverse_iterator;
 
-		void load_v2();
-		void load_v5();
+		void                        load_v2();
+		void                        load_v5();
 		[[nodiscard]] std::uint64_t get_id(std::size_t a_offset) const;
 
 		[[nodiscard]] const_iterator begin() const noexcept { return _offset2id.begin(); }
