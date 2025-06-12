@@ -128,14 +128,14 @@ namespace REL
 			{ IDDB::Loader::SKSE, { L"versionlib", L"version" } },
 			{ IDDB::Loader::F4SE, { L"version" } },
 			{ IDDB::Loader::SFSE, { L"versionlib" } },
-			//{ IDDB::Loader::OBSE, { L"versionlib" } }
+			{ IDDB::Loader::OBSE, { L"versionlib" } },
 		};
 
 		std::unordered_map<IDDB::Loader, std::string> g_loaderMap{
 			{ IDDB::Loader::SKSE, "SKSE" },
 			{ IDDB::Loader::F4SE, "F4SE" },
 			{ IDDB::Loader::SFSE, "SFSE" },
-			//{ IDDB::Loader::OBSE, "OBSE" }
+			{ IDDB::Loader::OBSE, "OBSE" },
 		};
 
 		wchar_t buffer[REX::W32::MAX_PATH];
@@ -149,9 +149,9 @@ namespace REL
 			m_loader = Loader::F4SE;
 		} else if (loader.filename() == L"SFSE") {
 			m_loader = Loader::SFSE;
-		}  // else if (loader.filename() == L"OBSE") {
-		//	m_loader = Loader::OBSE;
-		//}
+		} else if (loader.filename() == L"OBSE") {
+			m_loader = Loader::OBSE;
+		}
 
 		if (m_loader == Loader::None)
 			REX::FAIL("Failed to determine Address Library loader!");

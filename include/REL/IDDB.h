@@ -17,7 +17,7 @@ namespace REL
 			SKSE,
 			F4SE,
 			SFSE,
-			//OBSE,
+			OBSE,
 		};
 
 		enum class Format : std::int32_t
