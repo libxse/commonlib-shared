@@ -1,9 +1,7 @@
 #include "REX/REX/JSON.h"
 
-#include "REX/REX/LOG.h"
-
 #ifdef COMMONLIB_OPTION_JSON
-#	include <nlohmann/json.hpp>
+#	include <glaze/glaze.hpp>
 
 namespace REX::JSON
 {
@@ -16,11 +14,12 @@ namespace REX::JSON
 			T&     a_value,
 			T&     a_valueDefault)
 		{
-			const auto& json = *static_cast<nlohmann::json*>(a_data);
-			if (a_path[0] == '/') {
-				a_value = json.value<T>(nlohmann::json::json_pointer(a_path.data()), a_valueDefault);
+			const auto& json = *static_cast<glz::json_t*>(a_data);
+			if (a_path[0] != '/') {
+				const auto path = std::format("/{}"sv, a_path);
+				a_value = glz::get<T>(json, path).value_or(a_valueDefault);
 			} else {
-				a_value = json.value<T>(a_path, a_valueDefault);
+				a_value = glz::get<T>(json, a_path).value_or(a_valueDefault);
 			}
 		}
 
@@ -41,11 +40,12 @@ namespace REX::JSON
 			path_t a_path,
 			T&     a_value)
 		{
-			auto& json = *static_cast<nlohmann::json*>(a_data);
-			if (a_path[0] == '/') {
-				json[nlohmann::json::json_pointer(a_path.data())] = a_value;
+			auto& json = *static_cast<glz::json_t*>(a_data);
+			if (a_path[0] != '/') {
+				const auto path = std::format("/{}"sv, a_path);
+				glz::set(json, path, a_value);
 			} else {
-				json[a_path] = a_value;
+				glz::set(json, a_path, a_value);
 			}
 		}
 
@@ -64,44 +64,37 @@ namespace REX::JSON
 	void SettingStore::Load()
 	{
 		if (std::filesystem::exists(m_fileBase)) {
-			std::ifstream file{ m_fileBase.data() };
-			try {
-				auto result = nlohmann::json::parse(file);
+			glz::json_t result;
+			if (!glz::read_file_json(result, m_fileBase, std::string{})) {
 				for (auto setting : m_settings) {
 					setting->Load(&result, true);
 				}
-			} catch (const std::exception& e) {
-				REX::ERROR("{}", e.what());
 			}
 		}
 
 		if (std::filesystem::exists(m_fileUser)) {
-			std::ifstream file{ m_fileUser.data() };
-			try {
-				auto result = nlohmann::json::parse(file);
+			glz::json_t result;
+			if (!glz::read_file_json(result, m_fileUser, std::string{})) {
 				for (auto setting : m_settings) {
 					setting->Load(&result, false);
 				}
-			} catch (const std::exception& e) {
-				REX::ERROR("{}", e.what());
 			}
 		}
 	}
 
 	void SettingStore::Save()
 	{
-		nlohmann::json output{};
+		glz::json_t output;
 		if (std::filesystem::exists(m_fileBase)) {
-			std::ifstream file{ m_fileBase.data() };
-			output = nlohmann::json::parse(file);
+			(void)glz::read_file_json(output, m_fileBase, std::string{});
 		}
 
 		for (auto& setting : m_settings) {
 			setting->Save(&output);
 		}
 
-		std::ofstream file{ m_fileBase.data(), std::ios::trunc };
-		file << std::setw(4) << output;
+		constexpr glz::opts opts{ .prettify = true, .indentation_width = 4 };
+		(void)glz::write_file_json<opts>(output, m_fileBase, std::string{});
 	}
 }
 #endif

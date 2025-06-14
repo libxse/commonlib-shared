@@ -40,7 +40,7 @@ add_requires("spdlog", { configs = { header_only = false, wchar = true, std_form
 
 -- add config packages
 if has_config("commonlib_ini") then add_requires("simpleini") end
-if has_config("commonlib_json") then add_requires("nlohmann_json") end
+if has_config("commonlib_json") then add_requires("glaze") end
 if has_config("commonlib_toml") then add_requires("toml11") end
 if has_config("commonlib_xbyak") then add_requires("xbyak") end
 
@@ -53,7 +53,7 @@ target("commonlib-shared", function()
 
     -- add config packages
     if has_config("commonlib_ini") then add_packages("simpleini", { public = true }) end
-    if has_config("commonlib_json") then add_packages("nlohmann_json", { public = true }) end
+    if has_config("commonlib_json") then add_packages("glaze", { public = true }) end
     if has_config("commonlib_toml") then add_packages("toml11", { public = true }) end
     if has_config("commonlib_xbyak") then add_packages("xbyak", { public = true }) end
 
