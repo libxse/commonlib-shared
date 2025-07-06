@@ -38,6 +38,9 @@ end)
 -- add packages
 add_requires("spdlog", { configs = { header_only = false, wchar = true, std_format = true } })
 
+-- add package conf overrides
+add_requireconfs("*.cmake", { configs = { override = true, system = false } })
+
 -- add config packages
 if has_config("commonlib_ini") then add_requires("simpleini") end
 if has_config("commonlib_json") then add_requires("nlohmann_json") end
