@@ -98,7 +98,7 @@ namespace REL
 	void Trampoline::create(const std::size_t a_size, void* a_module)
 	{
 		if (a_size == 0) {
-			REX::FAIL("cannot create a trampoline with a zero size");
+			REX::FAIL("Cannot create a trampoline with a zero size");
 		}
 
 		if (!a_module) {
@@ -109,7 +109,7 @@ namespace REL
 
 		auto mem = Impl::AllocTrampoline(a_size, reinterpret_cast<std::uintptr_t>(a_module));
 		if (!mem) {
-			REX::FAIL("failed to create trampoline");
+			REX::FAIL("Failed to create trampoline");
 		}
 
 		set_trampoline(mem, a_size, [](void* a_mem, std::size_t) {
@@ -230,7 +230,7 @@ namespace REL
 	void Trampoline::stats() const
 	{
 		auto pct = (static_cast<double>(m_size) / static_cast<double>(m_capacity)) * 100.0;
-		REX::DEBUG("{} => {}B / {}B ({:05.2f}%)", m_name, m_size, m_capacity, pct);
+		REX::DEBUG("Trampoline [{}]: {}B / {}B ({:05.2f}%)", m_name, m_size, m_capacity, pct);
 	}
 
 	Trampoline& GetTrampoline() noexcept

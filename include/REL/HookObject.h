@@ -18,6 +18,7 @@ namespace REL
 
 	enum class HOOK_STEP : std::uint32_t
 	{
+		NONE = 0,
 		PRELOAD = 1,
 		LOAD = 2,
 	};
@@ -73,5 +74,61 @@ struct std::formatter<T>
 	constexpr auto format(const T& a_hook, FormatContext& a_ctx) const
 	{
 		return format_to(a_ctx.out(), "Hook [{}]", a_hook.GetName());
+	}
+};
+
+template <>
+struct std::formatter<REL::HOOK_TYPE>
+{
+	template <class ParseContext>
+	constexpr auto parse(ParseContext& a_ctx)
+	{
+		return a_ctx.begin();
+	}
+
+	template <class FormatContext>
+	constexpr auto format(const REL::HOOK_TYPE& a_type, FormatContext& a_ctx) const
+	{
+		switch (a_type) {
+		case REL::HOOK_TYPE::NONE:
+			return format_to(a_ctx.out(), "NONE");
+		case REL::HOOK_TYPE::CALL5:
+			return format_to(a_ctx.out(), "CALL5");
+		case REL::HOOK_TYPE::CALL6:
+			return format_to(a_ctx.out(), "CALL6");
+		case REL::HOOK_TYPE::JMP5:
+			return format_to(a_ctx.out(), "JMP5");
+		case REL::HOOK_TYPE::JMP6:
+			return format_to(a_ctx.out(), "JMP6");
+		case REL::HOOK_TYPE::VFT:
+			return format_to(a_ctx.out(), "VFT");
+		}
+
+		return format_to(a_ctx.out(), "UNKNOWN");
+	}
+};
+
+template <>
+struct std::formatter<REL::HOOK_STEP>
+{
+	template <class ParseContext>
+	constexpr auto parse(ParseContext& a_ctx)
+	{
+		return a_ctx.begin();
+	}
+
+	template <class FormatContext>
+	constexpr auto format(const REL::HOOK_STEP& a_step, FormatContext& a_ctx) const
+	{
+		switch (a_step) {
+		case REL::HOOK_STEP::NONE:
+			return format_to(a_ctx.out(), "NONE");
+		case REL::HOOK_STEP::PRELOAD:
+			return format_to(a_ctx.out(), "PRELOAD");
+		case REL::HOOK_STEP::LOAD:
+			return format_to(a_ctx.out(), "LOAD");
+		}
+
+		return format_to(a_ctx.out(), "UNKNOWN");
 	}
 };

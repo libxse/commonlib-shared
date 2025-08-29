@@ -105,6 +105,8 @@ namespace REL
 				} break;
 			}
 
+			REX::TRACE("{}: Init", *this);
+
 			return true;
 		}
 
@@ -119,6 +121,8 @@ namespace REL
 
 			m_enabled = true;
 
+			REX::TRACE("{}: Enabled", *this);
+
 			return true;
 		}
 
@@ -132,6 +136,8 @@ namespace REL
 			REL::WriteSafe(m_address, std::span{ m_bytesOld });
 
 			m_enabled = false;
+
+			REX::TRACE("{}: Disabled", *this);
 
 			return false;
 		}
@@ -291,6 +297,8 @@ namespace REL
 
 			m_enabled = true;
 
+			REX::TRACE("{}: Enabled", *this);
+
 			return true;
 		}
 
@@ -304,6 +312,8 @@ namespace REL
 			REL::WriteSafeData(m_address, m_functionOld);
 
 			m_enabled = false;
+
+			REX::TRACE("{}: Disabled", *this);
 
 			return true;
 		}
