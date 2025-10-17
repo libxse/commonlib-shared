@@ -127,15 +127,3 @@ struct std::formatter<REL::VersionBase<T>, CharT> : formatter<std::string, CharT
 		return formatter<std::string, CharT>::format(a_version.string(), a_ctx);
 	}
 };
-
-#ifdef FMT_VERSION
-template <typename T, class CharT>
-struct fmt::formatter<REL::VersionBase<T>, CharT> : formatter<std::string, CharT>
-{
-	template <class FormatContext>
-	auto format(const REL::VersionBase<T>& a_version, FormatContext& a_ctx) const
-	{
-		return formatter<std::string, CharT>::format(a_version.string(), a_ctx);
-	}
-};
-#endif
