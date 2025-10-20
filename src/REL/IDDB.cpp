@@ -143,13 +143,15 @@ namespace REL
 		std::filesystem::path plugin(buffer);
 
 		auto loader = plugin.parent_path().parent_path();
-		if (loader.filename() == L"SKSE") {
+		auto loaderName = loader.filename().wstring();
+		std::transform(loaderName.begin(), loaderName.end(), loaderName.begin(), std::towupper);
+		if (loaderName == L"SKSE") {
 			m_loader = Loader::SKSE;
-		} else if (loader.filename() == L"F4SE") {
+		} else if (loaderName == L"F4SE") {
 			m_loader = Loader::F4SE;
-		} else if (loader.filename() == L"SFSE") {
+		} else if (loaderName == L"SFSE") {
 			m_loader = Loader::SFSE;
-		} else if (loader.filename() == L"OBSE") {
+		} else if (loaderName == L"OBSE") {
 			m_loader = Loader::OBSE;
 		}
 
