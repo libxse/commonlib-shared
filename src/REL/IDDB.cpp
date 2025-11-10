@@ -146,8 +146,7 @@ namespace REL
 		auto loaderName = loader.filename().wstring();
 		std::transform(loaderName.begin(), loaderName.end(), loaderName.begin(), std::towupper);
 		for (auto& entry : g_loaderMap)
-			if (loaderName == entry.second.second)
-			{
+			if (loaderName == entry.second.second) {
 				m_loader = entry.first;
 				break;
 			}
