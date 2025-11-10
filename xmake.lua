@@ -14,25 +14,21 @@ add_rules("mode.debug", "mode.releasedbg")
 option("commonlib_ini", function()
     set_default(false)
     set_description("enable REX::INI settings support")
-    add_defines("COMMONLIB_OPTION_INI=1")
 end)
 
 option("commonlib_json", function()
     set_default(false)
     set_description("enable REX::JSON settings support")
-    add_defines("COMMONLIB_OPTION_JSON=1")
 end)
 
 option("commonlib_toml", function()
     set_default(false)
     set_description("enable REX::TOML settings support")
-    add_defines("COMMONLIB_OPTION_TOML=1")
 end)
 
 option("commonlib_xbyak", function()
     set_default(false)
     set_description("enable xbyak support for Trampoline")
-    add_defines("COMMONLIB_OPTION_XBYAK=1")
 end)
 
 -- add packages
@@ -55,10 +51,25 @@ target("commonlib-shared", function()
     add_packages("spdlog", { public = true })
 
     -- add config packages
-    if has_config("commonlib_ini") then add_packages("simpleini", { public = true }) end
-    if has_config("commonlib_json") then add_packages("nlohmann_json", { public = true }) end
-    if has_config("commonlib_toml") then add_packages("toml11", { public = true }) end
-    if has_config("commonlib_xbyak") then add_packages("xbyak", { public = true }) end
+    if has_config("commonlib_ini") then
+        add_packages("simpleini", { public = true })
+        add_defines("COMMONLIB_OPTION_INI=1", { public = true })
+    end
+
+    if has_config("commonlib_json") then
+        add_packages("nlohmann_json", { public = true })
+        add_defines("COMMONLIB_OPTION_JSON=1", { public = true })
+    end
+
+    if has_config("commonlib_toml") then
+        add_packages("toml11", { public = true })
+        add_defines("COMMONLIB_OPTION_TOML=1", { public = true })
+    end
+
+    if has_config("commonlib_xbyak") then
+        add_packages("xbyak", { public = true })
+        add_defines("COMMONLIB_OPTION_XBYAK=1", { public = true })
+    end
 
     -- add options
     add_options("commonlib_ini", "commonlib_json", "commonlib_toml", "commonlib_xbyak", { public = true })
