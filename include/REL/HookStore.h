@@ -19,7 +19,7 @@ namespace REL
 		void Enable();
 		void Enable(const HOOK_HANDLE a_handle);
 		void Enable(const HOOK_TYPE a_type);
-		void Enable(const HOOK_STEP a_phase);
+		void Enable(const HOOK_STEP a_step);
 
 		void Disable();
 		void Disable(const HOOK_HANDLE a_handle);

@@ -22,20 +22,28 @@ namespace REL
 
 	void HookStore::Init()
 	{
-		REX::DEBUG("Init {} queued hooks", m_hookQueue.size());
+		std::size_t count{ 0 };
 		while (!m_hookQueue.empty()) {
-			m_hooks[m_hookQueue.front()]->Init();
+			if (m_hooks[m_hookQueue.front()]->Init())
+				count++;
+
 			m_hookQueue.pop();
 		}
+
+		REX::DEBUG("HookStore: Init {} queued hooks", count);
 	}
 
 	void HookStore::Enable()
 	{
+		std::size_t count{ 0 };
 		for (auto& [name, hook] : m_hooks) {
 			if (hook) {
-				hook->Enable();
+				if (hook->Enable())
+					count++;
 			}
 		}
+
+		REX::DEBUG("HookStore: Enabled {} hooks", count);
 	}
 
 	void HookStore::Enable(const HOOK_HANDLE a_handle)
@@ -56,22 +64,30 @@ namespace REL
 		}
 	}
 
-	void HookStore::Enable(const HOOK_STEP a_phase)
+	void HookStore::Enable(const HOOK_STEP a_step)
 	{
+		std::size_t count{ 0 };
 		for (auto& [name, hook] : m_hooks) {
-			if (hook && hook->GetStep() == a_phase) {
-				hook->Enable();
+			if (hook && hook->GetStep() == a_step) {
+				if (hook->Enable())
+					count++;
 			}
 		}
+
+		REX::DEBUG("HookStore: Enabled {} {} hooks", count, a_step);
 	}
 
 	void HookStore::Disable()
 	{
+		std::size_t count{ 0 };
 		for (auto& [name, hook] : m_hooks) {
 			if (hook) {
-				hook->Disable();
+				if (hook->Disable())
+					count++;
 			}
 		}
+
+		REX::DEBUG("HookStore: Disabled {} hooks", count);
 	}
 
 	void HookStore::Disable(const HOOK_HANDLE a_handle)

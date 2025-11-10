@@ -120,7 +120,7 @@ namespace REL
 	private:
 		std::map<std::uintptr_t, std::byte*> m_branch5;
 		std::map<std::uintptr_t, std::byte*> m_branch6;
-		std::string                          m_name{ "Default Trampoline"sv };
+		std::string                          m_name{ "Default"sv };
 		deleter_type                         m_deleter;
 		std::byte*                           m_data{ nullptr };
 		std::size_t                          m_capacity{ 0 };

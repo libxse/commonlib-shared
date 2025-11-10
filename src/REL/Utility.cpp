@@ -14,7 +14,7 @@ namespace REL
 		std::memcpy(reinterpret_cast<void*>(a_dst), a_src, a_size);
 	}
 
-	void WriteSafe(void* a_dst, const void* a_src, const std::size_t a_size)
+	bool WriteSafe(void* a_dst, const void* a_src, const std::size_t a_size)
 	{
 		std::uint32_t protect{ 0 };
 
@@ -24,15 +24,15 @@ namespace REL
 			success = REX::W32::VirtualProtect(a_dst, a_size, protect, std::addressof(protect));
 		}
 
-		assert(success);
+		return success;
 	}
 
-	void WriteSafe(const std::uintptr_t a_dst, const void* a_src, const std::size_t a_size)
+	bool WriteSafe(const std::uintptr_t a_dst, const void* a_src, const std::size_t a_size)
 	{
-		WriteSafe(reinterpret_cast<void*>(a_dst), a_src, a_size);
+		return WriteSafe(reinterpret_cast<void*>(a_dst), a_src, a_size);
 	}
 
-	void WriteSafeFill(void* a_dst, const std::uint8_t a_value, const std::size_t a_size)
+	bool WriteSafeFill(void* a_dst, const std::uint8_t a_value, const std::size_t a_size)
 	{
 		std::uint32_t protect{ 0 };
 
@@ -42,11 +42,11 @@ namespace REL
 			success = REX::W32::VirtualProtect(a_dst, a_size, protect, std::addressof(protect));
 		}
 
-		assert(success);
+		return success;
 	}
 
-	void WriteSafeFill(const std::uintptr_t a_dst, const std::uint8_t a_value, const std::size_t a_size)
+	bool WriteSafeFill(const std::uintptr_t a_dst, const std::uint8_t a_value, const std::size_t a_size)
 	{
-		WriteSafeFill(reinterpret_cast<void*>(a_dst), a_value, a_size);
+		return WriteSafeFill(reinterpret_cast<void*>(a_dst), a_value, a_size);
 	}
 }

@@ -1,6 +1,8 @@
 #include "REL/HookObject.h"
 #include "REL/HookStore.h"
 
+#include "REX/REX/LOG.h"
+
 namespace REL
 {
 	HookObject::HookObject(const std::uintptr_t a_address) :
@@ -62,6 +64,8 @@ namespace REL
 
 	bool HookObject::Init()
 	{
+		REX::TRACE("{}: Init", *this);
+
 		return true;
 	}
 

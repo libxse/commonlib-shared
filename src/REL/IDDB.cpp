@@ -131,11 +131,11 @@ namespace REL
 			{ IDDB::Loader::OBSE, { L"versionlib" } },
 		};
 
-		std::unordered_map<IDDB::Loader, std::string> g_loaderMap{
-			{ IDDB::Loader::SKSE, "SKSE" },
-			{ IDDB::Loader::F4SE, "F4SE" },
-			{ IDDB::Loader::SFSE, "SFSE" },
-			{ IDDB::Loader::OBSE, "OBSE" },
+		std::unordered_map<IDDB::Loader, std::pair<std::string, std::wstring>> g_loaderMap{
+			{ IDDB::Loader::SKSE, { "SKSE", L"SKSE" } },
+			{ IDDB::Loader::F4SE, { "F4SE", L"F4SE" } },
+			{ IDDB::Loader::SFSE, { "SFSE", L"SFSE" } },
+			{ IDDB::Loader::OBSE, { "OBSE", L"OBSE" } },
 		};
 
 		wchar_t buffer[REX::W32::MAX_PATH];
@@ -143,15 +143,13 @@ namespace REL
 		std::filesystem::path plugin(buffer);
 
 		auto loader = plugin.parent_path().parent_path();
-		if (loader.filename() == L"SKSE") {
-			m_loader = Loader::SKSE;
-		} else if (loader.filename() == L"F4SE") {
-			m_loader = Loader::F4SE;
-		} else if (loader.filename() == L"SFSE") {
-			m_loader = Loader::SFSE;
-		} else if (loader.filename() == L"OBSE") {
-			m_loader = Loader::OBSE;
-		}
+		auto loaderName = loader.filename().wstring();
+		std::transform(loaderName.begin(), loaderName.end(), loaderName.begin(), std::towupper);
+		for (auto& entry : g_loaderMap)
+			if (loaderName == entry.second.second) {
+				m_loader = entry.first;
+				break;
+			}
 
 		if (m_loader == Loader::None)
 			REX::FAIL("Failed to determine Address Library loader!");
@@ -171,7 +169,7 @@ namespace REL
 		}
 
 		if (m_path.empty())
-			REX::FAIL("Failed to determine Address Library path!\nLoader: {}", g_loaderMap[m_loader]);
+			REX::FAIL("Failed to determine Address Library path!\nLoader: {}", g_loaderMap[m_loader].first);
 
 		if (m_format == Format::V0) {
 			load_v0();
