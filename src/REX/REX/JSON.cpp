@@ -33,6 +33,16 @@ namespace REX::JSON
 		template void SettingLoad<std::int16_t>(void*, path_t, std::int16_t&, std::int16_t&);
 		template void SettingLoad<std::int32_t>(void*, path_t, std::int32_t&, std::int32_t&);
 		template void SettingLoad<std::string>(void*, path_t, std::string&, std::string&);
+		template void SettingLoad<std::vector<bool>>(void*, path_t, std::vector<bool>&, std::vector<bool>&);
+		template void SettingLoad<std::vector<float>>(void*, path_t, std::vector<float>&, std::vector<float>&);
+		template void SettingLoad<std::vector<double>>(void*, path_t, std::vector<double>&, std::vector<double>&);
+		template void SettingLoad<std::vector<std::uint8_t>>(void*, path_t, std::vector<std::uint8_t>&, std::vector<std::uint8_t>&);
+		template void SettingLoad<std::vector<std::uint16_t>>(void*, path_t, std::vector<std::uint16_t>&, std::vector<std::uint16_t>&);
+		template void SettingLoad<std::vector<std::uint32_t>>(void*, path_t, std::vector<std::uint32_t>&, std::vector<std::uint32_t>&);
+		template void SettingLoad<std::vector<std::int8_t>>(void*, path_t, std::vector<std::int8_t>&, std::vector<std::int8_t>&);
+		template void SettingLoad<std::vector<std::int16_t>>(void*, path_t, std::vector<std::int16_t>&, std::vector<std::int16_t>&);
+		template void SettingLoad<std::vector<std::int32_t>>(void*, path_t, std::vector<std::int32_t>&, std::vector<std::int32_t>&);
+		template void SettingLoad<std::vector<std::string>>(void*, path_t, std::vector<std::string>&, std::vector<std::string>&);
 
 		template <class T>
 		void SettingSave<T>(
@@ -59,6 +69,16 @@ namespace REX::JSON
 		template void SettingSave<std::int16_t>(void*, path_t, std::int16_t&);
 		template void SettingSave<std::int32_t>(void*, path_t, std::int32_t&);
 		template void SettingSave<std::string>(void*, path_t, std::string&);
+		template void SettingSave<std::vector<bool>>(void*, path_t, std::vector<bool>&);
+		template void SettingSave<std::vector<float>>(void*, path_t, std::vector<float>&);
+		template void SettingSave<std::vector<double>>(void*, path_t, std::vector<double>&);
+		template void SettingSave<std::vector<std::uint8_t>>(void*, path_t, std::vector<std::uint8_t>&);
+		template void SettingSave<std::vector<std::uint16_t>>(void*, path_t, std::vector<std::uint16_t>&);
+		template void SettingSave<std::vector<std::uint32_t>>(void*, path_t, std::vector<std::uint32_t>&);
+		template void SettingSave<std::vector<std::int8_t>>(void*, path_t, std::vector<std::int8_t>&);
+		template void SettingSave<std::vector<std::int16_t>>(void*, path_t, std::vector<std::int16_t>&);
+		template void SettingSave<std::vector<std::int32_t>>(void*, path_t, std::vector<std::int32_t>&);
+		template void SettingSave<std::vector<std::string>>(void*, path_t, std::vector<std::string>&);
 	}
 
 	void SettingStore::Load()
