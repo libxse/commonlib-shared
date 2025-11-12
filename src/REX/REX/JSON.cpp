@@ -14,7 +14,7 @@ namespace REX::JSON
 			T&     a_value,
 			T&     a_valueDefault)
 		{
-			const auto& json = *static_cast<glz::json_t*>(a_data);
+			const auto& json = *static_cast<glz::generic*>(a_data);
 			if (a_path[0] != '/') {
 				const auto path = std::format("/{}"sv, a_path);
 				a_value = glz::get<T>(json, path).value_or(a_valueDefault);
@@ -40,7 +40,7 @@ namespace REX::JSON
 			path_t a_path,
 			T&     a_value)
 		{
-			auto& json = *static_cast<glz::json_t*>(a_data);
+			auto& json = *static_cast<glz::generic*>(a_data);
 			if (a_path[0] != '/') {
 				const auto path = std::format("/{}"sv, a_path);
 				glz::set(json, path, a_value);
@@ -64,7 +64,7 @@ namespace REX::JSON
 	void SettingStore::Load()
 	{
 		if (std::filesystem::exists(m_fileBase)) {
-			glz::json_t result;
+			glz::generic result{};
 			if (!glz::read_file_json(result, m_fileBase, std::string{})) {
 				for (auto setting : m_settings) {
 					setting->Load(&result, true);
@@ -73,7 +73,7 @@ namespace REX::JSON
 		}
 
 		if (std::filesystem::exists(m_fileUser)) {
-			glz::json_t result;
+			glz::generic result{};
 			if (!glz::read_file_json(result, m_fileUser, std::string{})) {
 				for (auto setting : m_settings) {
 					setting->Load(&result, false);
@@ -84,7 +84,7 @@ namespace REX::JSON
 
 	void SettingStore::Save()
 	{
-		glz::json_t output;
+		glz::generic output{};
 		if (std::filesystem::exists(m_fileBase)) {
 			(void)glz::read_file_json(output, m_fileBase, std::string{});
 		}
