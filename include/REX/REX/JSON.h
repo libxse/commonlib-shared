@@ -83,6 +83,39 @@ namespace REX::JSON
 
 	template <class Store = SettingStore>
 	using Str = Setting<std::string, Store>;
+
+	template <class T, class Store = SettingStore>
+	using SettingA = Setting<std::vector<T>, Store>;
+
+	template <class Store = SettingStore>
+	using BoolA = SettingA<bool, Store>;
+
+	template <class Store = SettingStore>
+	using F32A = SettingA<float, Store>;
+
+	template <class Store = SettingStore>
+	using F64A = SettingA<double, Store>;
+
+	template <class Store = SettingStore>
+	using I8A = SettingA<std::int8_t, Store>;
+
+	template <class Store = SettingStore>
+	using I16A = SettingA<std::int16_t, Store>;
+
+	template <class Store = SettingStore>
+	using I32A = SettingA<std::int32_t, Store>;
+
+	template <class Store = SettingStore>
+	using U8A = SettingA<std::uint8_t, Store>;
+
+	template <class Store = SettingStore>
+	using U16A = SettingA<std::uint16_t, Store>;
+
+	template <class Store = SettingStore>
+	using U32A = SettingA<std::uint32_t, Store>;
+
+	template <class Store = SettingStore>
+	using StrA = SettingA<std::string, Store>;
 }
 
 template <class T, class S, class CharT>
