@@ -5,6 +5,7 @@
 #include "REX/REX/CONVERT.h"
 #include "REX/REX/Enum.h"
 #include "REX/REX/EnumSet.h"
+#include "REX/REX/HASH.h"
 #include "REX/REX/INI.h"
 #include "REX/REX/JSON.h"
 #include "REX/REX/LOG.h"

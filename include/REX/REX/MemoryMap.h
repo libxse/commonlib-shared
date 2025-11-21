@@ -39,6 +39,11 @@ namespace REX
 			return static_cast<std::byte*>(m_mapView);
 		}
 
+		std::size_t size() const noexcept
+		{
+			return m_size;
+		}
+
 		bool is_open() const
 		{
 			return m_mapView;

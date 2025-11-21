@@ -48,6 +48,7 @@ namespace REL
 		void load_v2(STREAM& a_stream);
 		void load_v5(STREAM& a_stream);
 		void unpack_file(STREAM& a_stream, const HEADER_V2& a_header);
+		void validate_file();
 
 	protected:
 		friend class Offset2ID;

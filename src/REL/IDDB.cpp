@@ -2,6 +2,7 @@
 #include "REL/Module.h"
 #include "REL/Version.h"
 
+#include "REX/REX/HASH.h"
 #include "REX/REX/LOG.h"
 #include "REX/W32/KERNEL32.h"
 
@@ -196,6 +197,8 @@ namespace REL
 		if (!m_mmap.create(false, m_path, mapName))
 			REX::FAIL(L"Failed to create Address Library MemoryMap!\nError: {}\nPath: {}", REX::W32::GetLastError(), m_path.wstring());
 
+		validate_file();
+
 		m_v0 = {
 			reinterpret_cast<MAPPING*>(m_mmap.data() + sizeof(std::uint64_t)),
 			*reinterpret_cast<std::uint64_t*>(m_mmap.data())
@@ -220,6 +223,8 @@ namespace REL
 			const auto byteSize = static_cast<std::size_t>(header.address_count()) * sizeof(MAPPING);
 			if (!m_mmap.create(true, mapName, byteSize))
 				REX::FAIL("Failed to create Address Library MemoryMap!\nError: {}", REX::W32::GetLastError());
+
+			validate_file();
 
 			m_v0 = { reinterpret_cast<MAPPING*>(m_mmap.data()), header.address_count() };
 
@@ -254,6 +259,8 @@ namespace REL
 			const auto mapName = std::format("COMMONLIB_IDDB_OFFSETS_{}", mod->version().string("_"));
 			if (!m_mmap.create(false, m_path, mapName))
 				REX::FAIL(L"Failed to create Address Library MemoryMap!\nError: {}\nPath: {}", REX::W32::GetLastError(), m_path.wstring());
+
+			validate_file();
 
 			m_v5 = { reinterpret_cast<std::uint32_t*>(m_mmap.data() + sizeof(HEADER_V5)), header.offset_count() };
 
@@ -342,6 +349,33 @@ namespace REL
 
 			prevOffset = offset;
 			prevID = id;
+		}
+	}
+
+	void IDDB::validate_file()
+	{
+		// clang-format off
+		std::unordered_map<IDDB::Loader, std::vector<std::pair<REL::Version, std::string_view>>> g_blacklistMap{
+			{ IDDB::Loader::SKSE, {} },
+			{ IDDB::Loader::F4SE, { 
+				{ REL::Version{ 1, 10, 980 }, "2AD60B95388F1B6E77A6F86F17BEB51D043CF95A341E91ECB2E911A393E45FE8156D585D2562F7B14434483D6E6652E2373B91589013507CABAE596C26A343F1"sv },
+				{ REL::Version{ 1, 11, 159 }, "686D40387F638ED75AD43BB76CA14170576F1A30E91144F280987D13A3012B1CA6A4E04E6BE7A5B99E46C50332C49BE40C3D9448038E17D3D31C40E72A90AE26"sv }
+			} },
+			{ IDDB::Loader::SFSE, {} },
+			{ IDDB::Loader::OBSE, {} },
+		};
+		// clang-format on
+
+		const auto mod = Module::GetSingleton();
+		const auto version = mod->version();
+		for (auto& check : g_blacklistMap[m_loader]) {
+			if (version == check.first) {
+				auto sha = REX::SHA512({ m_mmap.data(), m_mmap.size() });
+				if (!sha)
+					REX::FAIL("Failed to hash Address Library file!\nPath: {}", m_path.string());
+				if (*sha == check.second)
+					REX::FAIL("Invalid Address Library loaded!\n\nRedownload Address Library for your game version.\nGame Version: {}", version.string());
+			}
 		}
 	}
 
