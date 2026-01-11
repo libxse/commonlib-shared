@@ -32,16 +32,13 @@ option("commonlib_xbyak", function()
 end)
 
 -- add packages
-add_requires("spdlog", { configs = { header_only = false, wchar = true, std_format = true } })
-
--- add package conf overrides
-add_requireconfs("*.cmake", { configs = { override = true, system = false } })
+add_requires("spdlog v1.16.0", { configs = { header_only = false, wchar = true, std_format = true } })
 
 -- add config packages
-if has_config("commonlib_ini") then add_requires("simpleini") end
-if has_config("commonlib_json") then add_requires("glaze") end
-if has_config("commonlib_toml") then add_requires("toml11") end
-if has_config("commonlib_xbyak") then add_requires("xbyak") end
+if has_config("commonlib_ini") then add_requires("simpleini v4.25") end
+if has_config("commonlib_json") then add_requires("glaze v7.0.0") end
+if has_config("commonlib_toml") then add_requires("toml11 v4.4.0") end
+if has_config("commonlib_xbyak") then add_requires("xbyak v7.06") end
 
 target("commonlib-shared", function()
     -- set target kind

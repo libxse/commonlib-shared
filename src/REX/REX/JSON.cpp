@@ -102,6 +102,12 @@ namespace REX::JSON
 		}
 	}
 
+	struct save_opts : glz::opts
+	{
+		static constexpr bool prettify = true;
+		std::uint8_t          indentation_width = 4;
+	};
+
 	void SettingStore::Save()
 	{
 		glz::generic output{};
@@ -113,8 +119,7 @@ namespace REX::JSON
 			setting->Save(&output);
 		}
 
-		constexpr glz::opts opts{ .prettify = true, .indentation_width = 4 };
-		(void)glz::write_file_json<opts>(output, m_fileBase, std::string{});
+		(void)glz::write_file_json<save_opts{}>(output, m_fileBase, std::string{});
 	}
 }
 #endif
