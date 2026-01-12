@@ -3,12 +3,14 @@ set_xmakever("3.0.0")
 
 -- set project constants
 set_project("commonlib-shared")
+set_arch("x64")
 set_languages("c++23")
 set_warnings("allextra")
 set_encodings("utf-8")
 
 -- add common rules
 add_rules("mode.debug", "mode.releasedbg")
+add_rules("plugin.vsxmake.autoupdate")
 
 -- add options
 option("commonlib_ini", function()
