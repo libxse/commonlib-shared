@@ -55,6 +55,8 @@ namespace REX::W32
 
 	inline constexpr auto D3D11_8BIT_INDEX_STRIP_CUT_VALUE{ 0xff };
 
+	inline constexpr auto D3D11_APPEND_ALIGNED_ELEMENT{ 0xffffffff };
+
 	inline constexpr auto D3D11_ARRAY_AXIS_ADDRESS_RANGE_BIT_COUNT{ 9 };
 
 	inline constexpr auto D3D11_CLIP_OR_CULL_DISTANCE_COUNT{ 8 };
