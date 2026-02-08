@@ -1,14 +1,15 @@
-#include "REL/IDDB.h"
-#include "REL/Module.h"
+#include "REL/FIDDB.h"
+
 #include "REL/Version.h"
 
+#include "REX/REX/FModule.h"
 #include "REX/REX/HASH.h"
 #include "REX/REX/LOG.h"
 #include "REX/W32/KERNEL32.h"
 
 namespace REL
 {
-	class IDDB::STREAM
+	class FIDDB::STREAM
 	{
 	public:
 		using stream_type = std::ifstream;
@@ -50,10 +51,10 @@ namespace REL
 		stream_type _stream;
 	};
 
-	class IDDB::HEADER_V2
+	class FIDDB::HEADER_V2
 	{
 	public:
-		HEADER_V2(IDDB::STREAM& a_in)
+		HEADER_V2(FIDDB::STREAM& a_in)
 		{
 			a_in.readin(m_gameVersion);
 
@@ -87,10 +88,10 @@ namespace REL
 		std::int32_t  m_addressCount{ 0 };
 	};
 
-	class IDDB::HEADER_V5
+	class FIDDB::HEADER_V5
 	{
 	public:
-		HEADER_V5(IDDB::STREAM& a_in)
+		HEADER_V5(FIDDB::STREAM& a_in)
 		{
 			a_in.readin(m_gameVersion);
 			a_in.readin(m_name);
@@ -123,20 +124,20 @@ namespace REL
 
 namespace REL
 {
-	IDDB::IDDB()
+	FIDDB::FIDDB()
 	{
-		std::unordered_map<IDDB::Loader, std::vector<std::wstring>> g_rootMap{
-			{ IDDB::Loader::SKSE, { L"versionlib", L"version" } },
-			{ IDDB::Loader::F4SE, { L"version" } },
-			{ IDDB::Loader::SFSE, { L"versionlib" } },
-			{ IDDB::Loader::OBSE, { L"versionlib" } },
+		std::unordered_map<Loader, std::vector<std::wstring>> g_rootMap{
+			{ Loader::SKSE, { L"versionlib", L"version" } },
+			{ Loader::F4SE, { L"version" } },
+			{ Loader::SFSE, { L"versionlib" } },
+			{ Loader::OBSE, { L"versionlib" } },
 		};
 
-		std::unordered_map<IDDB::Loader, std::pair<std::string, std::wstring>> g_loaderMap{
-			{ IDDB::Loader::SKSE, { "SKSE", L"SKSE" } },
-			{ IDDB::Loader::F4SE, { "F4SE", L"F4SE" } },
-			{ IDDB::Loader::SFSE, { "SFSE", L"SFSE" } },
-			{ IDDB::Loader::OBSE, { "OBSE", L"OBSE" } },
+		std::unordered_map<Loader, std::pair<std::string, std::wstring>> g_loaderMap{
+			{ Loader::SKSE, { "SKSE", L"SKSE" } },
+			{ Loader::F4SE, { "F4SE", L"F4SE" } },
+			{ Loader::SFSE, { "SFSE", L"SFSE" } },
+			{ Loader::OBSE, { "OBSE", L"OBSE" } },
 		};
 
 		wchar_t buffer[REX::W32::MAX_PATH];
@@ -155,8 +156,8 @@ namespace REL
 		if (m_loader == Loader::None)
 			REX::FAIL("Failed to determine Address Library loader!");
 
-		const auto mod = Module::GetSingleton();
-		const auto version = mod->version().wstring(L"-");
+		const auto mod = REX::FModule::GetExecutingModule();
+		const auto version = mod.GetFileVersion().wstring(L"-");
 		for (const auto& root : g_rootMap[m_loader]) {
 			const auto name = std::format(L"{}-{}.bin", root, version);
 			const auto path = plugin.parent_path() / name;
@@ -190,10 +191,10 @@ namespace REL
 		}
 	}
 
-	void IDDB::load_v0()
+	void FIDDB::load_v0()
 	{
-		const auto mod = Module::GetSingleton();
-		const auto mapName = std::format("COMMONLIB_IDDB_OFFSETS_{}", mod->version().string("_"));
+		const auto mod = REX::FModule::GetExecutingModule();
+		const auto mapName = std::format("COMMONLIB_IDDB_OFFSETS_{}", mod.GetFileVersion().string("_"));
 		if (!m_mmap.create(false, m_path, mapName))
 			REX::FAIL(L"Failed to create Address Library MemoryMap!\nError: {}\nPath: {}", REX::W32::GetLastError(), m_path.wstring());
 
@@ -205,21 +206,22 @@ namespace REL
 		};
 	}
 
-	void IDDB::load_v2(STREAM& a_stream)
+	void FIDDB::load_v2(STREAM& a_stream)
 	{
 		try {
 			HEADER_V2 header(a_stream);
 
-			const auto mod = Module::GetSingleton();
-			if (header.game_version() != mod->version()) {
+			const auto mod = REX::FModule::GetExecutingModule();
+			const auto modVersion = mod.GetFileVersion();
+			if (header.game_version() != modVersion) {
 				REX::FAIL(
 					"Address Library version mismatch!\n"
 					"Expected Version: {}\n"
 					"Actual Version: {}",
-					mod->version().string(), header.game_version().string());
+					modVersion.string(), header.game_version().string());
 			}
 
-			const auto mapName = std::format("COMMONLIB_IDDB_OFFSETS_{}", mod->version().string("_"));
+			const auto mapName = std::format("COMMONLIB_IDDB_OFFSETS_{}", modVersion.string("_"));
 			const auto byteSize = static_cast<std::size_t>(header.address_count()) * sizeof(MAPPING);
 			if (!m_mmap.create(true, mapName, byteSize))
 				REX::FAIL("Failed to create Address Library MemoryMap!\nError: {}", REX::W32::GetLastError());
@@ -242,21 +244,22 @@ namespace REL
 		}
 	}
 
-	void IDDB::load_v5(STREAM& a_stream)
+	void FIDDB::load_v5(STREAM& a_stream)
 	{
 		try {
 			HEADER_V5 header(a_stream);
 
-			const auto mod = Module::GetSingleton();
-			if (header.game_version() != mod->version()) {
+			const auto mod = REX::FModule::GetExecutingModule();
+			const auto modVersion = mod.GetFileVersion();
+			if (header.game_version() != modVersion) {
 				REX::FAIL(
 					"Address Library version mismatch!\n"
 					"Expected Version: {}\n"
 					"Actual Version: {}",
-					mod->version().string(), header.game_version().string());
+					modVersion.string(), header.game_version().string());
 			}
 
-			const auto mapName = std::format("COMMONLIB_IDDB_OFFSETS_{}", mod->version().string("_"));
+			const auto mapName = std::format("COMMONLIB_IDDB_OFFSETS_{}", modVersion.string("_"));
 			if (!m_mmap.create(false, m_path, mapName))
 				REX::FAIL(L"Failed to create Address Library MemoryMap!\nError: {}\nPath: {}", REX::W32::GetLastError(), m_path.wstring());
 
@@ -269,7 +272,7 @@ namespace REL
 		}
 	}
 
-	void IDDB::unpack_file(STREAM& a_stream, const HEADER_V2& a_header)
+	void FIDDB::unpack_file(STREAM& a_stream, const HEADER_V2& a_header)
 	{
 		std::uint8_t  type = 0;
 		std::uint64_t id = 0;
@@ -352,36 +355,36 @@ namespace REL
 		}
 	}
 
-	void IDDB::validate_file()
+	void FIDDB::validate_file()
 	{
 		// clang-format off
-		std::unordered_map<IDDB::Loader, std::vector<std::pair<REL::Version, std::string_view>>> g_blacklistMap{
-			{ IDDB::Loader::SKSE, {} },
-			{ IDDB::Loader::F4SE, { 
+		std::unordered_map<Loader, std::vector<std::pair<REL::Version, std::string_view>>> g_blacklistMap{
+			{ Loader::SKSE, {} },
+			{ Loader::F4SE, { 
 				{ REL::Version{ 1, 10, 980 }, "2AD60B95388F1B6E77A6F86F17BEB51D043CF95A341E91ECB2E911A393E45FE8156D585D2562F7B14434483D6E6652E2373B91589013507CABAE596C26A343F1"sv },
 				{ REL::Version{ 1, 11, 159 }, "686D40387F638ED75AD43BB76CA14170576F1A30E91144F280987D13A3012B1CA6A4E04E6BE7A5B99E46C50332C49BE40C3D9448038E17D3D31C40E72A90AE26"sv }
 			} },
-			{ IDDB::Loader::SFSE, {} },
-			{ IDDB::Loader::OBSE, {} },
+			{ Loader::SFSE, {} },
+			{ Loader::OBSE, {} },
 		};
 		// clang-format on
 
-		const auto mod = Module::GetSingleton();
-		const auto version = mod->version();
+		const auto mod = REX::FModule::GetExecutingModule();
+		const auto modVersion = mod.GetFileVersion();
 		for (auto& check : g_blacklistMap[m_loader]) {
-			if (version == check.first) {
+			if (modVersion == check.first) {
 				auto sha = REX::SHA512({ m_mmap.data(), m_mmap.size() });
 				if (!sha)
 					REX::FAIL("Failed to hash Address Library file!\nPath: {}", m_path.string());
 				if (*sha == check.second)
-					REX::FAIL("Invalid Address Library loaded!\n\nRedownload Address Library for your game version.\nGame Version: {}", version.string());
+					REX::FAIL("Invalid Address Library loaded!\n\nRedownload Address Library for your game version.\nGame Version: {}", modVersion.string());
 			}
 		}
 	}
 
-	std::uint64_t IDDB::offset(std::uint64_t a_id) const
+	std::uint64_t FIDDB::offset(std::uint64_t a_id) const
 	{
-		const auto mod = Module::GetSingleton();
+		const auto mod = REX::FModule::GetExecutingModule();
 		if (std::to_underlying(m_format) < 5) {
 			if (m_v0.empty())
 				REX::FAIL("No Address Library has been loaded!");
@@ -400,7 +403,7 @@ namespace REL
 					"Failed to find offset for Address Library ID!\n"
 					"Invalid ID: {}\n"
 					"Game Version: {}",
-					a_id, mod->version().string());
+					a_id, mod.GetFileVersion().string());
 			}
 
 			return static_cast<std::size_t>(it->offset);
@@ -415,7 +418,7 @@ namespace REL
 				"Failed to find offset for Address Library ID!\n"
 				"Invalid ID: {}\n"
 				"Game Version: {}",
-				a_id, mod->version().string());
+				a_id, mod.GetFileVersion().string());
 		}
 
 		return offset;

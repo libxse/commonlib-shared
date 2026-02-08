@@ -4,13 +4,13 @@
 
 namespace REX
 {
-	class MemoryMap
+	class FMemoryMap
 	{
 		static constexpr auto DYNAMIC_SIZE{ static_cast<std::size_t>(-1) };
 
 	public:
-		MemoryMap() = default;
-		~MemoryMap() { close(); }
+		FMemoryMap() = default;
+		~FMemoryMap() { close(); }
 
 	public:
 		void close()
@@ -129,4 +129,6 @@ namespace REX
 		std::size_t m_size{ 0 };
 		bool        m_owner{ false };
 	};
+
+	using MemoryMap [[deprecated("Renamed to 'REX::FMemoryMap'")]] = FMemoryMap;
 }

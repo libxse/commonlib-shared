@@ -2,10 +2,9 @@
 
 #include "REX/BASE.h"
 
-#include "REL/Module.h"
-
+#include "REX/REX/FModule.h"
 #include "REX/REX/LOG.h"
-#include "REX/REX/StaticString.h"
+#include "REX/REX/TStaticString.h"
 
 namespace REL
 {
@@ -144,15 +143,15 @@ namespace REL
 				const noexcept
 			{
 				if (!this->match(a_address)) {
-					const auto mod = Module::GetSingleton();
-					const auto version = mod->version();
+					const auto mod = REX::FModule::GetExecutingModule();
+					const auto modVersion = mod.GetFileVersion();
 					REX::IMPL::FAIL(
 						a_loc,
 						"A pattern has failed to match.\n"
 						"This means the plugin is incompatible with either the "
 						"current version of the game ({}), or another "
 						"installed mod.",
-						version.string());
+						modVersion.string());
 				}
 			}
 		};

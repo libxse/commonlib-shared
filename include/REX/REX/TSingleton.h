@@ -26,5 +26,5 @@ namespace REX
 	};
 
 	template <class T>
-	using Singleton = TSingleton<T>;
+	using Singleton [[deprecated("Renamed to 'REX::TSingleton'")]] = TSingleton<T>;
 }

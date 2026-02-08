@@ -1,6 +1,6 @@
 #pragma once
 
-#include "REX/REX/Setting.h"
+#include "REX/REX/TSetting.h"
 
 #ifdef COMMONLIB_OPTION_TOML
 namespace REX::TOML

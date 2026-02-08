@@ -4,6 +4,7 @@
 #include "REL/Relocation.h"
 #include "REL/Utility.h"
 
+#include "REX/REX/FModule.h"
 #include "REX/REX/LOG.h"
 #include "REX/W32/KERNEL32.h"
 
@@ -102,9 +103,9 @@ namespace REL
 		}
 
 		if (!a_module) {
-			const auto mod = Module::GetSingleton();
-			const auto text = mod->segment(REL::Segment::text);
-			a_module = text.pointer<std::byte>() + text.size();
+			const auto mod = REX::FModule::GetExecutingModule();
+			const auto text = mod.GetSection(".text");
+			a_module = text.GetPointer<std::byte>() + text.GetSize();
 		}
 
 		auto mem = Impl::AllocTrampoline(a_size, reinterpret_cast<std::uintptr_t>(a_module));

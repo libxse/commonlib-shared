@@ -1,14 +1,14 @@
 #include "REL/Offset2ID.h"
 
-#include "REL/Module.h"
+#include "REX/REX/FModule.h"
 #include "REX/REX/LOG.h"
 
 namespace REL
 {
 	void Offset2ID::load_v2()
 	{
-		const auto iddb = IDDB::GetSingleton();
-		const auto id2offset = iddb->get_id2offset<IDDB::MAPPING>();
+		const auto iddb = FIDDB::GetSingleton();
+		const auto id2offset = iddb->get_id2offset<FIDDB::MAPPING>();
 		_offset2id.reserve(id2offset.size());
 		_offset2id.insert(_offset2id.begin(), id2offset.begin(), id2offset.end());
 		std::sort(std::execution::sequenced_policy{}, _offset2id.begin(), _offset2id.end(), [](auto&& a_lhs, auto&& a_rhs) {
@@ -18,7 +18,7 @@ namespace REL
 
 	void Offset2ID::load_v5()
 	{
-		const auto iddb = IDDB::GetSingleton();
+		const auto iddb = FIDDB::GetSingleton();
 		const auto id2offset = iddb->get_id2offset<std::uint32_t>();
 		_offset2id.reserve(id2offset.size());
 
@@ -47,8 +47,8 @@ namespace REL
                 return a_lhs.offset < a_rhs.offset;
             });
 		if (it == _offset2id.end()) {
-			const auto mod = Module::GetSingleton();
-			const auto version = mod->version();
+			const auto mod = REX::FModule::GetExecutingModule();
+			const auto version = mod.GetFileVersion();
 			REX::FAIL(
 				"Failed to find Address Library ID for offset!\n"
 				"Invalid offset: 0x{:08X}\n"

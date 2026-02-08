@@ -1,7 +1,7 @@
 #pragma once
 
 #include "REX/BASE.h"
-#include "REX/REX/ScopeExit.h"
+#include "REX/REX/TScopeExit.h"
 #include "REX/W32/BCRYPT.h"
 
 namespace REX

@@ -1,16 +1,16 @@
 #pragma once
 
-#include "REX/BASE.h"
+#include "REL/FIDDB.h"
 
-#include "REL/IDDB.h"
+#include "REX/BASE.h"
 
 namespace REL
 {
 	class Offset2ID :
-		public REX::Singleton<Offset2ID>
+		public REX::TSingleton<Offset2ID>
 	{
 	public:
-		using value_type = IDDB::MAPPING;
+		using value_type = FIDDB::MAPPING;
 		using container_type = std::vector<value_type>;
 		using size_type = typename container_type::size_type;
 		using const_iterator = typename container_type::const_iterator;

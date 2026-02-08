@@ -4,12 +4,12 @@
 
 #include "REL/ASM.h"
 #include "REL/ID.h"
-#include "REL/Module.h"
 #include "REL/Offset.h"
 #include "REL/Trampoline.h"
 #include "REL/Utility.h"
 
 #include "REX/REX/CAST.h"
+#include "REX/REX/FModule.h"
 
 #define REL_MAKE_MEMBER_FUNCTION_POD_TYPE_HELPER_IMPL(a_nopropQual, a_propQual, ...)              \
 	template <                                                                                    \
@@ -374,7 +374,11 @@ namespace REL
 
 	private:
 		// clang-format off
-		[[nodiscard]] static std::uintptr_t base() { return Module::GetSingleton()->base(); }
+		[[nodiscard]] static std::uintptr_t base()
+		{
+			const auto mod = REX::FModule::GetExecutingModule();
+			return mod.GetBaseAddress();
+		}
 		// clang-format on
 
 		std::uintptr_t _impl{ 0 };

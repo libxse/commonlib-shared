@@ -1,6 +1,6 @@
 #pragma once
 
-#include "REX/REX/Singleton.h"
+#include "REX/REX/TSingleton.h"
 
 namespace REX
 {
@@ -53,7 +53,7 @@ namespace REX
 	template <class T>
 	class TSettingStore :
 		public ISettingStore,
-		public Singleton<T>
+		public TSingleton<T>
 	{
 	public:
 		virtual void Init(const char* a_fileBase, const char* a_fileUser) override
