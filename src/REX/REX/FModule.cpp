@@ -8,7 +8,7 @@ namespace REX
 {
 	FModule FModule::GetCurrentModule()
 	{
-		return FModule{ W32::GetCurrentModule() }; 
+		return FModule{ W32::GetCurrentModule() };
 	}
 
 	FModule FModule::GetExecutingModule()
@@ -100,8 +100,8 @@ namespace REX
 		const auto ntHeader = ADJUST_POINTER<W32::IMAGE_NT_HEADERS64>(dosHeader, dosHeader->lfanew);
 		const auto sections = W32::IMAGE_FIRST_SECTION(ntHeader);
 		for (std::size_t i = 0; i < ntHeader->fileHeader.sectionCount; ++i) {
-			const auto& section = sections[i];
-            constexpr auto size = std::extent_v<decltype(section.name)>;
+			const auto&    section = sections[i];
+			constexpr auto size = std::extent_v<decltype(section.name)>;
 			const auto     len = std::min(a_section.size(), size);
 
 			if (std::memcmp(a_section.data(), section.name, len) == 0) {

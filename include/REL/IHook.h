@@ -2,7 +2,7 @@
 
 namespace REL
 {
-    using FHookHandle = std::uint32_t;
+	using FHookHandle = std::uint32_t;
 
 	enum class EHookType : std::uint32_t
 	{
@@ -21,8 +21,8 @@ namespace REL
 		Load = 2,
 	};
 
-    struct IHook
-    {
+	struct IHook
+	{
 		virtual bool        Init() = 0;
 		virtual FHookHandle GetHandle() const = 0;
 		virtual const char* GetName() const = 0;
@@ -33,7 +33,7 @@ namespace REL
 		virtual bool        GetEnabled() const = 0;
 		virtual bool        Enable() = 0;
 		virtual bool        Disable() = 0;
-    };
+	};
 }
 
 template <class T>
