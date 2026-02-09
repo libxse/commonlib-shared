@@ -2,7 +2,7 @@
 
 #include "REX/REX/FModule.h"
 
-#include "REL/FIDDB.h"
+#include "REL/IDDB.h"
 
 namespace REL
 {
@@ -34,7 +34,7 @@ namespace REL
 
 		[[nodiscard]] std::size_t offset() const
 		{
-			const auto iddb = FIDDB::GetSingleton();
+			const auto iddb = IDDB::GetSingleton();
 			return iddb->offset(m_id);
 		}
 

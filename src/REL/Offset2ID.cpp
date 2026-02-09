@@ -7,8 +7,8 @@ namespace REL
 {
 	void Offset2ID::load_v2()
 	{
-		const auto iddb = FIDDB::GetSingleton();
-		const auto id2offset = iddb->get_id2offset<FIDDB::MAPPING>();
+		const auto iddb = IDDB::GetSingleton();
+		const auto id2offset = iddb->get_id2offset<IDDB::MAPPING>();
 		_offset2id.reserve(id2offset.size());
 		_offset2id.insert(_offset2id.begin(), id2offset.begin(), id2offset.end());
 		std::sort(std::execution::sequenced_policy{}, _offset2id.begin(), _offset2id.end(), [](auto&& a_lhs, auto&& a_rhs) {
@@ -18,7 +18,7 @@ namespace REL
 
 	void Offset2ID::load_v5()
 	{
-		const auto iddb = FIDDB::GetSingleton();
+		const auto iddb = IDDB::GetSingleton();
 		const auto id2offset = iddb->get_id2offset<std::uint32_t>();
 		_offset2id.reserve(id2offset.size());
 

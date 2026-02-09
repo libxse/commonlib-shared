@@ -7,8 +7,8 @@
 
 namespace REL
 {
-	class FIDDB :
-		public REX::TSingleton<FIDDB>
+	class IDDB :
+		public REX::TSingleton<IDDB>
 	{
 	public:
 		enum class Loader : std::uint32_t
@@ -35,7 +35,7 @@ namespace REL
 			std::uint64_t offset;
 		};
 
-		FIDDB();
+		IDDB();
 
 		std::uint64_t offset(std::uint64_t a_id) const;
 
@@ -67,6 +67,4 @@ namespace REL
 		std::span<MAPPING>       m_v0;
 		std::span<std::uint32_t> m_v5;
 	};
-
-	using IDDB [[deprecated("Renamed to 'REL::FIDDB'")]] = FIDDB;
 }

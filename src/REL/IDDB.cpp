@@ -1,4 +1,4 @@
-#include "REL/FIDDB.h"
+#include "REL/IDDB.h"
 
 #include "REL/Version.h"
 
@@ -9,7 +9,7 @@
 
 namespace REL
 {
-	class FIDDB::STREAM
+	class IDDB::STREAM
 	{
 	public:
 		using stream_type = std::ifstream;
@@ -51,10 +51,10 @@ namespace REL
 		stream_type _stream;
 	};
 
-	class FIDDB::HEADER_V2
+	class IDDB::HEADER_V2
 	{
 	public:
-		HEADER_V2(FIDDB::STREAM& a_in)
+		HEADER_V2(IDDB::STREAM& a_in)
 		{
 			a_in.readin(m_gameVersion);
 
@@ -88,10 +88,10 @@ namespace REL
 		std::int32_t  m_addressCount{ 0 };
 	};
 
-	class FIDDB::HEADER_V5
+	class IDDB::HEADER_V5
 	{
 	public:
-		HEADER_V5(FIDDB::STREAM& a_in)
+		HEADER_V5(IDDB::STREAM& a_in)
 		{
 			a_in.readin(m_gameVersion);
 			a_in.readin(m_name);
@@ -124,7 +124,7 @@ namespace REL
 
 namespace REL
 {
-	FIDDB::FIDDB()
+	IDDB::IDDB()
 	{
 		std::unordered_map<Loader, std::vector<std::wstring>> g_rootMap{
 			{ Loader::SKSE, { L"versionlib", L"version" } },
@@ -191,7 +191,7 @@ namespace REL
 		}
 	}
 
-	void FIDDB::load_v0()
+	void IDDB::load_v0()
 	{
 		const auto mod = REX::FModule::GetExecutingModule();
 		const auto mapName = std::format("COMMONLIB_IDDB_OFFSETS_{}", mod.GetFileVersion().string("_"));
@@ -206,7 +206,7 @@ namespace REL
 		};
 	}
 
-	void FIDDB::load_v2(STREAM& a_stream)
+	void IDDB::load_v2(STREAM& a_stream)
 	{
 		try {
 			HEADER_V2 header(a_stream);
@@ -244,7 +244,7 @@ namespace REL
 		}
 	}
 
-	void FIDDB::load_v5(STREAM& a_stream)
+	void IDDB::load_v5(STREAM& a_stream)
 	{
 		try {
 			HEADER_V5 header(a_stream);
@@ -272,7 +272,7 @@ namespace REL
 		}
 	}
 
-	void FIDDB::unpack_file(STREAM& a_stream, const HEADER_V2& a_header)
+	void IDDB::unpack_file(STREAM& a_stream, const HEADER_V2& a_header)
 	{
 		std::uint8_t  type = 0;
 		std::uint64_t id = 0;
@@ -355,7 +355,7 @@ namespace REL
 		}
 	}
 
-	void FIDDB::validate_file()
+	void IDDB::validate_file()
 	{
 		// clang-format off
 		std::unordered_map<Loader, std::vector<std::pair<REL::Version, std::string_view>>> g_blacklistMap{
@@ -382,7 +382,7 @@ namespace REL
 		}
 	}
 
-	std::uint64_t FIDDB::offset(std::uint64_t a_id) const
+	std::uint64_t IDDB::offset(std::uint64_t a_id) const
 	{
 		const auto mod = REX::FModule::GetExecutingModule();
 		if (std::to_underlying(m_format) < 5) {
