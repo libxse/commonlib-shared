@@ -2,9 +2,9 @@
 
 #include "REL/Version.h"
 
-#include "REX/REX/FModule.h"
-#include "REX/REX/HASH.h"
-#include "REX/REX/LOG.h"
+#include "REX/FModule.h"
+#include "REX/HASH.h"
+#include "REX/LOG.h"
 #include "REX/W32/KERNEL32.h"
 
 namespace REL

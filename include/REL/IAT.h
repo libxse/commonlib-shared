@@ -2,7 +2,7 @@
 
 #include "REX/BASE.h"
 
-#include "REX/REX/CAST.h"
+#include "REX/CAST.h"
 #include "REX/W32/BASE.h"
 
 namespace REL

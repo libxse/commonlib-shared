@@ -2,7 +2,7 @@
 
 #include "REL/IHook.h"
 #include "REX/BASE.h"
-#include "REX/REX/TSingleton.h"
+#include "REX/TSingleton.h"
 
 namespace REL
 {

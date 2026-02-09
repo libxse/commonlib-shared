@@ -3,9 +3,8 @@
 #include "REX/BASE.h"
 
 #include "REL/Version.h"
-#include "REX/REX/CAST.h"
-#include "REX/REX/FModuleSection.h"
 #include "REX/W32/BASE.h"
+#include "REX/FModuleSection.h"
 
 namespace REX
 {
@@ -41,12 +40,6 @@ namespace REX
 		}
 
 		void* SetImportFunctionPointer(std::string_view a_function, std::string_view a_library, void* a_pointer) const;
-
-		template <class T = void*, class F>
-		T SetImportFunction(std::string_view a_function, std::string_view a_library, F a_object) const
-		{
-			return reinterpret_cast<T>(SetImportFunctionPointer(a_function, a_library, REX::UNRESTRICTED_CAST<void*>(a_object)));
-		}
 
 		std::uintptr_t SetImportFunctionAddress(std::string_view a_function, std::string_view a_library, std::uintptr_t a_address) const
 		{

@@ -1,7 +1,7 @@
 #pragma once
 
 #include "REX/BASE.h"
-#include "REX/REX/CAST.h"
+#include "REX/CAST.h"
 
 #ifdef COMMONLIB_OPTION_XBYAK
 namespace Xbyak

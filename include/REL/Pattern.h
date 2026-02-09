@@ -2,9 +2,9 @@
 
 #include "REX/BASE.h"
 
-#include "REX/REX/FModule.h"
-#include "REX/REX/LOG.h"
-#include "REX/REX/TStaticString.h"
+#include "REX/FModule.h"
+#include "REX/LOG.h"
+#include "REX/TStaticString.h"
 
 namespace REL
 {
@@ -145,7 +145,7 @@ namespace REL
 				if (!this->match(a_address)) {
 					const auto mod = REX::FModule::GetExecutingModule();
 					const auto modVersion = mod.GetFileVersion();
-					REX::IMPL::FAIL(
+					REX::FAIL(
 						a_loc,
 						"A pattern has failed to match.\n"
 						"This means the plugin is incompatible with either the "

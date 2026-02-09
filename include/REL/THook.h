@@ -9,7 +9,7 @@
 #include "REL/Trampoline.h"
 #include "REL/Utility.h"
 
-#include "REX/REX/LOG.h"
+#include "REX/LOG.h"
 
 namespace REL
 {

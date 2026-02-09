@@ -2,8 +2,8 @@
 
 #include "REX/BASE.h"
 
-#include "REX/REX/FMemoryMap.h"
-#include "REX/REX/TSingleton.h"
+#include "REX/FMemoryMap.h"
+#include "REX/TSingleton.h"
 
 namespace REL
 {

@@ -1,66 +1,66 @@
-#include "REX/REX/LOG.h"
+#include "REX/LOG.h"
 
 #include "REX/W32/KERNEL32.h"
 #include "REX/W32/USER32.h"
 
 #include <spdlog/spdlog.h>
 
-namespace REX
+namespace REX::Impl
 {
-	void LOG(const std::source_location a_loc, const LOG_LEVEL a_level, const std::string_view a_fmt)
+	void Log(const std::source_location a_loc, const ELogLevel a_level, const std::string_view a_fmt)
 	{
 		const auto loc = spdlog::source_loc{ a_loc.file_name(), static_cast<std::int32_t>(a_loc.line()), a_loc.function_name() };
 		switch (a_level) {
-			case LOG_LEVEL::TRACE:
+			case ELogLevel::Trace:
 				spdlog::default_logger_raw()->log(loc, spdlog::level::trace, a_fmt);
 				break;
-			case LOG_LEVEL::DEBUG:
+			case ELogLevel::Debug:
 				spdlog::default_logger_raw()->log(loc, spdlog::level::debug, a_fmt);
 				break;
-			case LOG_LEVEL::INFO:
+			case ELogLevel::Info:
 				spdlog::default_logger_raw()->log(loc, spdlog::level::info, a_fmt);
 				break;
-			case LOG_LEVEL::WARN:
+			case ELogLevel::Warning:
 				spdlog::default_logger_raw()->log(loc, spdlog::level::warn, a_fmt);
 				break;
-			case LOG_LEVEL::ERROR:
+			case ELogLevel::Error:
 				spdlog::default_logger_raw()->log(loc, spdlog::level::err, a_fmt);
 				break;
-			case LOG_LEVEL::CRITICAL:
+			case ELogLevel::Critical:
 				spdlog::default_logger_raw()->log(loc, spdlog::level::critical, a_fmt);
 				break;
 		}
 	}
 
-	void LOG(const std::source_location a_loc, const LOG_LEVEL a_level, const std::wstring_view a_fmt)
+	void Log(const std::source_location a_loc, const ELogLevel a_level, const std::wstring_view a_fmt)
 	{
 		const auto loc = spdlog::source_loc{ a_loc.file_name(), static_cast<std::int32_t>(a_loc.line()), a_loc.function_name() };
 		switch (a_level) {
-			case LOG_LEVEL::TRACE:
+			case ELogLevel::Trace:
 				spdlog::default_logger_raw()->log(loc, spdlog::level::trace, a_fmt);
 				break;
-			case LOG_LEVEL::DEBUG:
+			case ELogLevel::Debug:
 				spdlog::default_logger_raw()->log(loc, spdlog::level::debug, a_fmt);
 				break;
-			case LOG_LEVEL::INFO:
+			case ELogLevel::Info:
 				spdlog::default_logger_raw()->log(loc, spdlog::level::info, a_fmt);
 				break;
-			case LOG_LEVEL::WARN:
+			case ELogLevel::Warning:
 				spdlog::default_logger_raw()->log(loc, spdlog::level::warn, a_fmt);
 				break;
-			case LOG_LEVEL::ERROR:
+			case ELogLevel::Error:
 				spdlog::default_logger_raw()->log(loc, spdlog::level::err, a_fmt);
 				break;
-			case LOG_LEVEL::CRITICAL:
+			case ELogLevel::Critical:
 				spdlog::default_logger_raw()->log(loc, spdlog::level::critical, a_fmt);
 				break;
 		}
 	}
 }
 
-namespace REX::IMPL
+namespace REX::Impl
 {
-	void FAIL(const std::source_location a_loc, const std::string_view a_fmt)
+	void Fail(const std::source_location a_loc, const std::string_view a_fmt)
 	{
 		const auto body = [&]() {
 			constexpr std::array directories{
@@ -111,12 +111,12 @@ namespace REX::IMPL
 			}
 		}();
 
-		LOG(a_loc, LOG_LEVEL::CRITICAL, a_fmt);
+		Log(a_loc, ELogLevel::Critical, a_fmt);
 		REX::W32::MessageBoxA(nullptr, body.c_str(), (caption.empty() ? nullptr : caption.c_str()), 0);
 		REX::W32::TerminateProcess(REX::W32::GetCurrentProcess(), 1);
 	}
 
-	void FAIL(const std::source_location a_loc, const std::wstring_view a_fmt)
+	void Fail(const std::source_location a_loc, const std::wstring_view a_fmt)
 	{
 		const auto body = [&]() {
 			constexpr std::array directories{
@@ -167,7 +167,7 @@ namespace REX::IMPL
 			}
 		}();
 
-		LOG(a_loc, LOG_LEVEL::CRITICAL, a_fmt);
+		Log(a_loc, ELogLevel::Critical, a_fmt);
 		REX::W32::MessageBoxW(nullptr, body.c_str(), (caption.empty() ? nullptr : caption.c_str()), 0);
 		REX::W32::TerminateProcess(REX::W32::GetCurrentProcess(), 1);
 	}

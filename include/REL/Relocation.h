@@ -8,8 +8,8 @@
 #include "REL/Trampoline.h"
 #include "REL/Utility.h"
 
-#include "REX/REX/CAST.h"
-#include "REX/REX/FModule.h"
+#include "REX/CAST.h"
+#include "REX/FModule.h"
 
 #define REL_MAKE_MEMBER_FUNCTION_POD_TYPE_HELPER_IMPL(a_nopropQual, a_propQual, ...)              \
 	template <                                                                                    \

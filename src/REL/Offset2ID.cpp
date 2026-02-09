@@ -1,7 +1,7 @@
 #include "REL/Offset2ID.h"
 
-#include "REX/REX/FModule.h"
-#include "REX/REX/LOG.h"
+#include "REX/FModule.h"
+#include "REX/LOG.h"
 
 namespace REL
 {

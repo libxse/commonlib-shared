@@ -182,12 +182,15 @@ namespace REX
 						  std::common_type_t<Args...>,
 						  std::underlying_type_t<
 							  std::common_type_t<Args...>>>;
+}
 
-	// backwards compat
+namespace REX
+{
 	template <
 		class E,
 		class U = std::underlying_type_t<E>>
-	class [[deprecated("Renamed to 'REX::TEnumSet'")]] EnumSet : public TEnumSet<E, U>
+	class [[deprecated("Renamed to 'REX::TEnumSet'")]] EnumSet :
+		public TEnumSet<E, U>
 	{
 		using super = TEnumSet<E, U>;
 
@@ -202,9 +205,9 @@ namespace REX
 
 	template <class... Args>
 	EnumSet(Args...) -> EnumSet<
-						 std::common_type_t<Args...>,
-						 std::underlying_type_t<
-							 std::common_type_t<Args...>>>;
+		std::common_type_t<Args...>,
+		std::underlying_type_t<
+			std::common_type_t<Args...>>>;
 }
 
 #define REX_DEFINE_ENUM_CLASS_FLAGS(E)                                                                                                     \

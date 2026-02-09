@@ -1,6 +1,6 @@
 #pragma once
 
-#include "REX/REX/FModule.h"
+#include "REX/FModule.h"
 
 #include "REL/IDDB.h"
 

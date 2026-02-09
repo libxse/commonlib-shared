@@ -67,12 +67,15 @@ namespace REX
 					   std::common_type_t<Args...>,
 					   std::underlying_type_t<
 						   std::common_type_t<Args...>>>;
+}
 
-	// backwards compat
+namespace REX
+{
 	template <
 		class E,
 		class U = std::underlying_type_t<E>>
-	class [[deprecated("Renamed to 'REX::TEnum'")]] Enum : public TEnum<E, U>
+	class [[deprecated("Renamed to 'REX::TEnum'")]] Enum :
+		public TEnum<E, U>
 	{
 		using super = TEnum<E, U>;
 
@@ -87,7 +90,7 @@ namespace REX
 
 	template <class... Args>
 	Enum(Args...) -> Enum<
-					  std::common_type_t<Args...>,
-					  std::underlying_type_t<
-						  std::common_type_t<Args...>>>;
+		std::common_type_t<Args...>,
+		std::underlying_type_t<
+			std::common_type_t<Args...>>>;
 }

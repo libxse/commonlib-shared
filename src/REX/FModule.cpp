@@ -1,7 +1,8 @@
-#include "REX/REX/FModule.h"
+#include "REX/FModule.h"
 
 #include "REL/Utility.h"
-#include "REX/REX/LOG.h"
+#include "REX/CAST.h"
+#include "REX/LOG.h"
 #include "REX/W32/KERNEL32.h"
 
 namespace REX

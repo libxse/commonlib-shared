@@ -2,7 +2,7 @@
 
 #include "REL/IHook.h"
 
-#include "REX/REX/LOG.h"
+#include "REX/LOG.h"
 
 namespace REL
 {
