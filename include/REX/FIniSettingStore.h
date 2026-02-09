@@ -2,7 +2,7 @@
 
 #ifdef COMMONLIB_OPTION_INI
 
-#include "REX/TSettingStore.h"
+#	include "REX/TSettingStore.h"
 
 namespace REX
 {

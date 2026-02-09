@@ -2,8 +2,8 @@
 
 #ifdef COMMONLIB_OPTION_JSON
 
-#include "REX/FJsonSettingStore.h"
-#include "REX/TSetting.h"
+#	include "REX/FJsonSettingStore.h"
+#	include "REX/TSetting.h"
 
 namespace REX::Impl
 {
@@ -16,7 +16,7 @@ namespace REX::Impl
 
 namespace REX
 {
-    template <class T, class S = FJsonSettingStore>
+	template <class T, class S = FJsonSettingStore>
 	class TJsonSetting :
 		public TSetting<T, S>
 	{

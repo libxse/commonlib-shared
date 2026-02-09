@@ -1,14 +1,14 @@
 #ifdef COMMONLIB_OPTION_INI
 
-#include "REX/FIniSettingStore.h"
-#include "REX/ISetting.h"
+#	include "REX/FIniSettingStore.h"
+#	include "REX/ISetting.h"
 
-#include <SimpleIni.h>
-#undef ERROR
+#	include <SimpleIni.h>
+#	undef ERROR
 
 namespace REX
 {
-    void FIniSettingStore::Load()
+	void FIniSettingStore::Load()
 	{
 		CSimpleIniA file;
 		file.SetUnicode(true);

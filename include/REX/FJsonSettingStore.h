@@ -2,11 +2,11 @@
 
 #ifdef COMMONLIB_OPTION_JSON
 
-#include "REX/TSettingStore.h"
+#	include "REX/TSettingStore.h"
 
 namespace REX
 {
-    class FJsonSettingStore :
+	class FJsonSettingStore :
 		public TSettingStore<FJsonSettingStore>
 	{
 	public:

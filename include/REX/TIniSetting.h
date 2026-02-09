@@ -2,8 +2,8 @@
 
 #ifdef COMMONLIB_OPTION_INI
 
-#include "REX/FIniSettingStore.h"
-#include "REX/TSetting.h"
+#	include "REX/FIniSettingStore.h"
+#	include "REX/TSetting.h"
 
 namespace REX::Impl
 {

@@ -2,7 +2,7 @@
 
 namespace REX
 {
-	struct ISetting; 
+	struct ISetting;
 
 	struct ISettingStore
 	{

@@ -3,8 +3,8 @@
 #include "REX/BASE.h"
 
 #include "REL/Version.h"
-#include "REX/W32/BASE.h"
 #include "REX/FModuleSection.h"
+#include "REX/W32/BASE.h"
 
 namespace REX
 {

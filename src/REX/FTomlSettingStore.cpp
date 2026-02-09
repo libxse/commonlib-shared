@@ -1,28 +1,28 @@
 #ifdef COMMONLIB_OPTION_TOML
 
-#include "REX/FTomlSettingStore.h"
-#include "REX/ISetting.h"
+#	include "REX/FTomlSettingStore.h"
+#	include "REX/ISetting.h"
 
-#include <toml.hpp>
+#	include <toml.hpp>
 
 bool toml_recurse_mark_implicit(toml::value& a_value)
 {
-    for (auto& kv : a_value.as_table()) {
-        if (kv.second.is_table()) {
-            if (!toml_recurse_mark_implicit(kv.second)) {
-                continue;
-            }
-            kv.second.as_table_fmt().fmt = toml::table_format::implicit;
-        } else {
-            return false;
-        }
-    }
-    return true;
+	for (auto& kv : a_value.as_table()) {
+		if (kv.second.is_table()) {
+			if (!toml_recurse_mark_implicit(kv.second)) {
+				continue;
+			}
+			kv.second.as_table_fmt().fmt = toml::table_format::implicit;
+		} else {
+			return false;
+		}
+	}
+	return true;
 }
 
 namespace REX
 {
-    void FTomlSettingStore::Load()
+	void FTomlSettingStore::Load()
 	{
 		if (auto result = toml::try_parse(m_fileBase.data()); result.is_ok()) {
 			for (auto& setting : m_settings) {

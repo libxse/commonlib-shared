@@ -90,7 +90,7 @@ namespace REX
 
 	template <class... Args>
 	Enum(Args...) -> Enum<
-		std::common_type_t<Args...>,
-		std::underlying_type_t<
-			std::common_type_t<Args...>>>;
+					  std::common_type_t<Args...>,
+					  std::underlying_type_t<
+						  std::common_type_t<Args...>>>;
 }

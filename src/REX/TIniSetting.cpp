@@ -1,9 +1,9 @@
 #ifdef COMMONLIB_OPTION_INI
 
-#include "REX/TIniSetting.h"
+#	include "REX/TIniSetting.h"
 
-#include <SimpleIni.h>
-#undef ERROR
+#	include <SimpleIni.h>
+#	undef ERROR
 
 namespace REX::Impl
 {

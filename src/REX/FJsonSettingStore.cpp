@@ -1,13 +1,13 @@
 #ifdef COMMONLIB_OPTION_JSON
 
-#include "REX/FJsonSettingStore.h"
-#include "REX/ISetting.h"
+#	include "REX/FJsonSettingStore.h"
+#	include "REX/ISetting.h"
 
-#include <glaze/glaze.hpp>
+#	include <glaze/glaze.hpp>
 
 namespace REX
 {
-    void FJsonSettingStore::Load()
+	void FJsonSettingStore::Load()
 	{
 		if (std::filesystem::exists(m_fileBase)) {
 			glz::generic result{};

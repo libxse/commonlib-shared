@@ -2,7 +2,7 @@
 
 #ifdef COMMONLIB_OPTION_TOML
 
-#include "REX/TSettingStore.h"
+#	include "REX/TSettingStore.h"
 
 namespace REX
 {
