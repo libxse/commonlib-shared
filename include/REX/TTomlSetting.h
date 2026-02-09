@@ -65,6 +65,7 @@ namespace REX
 	};
 }
 
+// DEPRECATED
 namespace REX::TOML
 {
 	template <class T, class S = FTomlSettingStore>

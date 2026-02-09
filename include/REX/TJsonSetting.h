@@ -47,6 +47,7 @@ namespace REX
 	};
 }
 
+// DEPRECATED
 namespace REX::JSON
 {
 	template <class T, class S = FJsonSettingStore>
@@ -55,8 +56,8 @@ namespace REX::JSON
 	template <class S = FJsonSettingStore>
 	using Bool = TJsonSetting<bool, S>;
 
-	template <class S = FJsonSettingStore>
-	using F32 = TJsonSetting<float, S>;
+	//template <class S = FJsonSettingStore>
+	//using F32 = TJsonSetting<float, S>;
 
 	template <class S = FJsonSettingStore>
 	using F64 = TJsonSetting<double, S>;
@@ -88,8 +89,8 @@ namespace REX::JSON
 	template <class S = FJsonSettingStore>
 	using BoolA = SettingA<bool, S>;
 
-	template <class S = FJsonSettingStore>
-	using F32A = SettingA<float, S>;
+	//template <class S = FJsonSettingStore>
+	//using F32A = SettingA<float, S>;
 
 	template <class S = FJsonSettingStore>
 	using F64A = SettingA<double, S>;

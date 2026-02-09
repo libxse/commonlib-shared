@@ -49,6 +49,7 @@ namespace REX
 	};
 }
 
+// DEPRECATED
 namespace REX::INI
 {
 	template <class T, class S = FIniSettingStore>
