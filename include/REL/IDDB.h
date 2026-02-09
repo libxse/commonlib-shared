@@ -2,13 +2,13 @@
 
 #include "REX/BASE.h"
 
-#include "REX/REX/MemoryMap.h"
-#include "REX/REX/Singleton.h"
+#include "REX/FMemoryMap.h"
+#include "REX/TSingleton.h"
 
 namespace REL
 {
 	class IDDB :
-		public REX::Singleton<IDDB>
+		public REX::TSingleton<IDDB>
 	{
 	public:
 		enum class Loader : std::uint32_t
@@ -63,7 +63,7 @@ namespace REL
 		std::filesystem::path    m_path;
 		Loader                   m_loader{ Loader::None };
 		Format                   m_format{ Format::None };
-		REX::MemoryMap           m_mmap;
+		REX::FMemoryMap          m_mmap;
 		std::span<MAPPING>       m_v0;
 		std::span<std::uint32_t> m_v5;
 	};

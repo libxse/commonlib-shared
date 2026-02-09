@@ -1,8 +1,6 @@
 #pragma once
 
-#include "REX/BASE.h"
-
-#include "REL/Module.h"
+#include "REX/FModule.h"
 
 namespace REL
 {
@@ -12,27 +10,27 @@ namespace REL
 		constexpr Offset() noexcept = default;
 
 		explicit constexpr Offset(std::size_t a_offset) noexcept :
-			_offset(a_offset)
+			m_offset(a_offset)
 		{}
 
 		constexpr Offset& operator=(std::size_t a_offset) noexcept
 		{
-			_offset = a_offset;
+			m_offset = a_offset;
 			return *this;
 		}
 
 		[[nodiscard]] std::uintptr_t address() const
 		{
-			const auto mod = Module::GetSingleton();
-			return mod->base() + offset();
+			const auto mod = REX::FModule::GetExecutingModule();
+			return mod.GetBaseAddress() + offset();
 		}
 
 		[[nodiscard]] constexpr std::size_t offset() const noexcept
 		{
-			return _offset;
+			return m_offset;
 		}
 
 	private:
-		std::size_t _offset{ 0 };
+		std::size_t m_offset{ 0 };
 	};
 }

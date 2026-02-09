@@ -3,75 +3,75 @@
 #include "REX/BASE.h"
 
 #include "REL/ASM.h"
-#include "REL/HookObject.h"
+#include "REL/FHook.h"
 #include "REL/ID.h"
 #include "REL/Offset.h"
 #include "REL/Trampoline.h"
 #include "REL/Utility.h"
 
-#include "REX/REX/LOG.h"
+#include "REX/LOG.h"
 
 namespace REL
 {
 	template <class>
-	class Hook;
+	class THook;
 
 	template <class R, class... T>
-	class Hook<R(T...)> :
-		public HookObject
+	class THook<R(T...)> :
+		public FHook
 	{
 	public:
-		explicit Hook(const ID a_id, const std::ptrdiff_t a_diff, R (*a_function)(T...)) :
-			HookObject(a_id.address() + a_diff)
+		explicit THook(const ID a_id, const std::ptrdiff_t a_diff, R (*a_function)(T...)) :
+			FHook(a_id.address() + a_diff)
 		{
 			m_function = reinterpret_cast<std::uintptr_t>(a_function);
 			Detect();
 		}
 
-		explicit Hook(const Offset a_offset, const std::ptrdiff_t a_diff, R (*a_function)(T...)) :
-			HookObject(a_offset.address() + a_diff)
+		explicit THook(const Offset a_offset, const std::ptrdiff_t a_diff, R (*a_function)(T...)) :
+			FHook(a_offset.address() + a_diff)
 		{
 			m_function = reinterpret_cast<std::uintptr_t>(a_function);
 			Detect();
 		}
 
-		explicit Hook(const HOOK_STEP a_step, const ID a_id, const std::ptrdiff_t a_diff, R (*a_function)(T...)) :
-			HookObject(a_id.address() + a_diff, a_step)
+		explicit THook(const EHookStep a_step, const ID a_id, const std::ptrdiff_t a_diff, R (*a_function)(T...)) :
+			FHook(a_id.address() + a_diff, a_step)
 		{
 			m_function = reinterpret_cast<std::uintptr_t>(a_function);
 			Detect();
 		}
 
-		explicit Hook(const HOOK_STEP a_step, const Offset a_offset, const std::ptrdiff_t a_diff, R (*a_function)(T...)) :
-			HookObject(a_offset.address() + a_diff, a_step)
+		explicit THook(const EHookStep a_step, const Offset a_offset, const std::ptrdiff_t a_diff, R (*a_function)(T...)) :
+			FHook(a_offset.address() + a_diff, a_step)
 		{
 			m_function = reinterpret_cast<std::uintptr_t>(a_function);
 			Detect();
 		}
 
-		explicit Hook(const char* a_name, const ID a_id, const std::ptrdiff_t a_diff, R (*a_function)(T...)) :
-			HookObject(a_id.address() + a_diff, a_name)
+		explicit THook(const char* a_name, const ID a_id, const std::ptrdiff_t a_diff, R (*a_function)(T...)) :
+			FHook(a_id.address() + a_diff, a_name)
 		{
 			m_function = reinterpret_cast<std::uintptr_t>(a_function);
 			Detect();
 		}
 
-		explicit Hook(const char* a_name, const Offset a_offset, const std::ptrdiff_t a_diff, R (*a_function)(T...)) :
-			HookObject(a_offset.address() + a_diff, a_name)
+		explicit THook(const char* a_name, const Offset a_offset, const std::ptrdiff_t a_diff, R (*a_function)(T...)) :
+			FHook(a_offset.address() + a_diff, a_name)
 		{
 			m_function = reinterpret_cast<std::uintptr_t>(a_function);
 			Detect();
 		}
 
-		explicit Hook(const char* a_name, const HOOK_STEP a_step, const ID a_id, const std::ptrdiff_t a_diff, R (*a_function)(T...)) :
-			HookObject(a_id.address() + a_diff, a_name, a_step)
+		explicit THook(const char* a_name, const EHookStep a_step, const ID a_id, const std::ptrdiff_t a_diff, R (*a_function)(T...)) :
+			FHook(a_id.address() + a_diff, a_name, a_step)
 		{
 			m_function = reinterpret_cast<std::uintptr_t>(a_function);
 			Detect();
 		}
 
-		explicit Hook(const char* a_name, const HOOK_STEP a_step, const Offset a_offset, const std::ptrdiff_t a_diff, R (*a_function)(T...)) :
-			HookObject(a_offset.address() + a_diff, a_name, a_step)
+		explicit THook(const char* a_name, const EHookStep a_step, const Offset a_offset, const std::ptrdiff_t a_diff, R (*a_function)(T...)) :
+			FHook(a_offset.address() + a_diff, a_name, a_step)
 		{
 			m_function = reinterpret_cast<std::uintptr_t>(a_function);
 			Detect();
@@ -79,7 +79,7 @@ namespace REL
 
 		virtual bool Init() override
 		{
-			if (m_type == HOOK_TYPE::NONE) {
+			if (m_type == EHookType::None) {
 				REX::ERROR("{}: could not determine hook type", *this);
 				return false;
 			}
@@ -87,19 +87,19 @@ namespace REL
 			REL::Write(std::span{ m_bytesOld }, m_address);
 
 			switch (m_type) {
-				case HOOK_TYPE::CALL5: {
+				case EHookType::CALL5: {
 					ASM::CALL5 assembly(m_address, GetTrampoline().allocate_branch5(m_function));
 					REL::WriteData(std::span{ m_bytes }, assembly);
 				} break;
-				case HOOK_TYPE::CALL6: {
+				case EHookType::CALL6: {
 					ASM::CALL6 assembly(m_address, GetTrampoline().allocate_branch6(m_function));
 					REL::WriteData(std::span{ m_bytes }, assembly);
 				} break;
-				case HOOK_TYPE::JMP5: {
+				case EHookType::JMP5: {
 					ASM::JMP5 assembly(m_address, GetTrampoline().allocate_branch5(m_function));
 					REL::WriteData(std::span{ m_bytes }, assembly);
 				} break;
-				case HOOK_TYPE::JMP6: {
+				case EHookType::JMP6: {
 					ASM::JMP6 assembly(m_address, GetTrampoline().allocate_branch6(m_function));
 					REL::WriteData(std::span{ m_bytes }, assembly);
 				} break;
@@ -112,7 +112,7 @@ namespace REL
 
 		virtual bool Enable() override
 		{
-			if (m_type == HOOK_TYPE::NONE) {
+			if (m_type == EHookType::None) {
 				REX::ERROR("{}: hook type is none", *this);
 				return false;
 			}
@@ -128,7 +128,7 @@ namespace REL
 
 		virtual bool Disable() override
 		{
-			if (m_type == HOOK_TYPE::NONE) {
+			if (m_type == EHookType::None) {
 				REX::ERROR("{}: hook type is none", *this);
 				return false;
 			}
@@ -154,13 +154,13 @@ namespace REL
 			const auto op = reinterpret_cast<std::uint8_t*>(m_address);
 			switch (*op) {
 				case 0xE8: {
-					m_type = HOOK_TYPE::CALL5;
+					m_type = EHookType::CALL5;
 					m_size = sizeof(ASM::CALL5);
 					m_sizeTrampoline = sizeof(ASM::JMP14);
 					m_functionOld = ASM::CALL5::TARGET(m_address);
 				} break;
 				case 0xE9: {
-					m_type = HOOK_TYPE::JMP5;
+					m_type = EHookType::JMP5;
 					m_size = sizeof(ASM::JMP5);
 					m_sizeTrampoline = sizeof(ASM::JMP14);
 					m_functionOld = ASM::JMP5::TARGET(m_address);
@@ -168,13 +168,13 @@ namespace REL
 				case 0xFF: {
 					switch (*(op + 1)) {
 						case 0x15: {
-							m_type = HOOK_TYPE::CALL6;
+							m_type = EHookType::CALL6;
 							m_size = sizeof(ASM::CALL6);
 							m_sizeTrampoline = sizeof(std::uintptr_t);
 							m_functionOld = ASM::CALL6::TARGET(m_address);
 						} break;
 						case 0x25: {
-							m_type = HOOK_TYPE::JMP6;
+							m_type = EHookType::JMP6;
 							m_size = sizeof(ASM::JMP6);
 							m_sizeTrampoline = sizeof(std::uintptr_t);
 							m_functionOld = ASM::JMP6::TARGET(m_address);
@@ -196,91 +196,94 @@ namespace REL
 	};
 
 	template <class R, class... T>
-	Hook(const ID, const std::uint64_t, R (*)(T...)) -> Hook<R(T...)>;
+	THook(const ID, const std::uint64_t, R (*)(T...)) -> THook<R(T...)>;
 
 	template <class R, class... T>
-	Hook(const Offset, const std::uint64_t, R (*)(T...)) -> Hook<R(T...)>;
+	THook(const Offset, const std::uint64_t, R (*)(T...)) -> THook<R(T...)>;
 
 	template <class R, class... T>
-	Hook(const HOOK_STEP, const ID, const std::uint64_t, R (*)(T...)) -> Hook<R(T...)>;
+	THook(const EHookStep, const ID, const std::uint64_t, R (*)(T...)) -> THook<R(T...)>;
 
 	template <class R, class... T>
-	Hook(const HOOK_STEP, const Offset, const std::uint64_t, R (*)(T...)) -> Hook<R(T...)>;
+	THook(const EHookStep, const Offset, const std::uint64_t, R (*)(T...)) -> THook<R(T...)>;
 
 	template <class R, class... T>
-	Hook(const char*, const ID, const std::uint64_t, R (*)(T...)) -> Hook<R(T...)>;
+	THook(const char*, const ID, const std::uint64_t, R (*)(T...)) -> THook<R(T...)>;
 
 	template <class R, class... T>
-	Hook(const char*, const Offset, const std::uint64_t, R (*)(T...)) -> Hook<R(T...)>;
+	THook(const char*, const Offset, const std::uint64_t, R (*)(T...)) -> THook<R(T...)>;
 
 	template <class R, class... T>
-	Hook(const char*, const HOOK_STEP, const ID, const std::uint64_t, R (*)(T...)) -> Hook<R(T...)>;
+	THook(const char*, const EHookStep, const ID, const std::uint64_t, R (*)(T...)) -> THook<R(T...)>;
 
 	template <class R, class... T>
-	Hook(const char*, const HOOK_STEP, const Offset, const std::uint64_t, R (*)(T...)) -> Hook<R(T...)>;
+	THook(const char*, const EHookStep, const Offset, const std::uint64_t, R (*)(T...)) -> THook<R(T...)>;
+
+	template <class T>
+	using Hook [[deprecated("Renamed to 'REL::THook'")]] = THook<T>;
 }
 
 namespace REL
 {
 	template <class>
-	class HookVFT;
+	class THookVFT;
 
 	template <class R, class... T>
-	class HookVFT<R(T...)> :
-		public HookObject
+	class THookVFT<R(T...)> :
+		public FHook
 	{
 	public:
-		explicit HookVFT(const ID a_id, const std::size_t a_idx, R (*a_function)(T...)) :
-			HookObject(a_id.address() + (sizeof(void*) * a_idx), HOOK_TYPE::VFT)
+		explicit THookVFT(const ID a_id, const std::size_t a_idx, R (*a_function)(T...)) :
+			FHook(a_id.address() + (sizeof(void*) * a_idx), EHookType::VFT)
 		{
 			m_function = reinterpret_cast<std::uintptr_t>(a_function);
 			m_functionOld = *reinterpret_cast<std::uintptr_t*>(m_address);
 		}
 
-		explicit HookVFT(const Offset a_offset, const std::size_t a_idx, R (*a_function)(T...)) :
-			HookObject(a_offset.address() + (sizeof(void*) * a_idx), HOOK_TYPE::VFT)
+		explicit THookVFT(const Offset a_offset, const std::size_t a_idx, R (*a_function)(T...)) :
+			FHook(a_offset.address() + (sizeof(void*) * a_idx), EHookType::VFT)
 		{
 			m_function = reinterpret_cast<std::uintptr_t>(a_function);
 			m_functionOld = *reinterpret_cast<std::uintptr_t*>(m_address);
 		}
 
-		explicit HookVFT(const HOOK_STEP a_step, const ID a_id, const std::size_t a_idx, R (*a_function)(T...)) :
-			HookObject(a_id.address() + (sizeof(void*) * a_idx), HOOK_TYPE::VFT, a_step)
+		explicit THookVFT(const EHookStep a_step, const ID a_id, const std::size_t a_idx, R (*a_function)(T...)) :
+			FHook(a_id.address() + (sizeof(void*) * a_idx), EHookType::VFT, a_step)
 		{
 			m_function = reinterpret_cast<std::uintptr_t>(a_function);
 			m_functionOld = *reinterpret_cast<std::uintptr_t*>(m_address);
 		}
 
-		explicit HookVFT(const HOOK_STEP a_step, const Offset a_offset, const std::size_t a_idx, R (*a_function)(T...)) :
-			HookObject(a_offset.address() + (sizeof(void*) * a_idx), HOOK_TYPE::VFT, a_step)
+		explicit THookVFT(const EHookStep a_step, const Offset a_offset, const std::size_t a_idx, R (*a_function)(T...)) :
+			FHook(a_offset.address() + (sizeof(void*) * a_idx), EHookType::VFT, a_step)
 		{
 			m_function = reinterpret_cast<std::uintptr_t>(a_function);
 			m_functionOld = *reinterpret_cast<std::uintptr_t*>(m_address);
 		}
 
-		explicit HookVFT(const char* a_name, const ID a_id, const std::size_t a_idx, R (*a_function)(T...)) :
-			HookObject(a_id.address() + (sizeof(void*) * a_idx), a_name, HOOK_TYPE::VFT)
+		explicit THookVFT(const char* a_name, const ID a_id, const std::size_t a_idx, R (*a_function)(T...)) :
+			FHook(a_id.address() + (sizeof(void*) * a_idx), a_name, EHookType::VFT)
 		{
 			m_function = reinterpret_cast<std::uintptr_t>(a_function);
 			m_functionOld = *reinterpret_cast<std::uintptr_t*>(m_address);
 		}
 
-		explicit HookVFT(const char* a_name, const Offset a_offset, const std::size_t a_idx, R (*a_function)(T...)) :
-			HookObject(a_offset.address() + (sizeof(void*) * a_idx), a_name, HOOK_TYPE::VFT)
+		explicit THookVFT(const char* a_name, const Offset a_offset, const std::size_t a_idx, R (*a_function)(T...)) :
+			FHook(a_offset.address() + (sizeof(void*) * a_idx), a_name, EHookType::VFT)
 		{
 			m_function = reinterpret_cast<std::uintptr_t>(a_function);
 			m_functionOld = *reinterpret_cast<std::uintptr_t*>(m_address);
 		}
 
-		explicit HookVFT(const char* a_name, const HOOK_STEP a_step, const ID a_id, const std::size_t a_idx, R (*a_function)(T...)) :
-			HookObject(a_id.address() + (sizeof(void*) * a_idx), a_name, HOOK_TYPE::VFT, a_step)
+		explicit THookVFT(const char* a_name, const EHookStep a_step, const ID a_id, const std::size_t a_idx, R (*a_function)(T...)) :
+			FHook(a_id.address() + (sizeof(void*) * a_idx), a_name, EHookType::VFT, a_step)
 		{
 			m_function = reinterpret_cast<std::uintptr_t>(a_function);
 			m_functionOld = *reinterpret_cast<std::uintptr_t*>(m_address);
 		}
 
-		explicit HookVFT(const char* a_name, const HOOK_STEP a_step, const Offset a_offset, const std::size_t a_idx, R (*a_function)(T...)) :
-			HookObject(a_offset.address() + (sizeof(void*) * a_idx), a_name, HOOK_TYPE::VFT, a_step)
+		explicit THookVFT(const char* a_name, const EHookStep a_step, const Offset a_offset, const std::size_t a_idx, R (*a_function)(T...)) :
+			FHook(a_offset.address() + (sizeof(void*) * a_idx), a_name, EHookType::VFT, a_step)
 		{
 			m_function = reinterpret_cast<std::uintptr_t>(a_function);
 			m_functionOld = *reinterpret_cast<std::uintptr_t*>(m_address);
@@ -330,26 +333,29 @@ namespace REL
 	};
 
 	template <class R, class... T>
-	HookVFT(const ID, const std::size_t, R (*)(T...)) -> HookVFT<R(T...)>;
+	THookVFT(const ID, const std::size_t, R (*)(T...)) -> THookVFT<R(T...)>;
 
 	template <class R, class... T>
-	HookVFT(const Offset, const std::size_t, R (*)(T...)) -> HookVFT<R(T...)>;
+	THookVFT(const Offset, const std::size_t, R (*)(T...)) -> THookVFT<R(T...)>;
 
 	template <class R, class... T>
-	HookVFT(const HOOK_STEP, const ID, const std::size_t, R (*)(T...)) -> HookVFT<R(T...)>;
+	THookVFT(const EHookStep, const ID, const std::size_t, R (*)(T...)) -> THookVFT<R(T...)>;
 
 	template <class R, class... T>
-	HookVFT(const HOOK_STEP, const Offset, const std::size_t, R (*)(T...)) -> HookVFT<R(T...)>;
+	THookVFT(const EHookStep, const Offset, const std::size_t, R (*)(T...)) -> THookVFT<R(T...)>;
 
 	template <class R, class... T>
-	HookVFT(const char*, const ID, const std::size_t, R (*)(T...)) -> HookVFT<R(T...)>;
+	THookVFT(const char*, const ID, const std::size_t, R (*)(T...)) -> THookVFT<R(T...)>;
 
 	template <class R, class... T>
-	HookVFT(const char*, const Offset, const std::size_t, R (*)(T...)) -> HookVFT<R(T...)>;
+	THookVFT(const char*, const Offset, const std::size_t, R (*)(T...)) -> THookVFT<R(T...)>;
 
 	template <class R, class... T>
-	HookVFT(const char*, const HOOK_STEP, const ID, const std::size_t, R (*)(T...)) -> HookVFT<R(T...)>;
+	THookVFT(const char*, const EHookStep, const ID, const std::size_t, R (*)(T...)) -> THookVFT<R(T...)>;
 
 	template <class R, class... T>
-	HookVFT(const char*, const HOOK_STEP, const Offset, const std::size_t, R (*)(T...)) -> HookVFT<R(T...)>;
+	THookVFT(const char*, const EHookStep, const Offset, const std::size_t, R (*)(T...)) -> THookVFT<R(T...)>;
+
+	template <class T>
+	using HookVFT [[deprecated("Renamed to 'REL::THookVFT'")]] = THookVFT<T>;
 }

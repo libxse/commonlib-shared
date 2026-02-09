@@ -1,10 +1,12 @@
-#include "REL/HookStore.h"
+#include "REL/FHookStore.h"
 
-#include "REL/Hook.h"
+#include "REL/IHook.h"
+
+#include "REX/LOG.h"
 
 namespace REL
 {
-	HOOK_HANDLE HookStore::Add(HookObject* a_hook)
+	FHookHandle FHookStore::Add(IHook* a_hook)
 	{
 		if (a_hook && a_hook->GetHandle() == 0) {
 			m_hooks.insert({ ++m_handleCount, a_hook });
@@ -15,12 +17,12 @@ namespace REL
 		return 0;
 	}
 
-	void HookStore::Remove(const HOOK_HANDLE a_handle)
+	void FHookStore::Remove(const FHookHandle a_handle)
 	{
 		m_hooks.erase(a_handle);
 	}
 
-	void HookStore::Init()
+	void FHookStore::Init()
 	{
 		std::size_t count{ 0 };
 		while (!m_hookQueue.empty()) {
@@ -30,10 +32,10 @@ namespace REL
 			m_hookQueue.pop();
 		}
 
-		REX::DEBUG("HookStore: Init {} queued hooks", count);
+		REX::DEBUG("FHookStore: Init {} queued hooks", count);
 	}
 
-	void HookStore::Enable()
+	void FHookStore::Enable()
 	{
 		std::size_t count{ 0 };
 		for (auto& [name, hook] : m_hooks) {
@@ -43,10 +45,10 @@ namespace REL
 			}
 		}
 
-		REX::DEBUG("HookStore: Enabled {} hooks", count);
+		REX::DEBUG("FHookStore: Enabled {} hooks", count);
 	}
 
-	void HookStore::Enable(const HOOK_HANDLE a_handle)
+	void FHookStore::Enable(const FHookHandle a_handle)
 	{
 		if (const auto it = m_hooks.find(a_handle); it != m_hooks.end()) {
 			if (it->second) {
@@ -55,7 +57,7 @@ namespace REL
 		}
 	}
 
-	void HookStore::Enable(const HOOK_TYPE a_type)
+	void FHookStore::Enable(const EHookType a_type)
 	{
 		for (auto& [name, hook] : m_hooks) {
 			if (hook && hook->GetType() == a_type) {
@@ -64,7 +66,7 @@ namespace REL
 		}
 	}
 
-	void HookStore::Enable(const HOOK_STEP a_step)
+	void FHookStore::Enable(const EHookStep a_step)
 	{
 		std::size_t count{ 0 };
 		for (auto& [name, hook] : m_hooks) {
@@ -74,10 +76,10 @@ namespace REL
 			}
 		}
 
-		REX::DEBUG("HookStore: Enabled {} {} hooks", count, a_step);
+		REX::DEBUG("FHookStore: Enabled {} {} hooks", count, a_step);
 	}
 
-	void HookStore::Disable()
+	void FHookStore::Disable()
 	{
 		std::size_t count{ 0 };
 		for (auto& [name, hook] : m_hooks) {
@@ -87,10 +89,10 @@ namespace REL
 			}
 		}
 
-		REX::DEBUG("HookStore: Disabled {} hooks", count);
+		REX::DEBUG("FHookStore: Disabled {} hooks", count);
 	}
 
-	void HookStore::Disable(const HOOK_HANDLE a_handle)
+	void FHookStore::Disable(const FHookHandle a_handle)
 	{
 		for (auto& [name, hook] : m_hooks) {
 			if (hook && hook->GetHandle() == a_handle) {
@@ -99,7 +101,7 @@ namespace REL
 		}
 	}
 
-	void HookStore::Disable(const HOOK_TYPE a_type)
+	void FHookStore::Disable(const EHookType a_type)
 	{
 		for (auto& [name, hook] : m_hooks) {
 			if (hook && hook->GetType() == a_type) {
@@ -108,7 +110,7 @@ namespace REL
 		}
 	}
 
-	std::size_t HookStore::GetSizeTrampoline()
+	std::size_t FHookStore::GetSizeTrampoline()
 	{
 		std::size_t size{ 0 };
 		for (auto& [name, hook] : m_hooks) {

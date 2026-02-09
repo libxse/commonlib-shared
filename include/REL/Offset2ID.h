@@ -1,13 +1,13 @@
 #pragma once
 
-#include "REX/BASE.h"
-
 #include "REL/IDDB.h"
+
+#include "REX/BASE.h"
 
 namespace REL
 {
 	class Offset2ID :
-		public REX::Singleton<Offset2ID>
+		public REX::TSingleton<Offset2ID>
 	{
 	public:
 		using value_type = IDDB::MAPPING;

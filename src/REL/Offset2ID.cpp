@@ -1,7 +1,7 @@
 #include "REL/Offset2ID.h"
 
-#include "REL/Module.h"
-#include "REX/REX/LOG.h"
+#include "REX/FModule.h"
+#include "REX/LOG.h"
 
 namespace REL
 {
@@ -47,8 +47,8 @@ namespace REL
                 return a_lhs.offset < a_rhs.offset;
             });
 		if (it == _offset2id.end()) {
-			const auto mod = Module::GetSingleton();
-			const auto version = mod->version();
+			const auto mod = REX::FModule::GetExecutingModule();
+			const auto version = mod.GetFileVersion();
 			REX::FAIL(
 				"Failed to find Address Library ID for offset!\n"
 				"Invalid offset: 0x{:08X}\n"

@@ -1,9 +1,8 @@
 #pragma once
 
-#include "REX/BASE.h"
+#include "REX/FModule.h"
 
 #include "REL/IDDB.h"
-#include "REL/Module.h"
 
 namespace REL
 {
@@ -24,8 +23,8 @@ namespace REL
 
 		[[nodiscard]] std::uintptr_t address() const
 		{
-			const auto mod = Module::GetSingleton();
-			return mod->base() + offset();
+			const auto mod = REX::FModule::GetExecutingModule();
+			return mod.GetBaseAddress() + offset();
 		}
 
 		[[nodiscard]] constexpr std::uint64_t id() const noexcept
