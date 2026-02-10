@@ -23,9 +23,9 @@ namespace REL
 		}
 
 		Version             version;
-		std::wistringstream ss(std::wstring(static_cast<const wchar_t*>(verBuf), verLen));
-		std::wstring        token;
-		for (std::size_t i = 0; i < 4 && std::getline(ss, token, L'.'); ++i) {
+		std::istringstream ss(std::string(static_cast<const char*>(verBuf), verLen));
+		std::string        token;
+		for (std::size_t i = 0; i < 4 && std::getline(ss, token, '.'); ++i) {
 			version[i] = static_cast<std::uint16_t>(std::stoi(token));
 		}
 
