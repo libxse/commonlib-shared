@@ -203,11 +203,16 @@ namespace REX
 		using super::operator*;
 	};
 
+#pragma warning(push)
+#pragma warning(disable: 4996)
+
 	template <class... Args>
 	EnumSet(Args...) -> EnumSet<
 						 std::common_type_t<Args...>,
 						 std::underlying_type_t<
 							 std::common_type_t<Args...>>>;
+
+#pragma warning(pop)
 }
 
 #define REX_DEFINE_ENUM_CLASS_FLAGS(E)                                                                                                     \

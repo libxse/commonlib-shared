@@ -92,23 +92,32 @@ target("commonlib-shared", function()
     -- set precompiled header
     set_pcxxheader("src/REX/PCH.h")
 
-    -- add flags
-    add_cxxflags("/EHsc", "/permissive-", { public = true })
+    -- add flags (public)
+    add_cxxflags(
+        "/EHsc",
+        "/permissive-",
+        { public = true }
+    )
 
     -- add flags (cl)
+    add_cxxflags(
+        "cl::/external:W0"
+    )
+
+    -- add flags (cl) (public)
     add_cxxflags(
         "cl::/bigobj",
         "cl::/cgthreads8",
         "cl::/diagnostics:caret",
-        "cl::/external:W0",
         "cl::/fp:contract",
         "cl::/fp:except-",
         "cl::/guard:cf-",
         "cl::/Zc:preprocessor",
-        "cl::/Zc:templateScope"
+        "cl::/Zc:templateScope",
+        { public = true }
     )
 
-    -- add flags (cl: disable warnings)
+    -- add flags (cl: disable warnings) (public)
     add_cxxflags(
         "cl::/wd4200", -- nonstandard extension used : zero-sized array in struct/union
         "cl::/wd4201", -- nonstandard extension used : nameless struct/union
@@ -116,20 +125,20 @@ target("commonlib-shared", function()
         { public = true }
     )
 
-    -- add flags (cl: warnings -> errors)
+    -- add flags (cl: warnings -> errors) (public)
     add_cxxflags(
         "cl::/we4715", -- not all control paths return a value
         { public = true }
     )
 
-    -- add flags (clang-cl)
+    -- add flags (clang-cl) (public)
     add_cxxflags(
         "clang_cl::-fms-compatibility",
         "clang_cl::-fms-extensions",
         { public = true }
     )
 
-    -- add flags (clang-cl: disable warnings)
+    -- add flags (clang-cl: disable warnings) (public)
     add_cxxflags(
         "clang_cl::-Wno-delete-non-abstract-non-virtual-dtor",
         "clang_cl::-Wno-deprecated-volatile",
@@ -141,6 +150,7 @@ target("commonlib-shared", function()
         "clang_cl::-Wno-pragma-system-header-outside-header",
         "clang_cl::-Wno-reinterpret-base-class",
         "clang_cl::-Wno-switch",
+        "clang_cl::-Wno-unused-local-typedef",
         "clang_cl::-Wno-unused-private-field",
         { public = true }
     )

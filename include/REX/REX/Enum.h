@@ -1,5 +1,5 @@
 #pragma once
 
-#pragma message("The header 'REX/REX/Enum.h' is deprecated, please include 'REX/TEnum.h'")
+#warning "The header 'REX/REX/Enum.h' is deprecated, please include 'REX/REX.h'"
 
 #include "REX/TEnum.h"
