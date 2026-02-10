@@ -22,7 +22,7 @@ namespace REL
 			return std::nullopt;
 		}
 
-		Version             version;
+		Version            version;
 		std::istringstream ss(std::string(static_cast<const char*>(verBuf), verLen));
 		std::string        token;
 		for (std::size_t i = 0; i < 4 && std::getline(ss, token, '.'); ++i) {
