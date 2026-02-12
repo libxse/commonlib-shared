@@ -2,8 +2,8 @@
 
 namespace REX
 {
-    class FUUID
-    {
+	class FUUID
+	{
 	public:
 		inline constexpr FUUID() noexcept = default;
 		inline constexpr FUUID(FUUID&&) noexcept = default;
@@ -28,7 +28,7 @@ namespace REX
 			return m_data[a_pos];
 		}
 
-    	inline constexpr const std::uint8_t operator[](std::size_t a_pos) const noexcept
+		inline constexpr const std::uint8_t operator[](std::size_t a_pos) const noexcept
 		{
 			return m_data[a_pos];
 		}
@@ -44,8 +44,8 @@ namespace REX
 			return true;
 		}
 
-        inline constexpr explicit operator bool() const noexcept
-        {
+		inline constexpr explicit operator bool() const noexcept
+		{
 			for (auto i = 0u; i < sizeof(m_data); i++) {
 				if (m_data[i]) {
 					return true;
@@ -53,9 +53,9 @@ namespace REX
 			}
 
 			return false;
-        }
+		}
 
-    private:
+	private:
 		inline static constexpr std::uint8_t ParseStringHexChar(const char a_char)
 		{
 			const char c = a_char | 0x20;
@@ -87,9 +87,9 @@ namespace REX
 			}
 		}
 
-    private:
-        std::uint8_t m_data[16];
-    };
-    static_assert(sizeof(FUUID) == 16);
+	private:
+		std::uint8_t m_data[16];
+	};
+	static_assert(sizeof(FUUID) == 16);
 	static_assert(FUUID{ "62470f2d-f92b-4189-8af6-157310dadc8b" } == FUUID{ 0x62, 0x47, 0x0f, 0x2d, 0xf9, 0x2b, 0x41, 0x89, 0x8a, 0xf6, 0x15, 0x73, 0x10, 0xda, 0xdc, 0x8b });
 }

@@ -3,7 +3,7 @@
 #ifdef COMMONLIB_OPTION_INI
 
 #	include "REX/FSettingStore.h"
-#   include "REX/TSingleton.h"
+#	include "REX/TSingleton.h"
 
 namespace REX
 {

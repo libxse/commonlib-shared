@@ -3,7 +3,7 @@
 #ifdef COMMONLIB_OPTION_JSON
 
 #	include "REX/FSettingStore.h"
-#   include "REX/TSingleton.h"
+#	include "REX/TSingleton.h"
 
 namespace REX
 {

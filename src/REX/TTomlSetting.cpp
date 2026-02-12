@@ -57,61 +57,61 @@ namespace REX::Impl
 		a_value = a_valueDefault;
 	}
 
-	template<>
+	template <>
 	void TomlSettingLoad<bool>(void* a_data, std::vector<std::string> a_section, std::string_view a_key, bool& a_value, bool& a_valueDefault)
 	{
 		TomlSettingLoadEx<bool>(a_data, a_section, a_key, a_value, a_valueDefault);
 	}
 
-	template<>
+	template <>
 	void TomlSettingLoad<float>(void* a_data, std::vector<std::string> a_section, std::string_view a_key, float& a_value, float& a_valueDefault)
 	{
 		TomlSettingLoadEx<float>(a_data, a_section, a_key, a_value, a_valueDefault);
 	}
 
-	template<>
+	template <>
 	void TomlSettingLoad<double>(void* a_data, std::vector<std::string> a_section, std::string_view a_key, double& a_value, double& a_valueDefault)
 	{
 		TomlSettingLoadEx<double>(a_data, a_section, a_key, a_value, a_valueDefault);
 	}
 
-	template<>
+	template <>
 	void TomlSettingLoad<std::uint8_t>(void* a_data, std::vector<std::string> a_section, std::string_view a_key, std::uint8_t& a_value, std::uint8_t& a_valueDefault)
 	{
 		TomlSettingLoadEx<std::uint8_t>(a_data, a_section, a_key, a_value, a_valueDefault);
 	}
 
-	template<>
+	template <>
 	void TomlSettingLoad<std::uint16_t>(void* a_data, std::vector<std::string> a_section, std::string_view a_key, std::uint16_t& a_value, std::uint16_t& a_valueDefault)
 	{
 		TomlSettingLoadEx<std::uint16_t>(a_data, a_section, a_key, a_value, a_valueDefault);
 	}
 
-	template<>
+	template <>
 	void TomlSettingLoad<std::uint32_t>(void* a_data, std::vector<std::string> a_section, std::string_view a_key, std::uint32_t& a_value, std::uint32_t& a_valueDefault)
 	{
 		TomlSettingLoadEx<std::uint32_t>(a_data, a_section, a_key, a_value, a_valueDefault);
 	}
 
-	template<>
+	template <>
 	void TomlSettingLoad<std::int8_t>(void* a_data, std::vector<std::string> a_section, std::string_view a_key, std::int8_t& a_value, std::int8_t& a_valueDefault)
 	{
 		TomlSettingLoadEx<std::int8_t>(a_data, a_section, a_key, a_value, a_valueDefault);
 	}
 
-	template<>
+	template <>
 	void TomlSettingLoad<std::int16_t>(void* a_data, std::vector<std::string> a_section, std::string_view a_key, std::int16_t& a_value, std::int16_t& a_valueDefault)
 	{
 		TomlSettingLoadEx<std::int16_t>(a_data, a_section, a_key, a_value, a_valueDefault);
 	}
 
-	template<>
+	template <>
 	void TomlSettingLoad<std::int32_t>(void* a_data, std::vector<std::string> a_section, std::string_view a_key, std::int32_t& a_value, std::int32_t& a_valueDefault)
 	{
 		TomlSettingLoadEx<std::int32_t>(a_data, a_section, a_key, a_value, a_valueDefault);
 	}
 
-	template<>
+	template <>
 	void TomlSettingLoad<std::string>(void* a_data, std::vector<std::string> a_section, std::string_view a_key, std::string& a_value, std::string& a_valueDefault)
 	{
 		TomlSettingLoadEx<std::string>(a_data, a_section, a_key, a_value, a_valueDefault);
