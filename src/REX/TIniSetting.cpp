@@ -7,68 +7,144 @@
 
 namespace REX::Impl
 {
-	template <class T>
-	constexpr bool is_long_integral_v = std::_Is_any_of_v<std::remove_cv_t<T>, std::uint8_t, std::uint16_t, std::uint32_t, std::int8_t, std::int16_t, std::int32_t>;
-
-	template <class T>
-	void IniSettingLoad<T>(
-		void*            a_data,
-		std::string_view a_section,
-		std::string_view a_key,
-		T&               a_value,
-		T&               a_valueDefault)
+	template <>
+	void IniSettingLoad<bool>(void* a_data, std::string_view a_section, std::string_view a_key, bool& a_value, bool& a_valueDefault)
 	{
-		const auto file = static_cast<CSimpleIniA*>(a_data);
-		if constexpr (std::is_same_v<T, bool>) {
-			a_value = file->GetBoolValue(a_section.data(), a_key.data(), a_valueDefault);
-		} else if constexpr (std::is_floating_point_v<T>) {
-			a_value = static_cast<T>(file->GetDoubleValue(a_section.data(), a_key.data(), a_valueDefault));
-		} else if constexpr (is_long_integral_v<T>) {
-			a_value = static_cast<T>(file->GetLongValue(a_section.data(), a_key.data(), a_valueDefault));
-		} else if constexpr (std::is_same_v<T, std::string>) {
-			a_value = file->GetValue(a_section.data(), a_key.data(), a_valueDefault.c_str());
-		}
+		const auto data = static_cast<CSimpleIniA*>(a_data);
+		a_value = data->GetBoolValue(a_section.data(), a_key.data(), a_valueDefault);
 	}
 
-	template void IniSettingLoad<bool>(void*, std::string_view, std::string_view, bool&, bool&);
-	template void IniSettingLoad<float>(void*, std::string_view, std::string_view, float&, float&);
-	template void IniSettingLoad<double>(void*, std::string_view, std::string_view, double&, double&);
-	template void IniSettingLoad<std::uint8_t>(void*, std::string_view, std::string_view, std::uint8_t&, std::uint8_t&);
-	template void IniSettingLoad<std::uint16_t>(void*, std::string_view, std::string_view, std::uint16_t&, std::uint16_t&);
-	template void IniSettingLoad<std::uint32_t>(void*, std::string_view, std::string_view, std::uint32_t&, std::uint32_t&);
-	template void IniSettingLoad<std::int8_t>(void*, std::string_view, std::string_view, std::int8_t&, std::int8_t&);
-	template void IniSettingLoad<std::int16_t>(void*, std::string_view, std::string_view, std::int16_t&, std::int16_t&);
-	template void IniSettingLoad<std::int32_t>(void*, std::string_view, std::string_view, std::int32_t&, std::int32_t&);
-	template void IniSettingLoad<std::string>(void*, std::string_view, std::string_view, std::string&, std::string&);
-
-	template <class T>
-	void IniSettingSave<T>(
-		void*            a_data,
-		std::string_view a_section,
-		std::string_view a_key,
-		T&               a_value)
+	template <>
+	void IniSettingLoad<float>(void* a_data, std::string_view a_section, std::string_view a_key, float& a_value, float& a_valueDefault)
 	{
-		auto& file = *static_cast<CSimpleIniA*>(a_data);
-		if constexpr (std::is_same_v<T, bool>) {
-			file.SetBoolValue(a_section.data(), a_key.data(), a_value);
-		} else if constexpr (std::is_floating_point_v<T>) {
-			file.SetDoubleValue(a_section.data(), a_key.data(), a_value);
-		} else if constexpr (is_long_integral_v<T>) {
-			file.SetLongValue(a_section.data(), a_key.data(), a_value);
-		} else if constexpr (std::is_same_v<T, std::string>) {
-			file.SetValue(a_section.data(), a_key.data(), a_value.c_str());
-		}
+		const auto data = static_cast<CSimpleIniA*>(a_data);
+		a_value = static_cast<float>(data->GetDoubleValue(a_section.data(), a_key.data(), a_valueDefault));
 	}
 
-	template void IniSettingSave<bool>(void*, std::string_view, std::string_view, bool&);
-	template void IniSettingSave<float>(void*, std::string_view, std::string_view, float&);
-	template void IniSettingSave<double>(void*, std::string_view, std::string_view, double&);
-	template void IniSettingSave<std::uint8_t>(void*, std::string_view, std::string_view, std::uint8_t&);
-	template void IniSettingSave<std::uint16_t>(void*, std::string_view, std::string_view, std::uint16_t&);
-	template void IniSettingSave<std::uint32_t>(void*, std::string_view, std::string_view, std::uint32_t&);
-	template void IniSettingSave<std::int8_t>(void*, std::string_view, std::string_view, std::int8_t&);
-	template void IniSettingSave<std::int16_t>(void*, std::string_view, std::string_view, std::int16_t&);
-	template void IniSettingSave<std::int32_t>(void*, std::string_view, std::string_view, std::int32_t&);
-	template void IniSettingSave<std::string>(void*, std::string_view, std::string_view, std::string&);
+	template <>
+	void IniSettingLoad<double>(void* a_data, std::string_view a_section, std::string_view a_key, double& a_value, double& a_valueDefault)
+	{
+		const auto data = static_cast<CSimpleIniA*>(a_data);
+		a_value = data->GetDoubleValue(a_section.data(), a_key.data(), a_valueDefault);
+	}
+
+	template <>
+	void IniSettingLoad<std::uint8_t>(void* a_data, std::string_view a_section, std::string_view a_key, std::uint8_t& a_value, std::uint8_t& a_valueDefault)
+	{
+		const auto data = static_cast<CSimpleIniA*>(a_data);
+		a_value = static_cast<std::uint8_t>(data->GetLongValue(a_section.data(), a_key.data(), a_valueDefault));
+	}
+
+	template <>
+	void IniSettingLoad<std::uint16_t>(void* a_data, std::string_view a_section, std::string_view a_key, std::uint16_t& a_value, std::uint16_t& a_valueDefault)
+	{
+		const auto data = static_cast<CSimpleIniA*>(a_data);
+		a_value = static_cast<std::uint16_t>(data->GetLongValue(a_section.data(), a_key.data(), a_valueDefault));
+	}
+
+	template <>
+	void IniSettingLoad<std::uint32_t>(void* a_data, std::string_view a_section, std::string_view a_key, std::uint32_t& a_value, std::uint32_t& a_valueDefault)
+	{
+		const auto data = static_cast<CSimpleIniA*>(a_data);
+		a_value = static_cast<std::uint32_t>(data->GetLongValue(a_section.data(), a_key.data(), a_valueDefault));
+	}
+
+	template <>
+	void IniSettingLoad<std::int8_t>(void* a_data, std::string_view a_section, std::string_view a_key, std::int8_t& a_value, std::int8_t& a_valueDefault)
+	{
+		const auto data = static_cast<CSimpleIniA*>(a_data);
+		a_value = static_cast<std::int8_t>(data->GetLongValue(a_section.data(), a_key.data(), a_valueDefault));
+	}
+
+	template <>
+	void IniSettingLoad<std::int16_t>(void* a_data, std::string_view a_section, std::string_view a_key, std::int16_t& a_value, std::int16_t& a_valueDefault)
+	{
+		const auto data = static_cast<CSimpleIniA*>(a_data);
+		a_value = static_cast<std::int16_t>(data->GetLongValue(a_section.data(), a_key.data(), a_valueDefault));
+	}
+
+	template <>
+	void IniSettingLoad<std::int32_t>(void* a_data, std::string_view a_section, std::string_view a_key, std::int32_t& a_value, std::int32_t& a_valueDefault)
+	{
+		const auto data = static_cast<CSimpleIniA*>(a_data);
+		a_value = static_cast<std::int32_t>(data->GetLongValue(a_section.data(), a_key.data(), a_valueDefault));
+	}
+
+	template <>
+	void IniSettingLoad<std::string>(void* a_data, std::string_view a_section, std::string_view a_key, std::string& a_value, std::string& a_valueDefault)
+	{
+		const auto data = static_cast<CSimpleIniA*>(a_data);
+		a_value = data->GetValue(a_section.data(), a_key.data(), a_valueDefault.c_str());
+	}
+
+	template <>
+	void IniSettingSave<bool>(void* a_data, std::string_view a_section, std::string_view a_key, bool& a_value)
+	{
+		auto& data = *static_cast<CSimpleIniA*>(a_data);
+		data.SetBoolValue(a_section.data(), a_key.data(), a_value);
+	}
+
+	template <>
+	void IniSettingSave<float>(void* a_data, std::string_view a_section, std::string_view a_key, float& a_value)
+	{
+		auto& data = *static_cast<CSimpleIniA*>(a_data);
+		data.SetDoubleValue(a_section.data(), a_key.data(), a_value);
+	}
+
+	template <>
+	void IniSettingSave<double>(void* a_data, std::string_view a_section, std::string_view a_key, double& a_value)
+	{
+		auto& data = *static_cast<CSimpleIniA*>(a_data);
+		data.SetDoubleValue(a_section.data(), a_key.data(), a_value);
+	}
+
+	template <>
+	void IniSettingSave<std::uint8_t>(void* a_data, std::string_view a_section, std::string_view a_key, std::uint8_t& a_value)
+	{
+		auto& data = *static_cast<CSimpleIniA*>(a_data);
+		data.SetLongValue(a_section.data(), a_key.data(), a_value);
+	}
+
+	template <>
+	void IniSettingSave<std::uint16_t>(void* a_data, std::string_view a_section, std::string_view a_key, std::uint16_t& a_value)
+	{
+		auto& data = *static_cast<CSimpleIniA*>(a_data);
+		data.SetLongValue(a_section.data(), a_key.data(), a_value);
+	}
+
+	template <>
+	void IniSettingSave<std::uint32_t>(void* a_data, std::string_view a_section, std::string_view a_key, std::uint32_t& a_value)
+	{
+		auto& data = *static_cast<CSimpleIniA*>(a_data);
+		data.SetLongValue(a_section.data(), a_key.data(), a_value);
+	}
+
+	template <>
+	void IniSettingSave<std::int8_t>(void* a_data, std::string_view a_section, std::string_view a_key, std::int8_t& a_value)
+	{
+		auto& data = *static_cast<CSimpleIniA*>(a_data);
+		data.SetLongValue(a_section.data(), a_key.data(), a_value);
+	}
+
+	template <>
+	void IniSettingSave<std::int16_t>(void* a_data, std::string_view a_section, std::string_view a_key, std::int16_t& a_value)
+	{
+		auto& data = *static_cast<CSimpleIniA*>(a_data);
+		data.SetLongValue(a_section.data(), a_key.data(), a_value);
+	}
+
+	template <>
+	void IniSettingSave<std::int32_t>(void* a_data, std::string_view a_section, std::string_view a_key, std::int32_t& a_value)
+	{
+		auto& data = *static_cast<CSimpleIniA*>(a_data);
+		data.SetLongValue(a_section.data(), a_key.data(), a_value);
+	}
+
+	template <>
+	void IniSettingSave<std::string>(void* a_data, std::string_view a_section, std::string_view a_key, std::string& a_value)
+	{
+		auto& data = *static_cast<CSimpleIniA*>(a_data);
+		data.SetValue(a_section.data(), a_key.data(), a_value.c_str());
+	}
 }
 #endif

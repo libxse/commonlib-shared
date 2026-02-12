@@ -2,12 +2,14 @@
 
 #ifdef COMMONLIB_OPTION_JSON
 
-#	include "REX/TSettingStore.h"
+#	include "REX/FSettingStore.h"
+#   include "REX/TSingleton.h"
 
 namespace REX
 {
 	class FJsonSettingStore :
-		public TSettingStore<FJsonSettingStore>
+		public FSettingStore,
+		public TSingleton<FJsonSettingStore>
 	{
 	public:
 		virtual void Load() override;

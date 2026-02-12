@@ -2,12 +2,14 @@
 
 #ifdef COMMONLIB_OPTION_TOML
 
-#	include "REX/TSettingStore.h"
+#	include "REX/FSettingStore.h"
+#   include "REX/TSingleton.h"
 
 namespace REX
 {
 	class FTomlSettingStore :
-		public TSettingStore<FTomlSettingStore>
+		public FSettingStore,
+		public TSingleton<FTomlSettingStore>
 	{
 	public:
 		virtual void Load() override;

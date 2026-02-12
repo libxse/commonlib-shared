@@ -2,12 +2,14 @@
 
 #ifdef COMMONLIB_OPTION_INI
 
-#	include "REX/TSettingStore.h"
+#	include "REX/FSettingStore.h"
+#   include "REX/TSingleton.h"
 
 namespace REX
 {
 	class FIniSettingStore :
-		public TSettingStore<FIniSettingStore>
+		public FSettingStore,
+		public TSingleton<FIniSettingStore>
 	{
 	public:
 		virtual void Load() override;

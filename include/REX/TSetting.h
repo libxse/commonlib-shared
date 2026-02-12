@@ -1,10 +1,10 @@
 #pragma once
 
-#include "REX/ISetting.h"
+#include "ISetting.h"
 
 namespace REX
 {
-	template <class T, class Store>
+	template <class T>
 	class TSetting :
 		public ISetting
 	{
@@ -14,16 +14,23 @@ namespace REX
 		TSetting(T a_default) :
 			m_value(a_default),
 			m_valueDefault(a_default)
-		{
-			Store::GetSingleton()->Register(this);
-		}
+		{}
 
 	public:
-		T GetValue() const { return m_value; }
+		T GetValue() const
+		{
+			return m_value;
+		}
 
-		T GetValueDefault() const { return m_valueDefault; }
+		T GetValueDefault() const
+		{
+			return m_valueDefault;
+		}
 
-		void SetValue(T a_value) { m_value = a_value; }
+		void SetValue(T a_value)
+		{
+			m_value = a_value;
+		}
 
 	public:
 		operator T&() { return m_value; }

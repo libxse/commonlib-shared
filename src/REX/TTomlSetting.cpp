@@ -33,12 +33,7 @@ toml::value* toml_recurse_table(toml::value* a_result, toml::value& a_value, con
 namespace REX::Impl
 {
 	template <class T>
-	void TomlSettingLoad<T>(
-		void*                    a_data,
-		std::vector<std::string> a_section,
-		std::string_view         a_key,
-		T&                       a_value,
-		T&                       a_valueDefault)
+	void TomlSettingLoadEx(void* a_data, std::vector<std::string> a_section, std::string_view a_key, T& a_value, T& a_valueDefault)
 	{
 		const auto& data = static_cast<toml::value*>(a_data);
 		if (a_section.empty()) {
@@ -62,23 +57,68 @@ namespace REX::Impl
 		a_value = a_valueDefault;
 	}
 
-	template void TomlSettingLoad<bool>(void*, std::vector<std::string>, std::string_view, bool&, bool&);
-	template void TomlSettingLoad<float>(void*, std::vector<std::string>, std::string_view, float&, float&);
-	template void TomlSettingLoad<double>(void*, std::vector<std::string>, std::string_view, double&, double&);
-	template void TomlSettingLoad<std::uint8_t>(void*, std::vector<std::string>, std::string_view, std::uint8_t&, std::uint8_t&);
-	template void TomlSettingLoad<std::uint16_t>(void*, std::vector<std::string>, std::string_view, std::uint16_t&, std::uint16_t&);
-	template void TomlSettingLoad<std::uint32_t>(void*, std::vector<std::string>, std::string_view, std::uint32_t&, std::uint32_t&);
-	template void TomlSettingLoad<std::int8_t>(void*, std::vector<std::string>, std::string_view, std::int8_t&, std::int8_t&);
-	template void TomlSettingLoad<std::int16_t>(void*, std::vector<std::string>, std::string_view, std::int16_t&, std::int16_t&);
-	template void TomlSettingLoad<std::int32_t>(void*, std::vector<std::string>, std::string_view, std::int32_t&, std::int32_t&);
-	template void TomlSettingLoad<std::string>(void*, std::vector<std::string>, std::string_view, std::string&, std::string&);
+	template<>
+	void TomlSettingLoad<bool>(void* a_data, std::vector<std::string> a_section, std::string_view a_key, bool& a_value, bool& a_valueDefault)
+	{
+		TomlSettingLoadEx<bool>(a_data, a_section, a_key, a_value, a_valueDefault);
+	}
+
+	template<>
+	void TomlSettingLoad<float>(void* a_data, std::vector<std::string> a_section, std::string_view a_key, float& a_value, float& a_valueDefault)
+	{
+		TomlSettingLoadEx<float>(a_data, a_section, a_key, a_value, a_valueDefault);
+	}
+
+	template<>
+	void TomlSettingLoad<double>(void* a_data, std::vector<std::string> a_section, std::string_view a_key, double& a_value, double& a_valueDefault)
+	{
+		TomlSettingLoadEx<double>(a_data, a_section, a_key, a_value, a_valueDefault);
+	}
+
+	template<>
+	void TomlSettingLoad<std::uint8_t>(void* a_data, std::vector<std::string> a_section, std::string_view a_key, std::uint8_t& a_value, std::uint8_t& a_valueDefault)
+	{
+		TomlSettingLoadEx<std::uint8_t>(a_data, a_section, a_key, a_value, a_valueDefault);
+	}
+
+	template<>
+	void TomlSettingLoad<std::uint16_t>(void* a_data, std::vector<std::string> a_section, std::string_view a_key, std::uint16_t& a_value, std::uint16_t& a_valueDefault)
+	{
+		TomlSettingLoadEx<std::uint16_t>(a_data, a_section, a_key, a_value, a_valueDefault);
+	}
+
+	template<>
+	void TomlSettingLoad<std::uint32_t>(void* a_data, std::vector<std::string> a_section, std::string_view a_key, std::uint32_t& a_value, std::uint32_t& a_valueDefault)
+	{
+		TomlSettingLoadEx<std::uint32_t>(a_data, a_section, a_key, a_value, a_valueDefault);
+	}
+
+	template<>
+	void TomlSettingLoad<std::int8_t>(void* a_data, std::vector<std::string> a_section, std::string_view a_key, std::int8_t& a_value, std::int8_t& a_valueDefault)
+	{
+		TomlSettingLoadEx<std::int8_t>(a_data, a_section, a_key, a_value, a_valueDefault);
+	}
+
+	template<>
+	void TomlSettingLoad<std::int16_t>(void* a_data, std::vector<std::string> a_section, std::string_view a_key, std::int16_t& a_value, std::int16_t& a_valueDefault)
+	{
+		TomlSettingLoadEx<std::int16_t>(a_data, a_section, a_key, a_value, a_valueDefault);
+	}
+
+	template<>
+	void TomlSettingLoad<std::int32_t>(void* a_data, std::vector<std::string> a_section, std::string_view a_key, std::int32_t& a_value, std::int32_t& a_valueDefault)
+	{
+		TomlSettingLoadEx<std::int32_t>(a_data, a_section, a_key, a_value, a_valueDefault);
+	}
+
+	template<>
+	void TomlSettingLoad<std::string>(void* a_data, std::vector<std::string> a_section, std::string_view a_key, std::string& a_value, std::string& a_valueDefault)
+	{
+		TomlSettingLoadEx<std::string>(a_data, a_section, a_key, a_value, a_valueDefault);
+	}
 
 	template <class T>
-	void TomlSettingSave<T>(
-		void*                    a_data,
-		std::vector<std::string> a_section,
-		std::string_view         a_key,
-		T&                       a_value)
+	void TomlSettingSaveEx(void* a_data, std::vector<std::string> a_section, std::string_view a_key, T& a_value)
 	{
 		auto& data = *static_cast<toml::value*>(a_data);
 		if (a_section.empty()) {
@@ -96,15 +136,64 @@ namespace REX::Impl
 		}
 	}
 
-	template void TomlSettingSave<bool>(void*, std::vector<std::string>, std::string_view, bool&);
-	template void TomlSettingSave<float>(void*, std::vector<std::string>, std::string_view, float&);
-	template void TomlSettingSave<double>(void*, std::vector<std::string>, std::string_view, double&);
-	template void TomlSettingSave<std::uint8_t>(void*, std::vector<std::string>, std::string_view, std::uint8_t&);
-	template void TomlSettingSave<std::uint16_t>(void*, std::vector<std::string>, std::string_view, std::uint16_t&);
-	template void TomlSettingSave<std::uint32_t>(void*, std::vector<std::string>, std::string_view, std::uint32_t&);
-	template void TomlSettingSave<std::int8_t>(void*, std::vector<std::string>, std::string_view, std::int8_t&);
-	template void TomlSettingSave<std::int16_t>(void*, std::vector<std::string>, std::string_view, std::int16_t&);
-	template void TomlSettingSave<std::int32_t>(void*, std::vector<std::string>, std::string_view, std::int32_t&);
-	template void TomlSettingSave<std::string>(void*, std::vector<std::string>, std::string_view, std::string&);
+	template <>
+	void TomlSettingSave<bool>(void* a_data, std::vector<std::string> a_section, std::string_view a_key, bool& a_value)
+	{
+		TomlSettingSaveEx<bool>(a_data, a_section, a_key, a_value);
+	}
+
+	template <>
+	void TomlSettingSave<float>(void* a_data, std::vector<std::string> a_section, std::string_view a_key, float& a_value)
+	{
+		TomlSettingSaveEx<float>(a_data, a_section, a_key, a_value);
+	}
+
+	template <>
+	void TomlSettingSave<double>(void* a_data, std::vector<std::string> a_section, std::string_view a_key, double& a_value)
+	{
+		TomlSettingSaveEx<double>(a_data, a_section, a_key, a_value);
+	}
+
+	template <>
+	void TomlSettingSave<std::uint8_t>(void* a_data, std::vector<std::string> a_section, std::string_view a_key, std::uint8_t& a_value)
+	{
+		TomlSettingSaveEx<std::uint8_t>(a_data, a_section, a_key, a_value);
+	}
+
+	template <>
+	void TomlSettingSave<std::uint16_t>(void* a_data, std::vector<std::string> a_section, std::string_view a_key, std::uint16_t& a_value)
+	{
+		TomlSettingSaveEx<std::uint16_t>(a_data, a_section, a_key, a_value);
+	}
+
+	template <>
+	void TomlSettingSave<std::uint32_t>(void* a_data, std::vector<std::string> a_section, std::string_view a_key, std::uint32_t& a_value)
+	{
+		TomlSettingSaveEx<std::uint32_t>(a_data, a_section, a_key, a_value);
+	}
+
+	template <>
+	void TomlSettingSave<std::int8_t>(void* a_data, std::vector<std::string> a_section, std::string_view a_key, std::int8_t& a_value)
+	{
+		TomlSettingSaveEx<std::int8_t>(a_data, a_section, a_key, a_value);
+	}
+
+	template <>
+	void TomlSettingSave<std::int16_t>(void* a_data, std::vector<std::string> a_section, std::string_view a_key, std::int16_t& a_value)
+	{
+		TomlSettingSaveEx<std::int16_t>(a_data, a_section, a_key, a_value);
+	}
+
+	template <>
+	void TomlSettingSave<std::int32_t>(void* a_data, std::vector<std::string> a_section, std::string_view a_key, std::int32_t& a_value)
+	{
+		TomlSettingSaveEx<std::int32_t>(a_data, a_section, a_key, a_value);
+	}
+
+	template <>
+	void TomlSettingSave<std::string>(void* a_data, std::vector<std::string> a_section, std::string_view a_key, std::string& a_value)
+	{
+		TomlSettingSaveEx<std::string>(a_data, a_section, a_key, a_value);
+	}
 }
 #endif

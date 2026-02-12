@@ -8,39 +8,49 @@
 namespace REX::Impl
 {
 	template <class T>
-	void IniSettingLoad(void* a_file, std::string_view a_section, std::string_view a_key, T& a_value, T& a_valueDefault);
+	void IniSettingLoad(void* a_data, std::string_view a_section, std::string_view a_key, T& a_value, T& a_valueDefault);
 
 	template <class T>
-	void IniSettingSave(void* a_file, std::string_view a_section, std::string_view a_key, T& a_value);
+	void IniSettingSave(void* a_data, std::string_view a_section, std::string_view a_key, T& a_value);
 }
 
 namespace REX
 {
 	template <class T, class S = FIniSettingStore>
 	class TIniSetting :
-		public TSetting<T, S>
+		public TSetting<T>
 	{
 	public:
 		TIniSetting(std::string_view a_section, std::string_view a_key, T a_default) :
-			TSetting<T, S>(a_default),
+			TSetting<T>(a_default),
 			m_section(a_section),
 			m_key(a_key)
-		{}
+		{
+			S::GetSingleton()->Add(this);
+		}
+
+		TIniSetting(std::string_view a_key, T a_default) :
+			TSetting<T>(a_default),
+			m_section(),
+			m_key(a_key)
+		{
+			S::GetSingleton()->Add(this);
+		}
 
 	public:
 		virtual void Load(void* a_data, bool a_isBase) override
 		{
 			if (a_isBase) {
-				Impl::IniSettingLoad(a_data, m_section, m_key, this->m_valueDefault, this->m_valueDefault);
+				Impl::IniSettingLoad<T>(a_data, m_section, m_key, this->m_valueDefault, this->m_valueDefault);
 				this->SetValue(this->m_valueDefault);
 			} else {
-				Impl::IniSettingLoad(a_data, m_section, m_key, this->m_value, this->m_valueDefault);
+				Impl::IniSettingLoad<T>(a_data, m_section, m_key, this->m_value, this->m_valueDefault);
 			}
 		}
 
 		virtual void Save(void* a_data) override
 		{
-			Impl::IniSettingSave(a_data, m_section, m_key, this->m_value);
+			Impl::IniSettingSave<T>(a_data, m_section, m_key, this->m_value);
 		}
 
 	private:

@@ -1,14 +1,11 @@
 #pragma once
 
 #include "REX/ISettingStore.h"
-#include "REX/TSingleton.h"
 
 namespace REX
 {
-	template <class T>
-	class TSettingStore :
-		public ISettingStore,
-		public TSingleton<T>
+	class FSettingStore :
+		public ISettingStore
 	{
 	public:
 		virtual void Init(const char* a_fileBase, const char* a_fileUser) override
@@ -17,7 +14,7 @@ namespace REX
 			m_fileUser = a_fileUser;
 		}
 
-		virtual void Register(ISetting* a_setting) override
+		virtual void Add(ISetting* a_setting) override
 		{
 			m_settings.emplace_back(a_setting);
 		}

@@ -8,38 +8,40 @@
 namespace REX::Impl
 {
 	template <class T>
-	void JsonSettingLoad(void* a_file, std::string_view a_path, T& a_value, T& a_valueDefault);
+	void JsonSettingLoad(void* a_data, std::string_view a_path, T& a_value, T& a_valueDefault);
 
 	template <class T>
-	void JsonSettingSave(void* a_file, std::string_view a_path, T& a_value);
+	void JsonSettingSave(void* a_data, std::string_view a_path, T& a_value);
 }
 
 namespace REX
 {
 	template <class T, class S = FJsonSettingStore>
 	class TJsonSetting :
-		public TSetting<T, S>
+		public TSetting<T>
 	{
 	public:
 		TJsonSetting(std::string_view a_path, T a_default) :
-			TSetting<T, S>(a_default),
+			TSetting<T>(a_default),
 			m_path(a_path)
-		{}
+		{
+			S::GetSingleton()->Add(this);
+		}
 
 	public:
 		virtual void Load(void* a_data, bool a_isBase) override
 		{
 			if (a_isBase) {
-				Impl::JsonSettingLoad(a_data, m_path, this->m_valueDefault, this->m_valueDefault);
+				Impl::JsonSettingLoad<T>(a_data, m_path, this->m_valueDefault, this->m_valueDefault);
 				this->SetValue(this->m_valueDefault);
 			} else {
-				Impl::JsonSettingLoad(a_data, m_path, this->m_value, this->m_valueDefault);
+				Impl::JsonSettingLoad<T>(a_data, m_path, this->m_value, this->m_valueDefault);
 			}
 		}
 
 		virtual void Save(void* a_data) override
 		{
-			Impl::JsonSettingSave(a_data, m_path, this->m_value);
+			Impl::JsonSettingSave<T>(a_data, m_path, this->m_value);
 		}
 
 	private:

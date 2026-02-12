@@ -8,55 +8,61 @@
 namespace REX::Impl
 {
 	template <class T>
-	void TomlSettingLoad(void* a_file, std::vector<std::string> a_section, std::string_view a_key, T& a_value, T& a_valueDefault);
+	void TomlSettingLoad(void* a_data, std::vector<std::string> a_section, std::string_view a_key, T& a_value, T& a_valueDefault);
 
 	template <class T>
-	void TomlSettingSave(void* a_file, std::vector<std::string> a_section, std::string_view a_key, T& a_value);
+	void TomlSettingSave(void* a_data, std::vector<std::string> a_section, std::string_view a_key, T& a_value);
 }
 
 namespace REX
 {
 	template <class T, class S = FTomlSettingStore>
 	class TTomlSetting :
-		public TSetting<T, S>
+		public TSetting<T>
 	{
 	public:
 		TTomlSetting(std::string_view a_key, T a_default) :
-			TSetting<T, S>(a_default),
+			TSetting<T>(a_default),
 			m_section(),
 			m_key(a_key)
-		{}
+		{
+			S::GetSingleton()->Add(this);
+		}
 
 		TTomlSetting(std::string_view a_section, std::string_view a_key, T a_default) :
-			TSetting<T, S>(a_default),
+			TSetting<T>(a_default),
 			m_section(),
 			m_key(a_key)
 		{
 			for (const auto token : std::ranges::split_view{ a_section, std::string_view{ "." } }) {
 				m_section.emplace_back(token.data(), token.size());
 			}
+
+			S::GetSingleton()->Add(this);
 		}
 
 		TTomlSetting(std::initializer_list<std::string> a_section, std::string_view a_key, T a_default) :
-			TSetting<T, S>(a_default),
+			TSetting<T>(a_default),
 			m_section(a_section),
 			m_key(a_key)
-		{}
+		{
+			S::GetSingleton()->Add(this);
+		}
 
 	public:
 		virtual void Load(void* a_data, bool a_isBase) override
 		{
 			if (a_isBase) {
-				Impl::TomlSettingLoad(a_data, m_section, m_key, this->m_valueDefault, this->m_valueDefault);
+				Impl::TomlSettingLoad<T>(a_data, m_section, m_key, this->m_valueDefault, this->m_valueDefault);
 				this->SetValue(this->m_valueDefault);
 			} else {
-				Impl::TomlSettingLoad(a_data, m_section, m_key, this->m_value, this->m_valueDefault);
+				Impl::TomlSettingLoad<T>(a_data, m_section, m_key, this->m_value, this->m_valueDefault);
 			}
 		}
 
 		virtual void Save(void* a_data) override
 		{
-			Impl::TomlSettingSave(a_data, m_section, m_key, this->m_value);
+			Impl::TomlSettingSave<T>(a_data, m_section, m_key, this->m_value);
 		}
 
 	private:
