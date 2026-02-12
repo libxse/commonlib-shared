@@ -99,19 +99,16 @@ target("commonlib-shared", function()
         { public = true }
     )
 
-    -- add flags (cl)
-    add_cxxflags(
-        "cl::/external:W0"
-    )
-
     -- add flags (cl) (public)
     add_cxxflags(
         "cl::/bigobj",
         "cl::/cgthreads8",
         "cl::/diagnostics:caret",
+        "cl::/external:W0",
         "cl::/fp:contract",
         "cl::/fp:except-",
         "cl::/guard:cf-",
+        "cl::/Zc:enumTypes",
         "cl::/Zc:preprocessor",
         "cl::/Zc:templateScope",
         { public = true }
