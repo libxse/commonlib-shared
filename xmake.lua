@@ -152,3 +152,87 @@ target("commonlib-shared", function()
         { public = true }
     )
 end)
+
+rule("commonlib.plugin", function()
+    add_deps("win.sdk.resource")
+
+    on_config(function(target)
+        import("core.project.project")
+        import("core.base.semver")
+
+        target:set("arch", "x64")
+        target:set("kind", "shared")
+
+        target:set("configdir", target:autogendir())
+        target:add("configfiles", path.join(os.scriptdir(), "res/commonlib-plugin.rc.in"))
+        target:add("files", path.join(target:configdir(), "commonlib-plugin.rc"))
+
+        local data = target:data("commonlib.plugin.config") or {}
+        target:set("configvar", "COMMONLIB_PLUGIN_AUTHOR", data.author or "")
+        target:set("configvar", "COMMONLIB_PLUGIN_CONTACT", data.contact or "")
+        target:set("configvar", "COMMONLIB_PLUGIN_DESCRIPTION", data.description or "")
+        target:set("configvar", "COMMONLIB_PLUGIN_LICENSE", (target:license() or "Unknown") .. " License")
+        target:set("configvar", "COMMONLIB_PLUGIN_NAME", data.name or target:name())
+        target:set("configvar", "COMMONLIB_PLUGIN_VERSION", target:version() or "0.0.0")
+        target:set("configvar", "COMMONLIB_PLUGIN_VERSION_MAJOR", semver.new(target:version() or "0.0.0"):major())
+        target:set("configvar", "COMMONLIB_PLUGIN_VERSION_MINOR", semver.new(target:version() or "0.0.0"):minor())
+        target:set("configvar", "COMMONLIB_PLUGIN_VERSION_PATCH", semver.new(target:version() or "0.0.0"):patch())
+        target:set("configvar", "COMMONLIB_PROJECT_NAME", project.name() or "")
+        target:set("configvar", "COMMONLIB_PROJECT_VERSION", project.version() or "0.0.0")
+        target:set("configvar", "COMMONLIB_PROJECT_VERSION_MAJOR", semver.new(project.version() or "0.0.0"):major())
+        target:set("configvar", "COMMONLIB_PROJECT_VERSION_MINOR", semver.new(project.version() or "0.0.0"):minor())
+        target:set("configvar", "COMMONLIB_PROJECT_VERSION_PATCH", semver.new(project.version() or "0.0.0"):patch())
+    end)
+
+    on_install(function(target)
+        import("target.action.install")(target, { binaries = false, headers = false, libraries = false, packages = false })
+    end)
+
+    on_package(function(target)
+        import("core.project.config")
+        import("core.project.project")
+
+        local archivename = target:name() .. "-" .. (target:version() or "0.0.0") .. ".zip"
+        cprint("${dim}packaging %s .. ", archivename)
+
+        local rootdir = path.join(os.tmpdir(), "packages", project.name() or "", target:name())
+        os.tryrm(rootdir)
+
+        local data = target:data("commonlib.plugin.package") or {}
+        local installdir = path.join(rootdir, data.prefixdir or "")
+        os.mkdir(installdir)
+
+        local srcfiles, dstfiles = target:installfiles(installdir)
+        if srcfiles and #srcfiles > 0 and dstfiles and #dstfiles > 0 then
+            for idx, srcfile in ipairs(srcfiles) do
+                os.trycp(srcfile, dstfiles[idx])
+            end
+        else
+            return
+        end
+
+        local archivedir = path.absolute(path.join(config.builddir(), "packages"))
+        local archivefile = path.join(archivedir, archivename)
+        os.tryrm(archivefile)
+
+        local olddir = os.cd(rootdir)
+        local archivefiles = os.files("**")
+        os.cd(olddir)
+
+        import("utils.archive").archive(archivefile, archivefiles, { curdir = rootdir })
+
+        cprint("${dim}packaging %s to %s ... ${color.success}${text.success}", archivename, archivedir)
+    end)
+
+    after_build(function(target)
+        import("core.project.depend")
+        import("core.project.task")
+
+        depend.on_changed(function()
+            local srcfiles, dstfiles = target:installfiles()
+            if srcfiles and #srcfiles > 0 and dstfiles and #dstfiles > 0 then
+                task.run("install")
+            end
+        end, { changed = target:is_rebuilt(), files = { target:targetfile() } })
+    end)
+end)
