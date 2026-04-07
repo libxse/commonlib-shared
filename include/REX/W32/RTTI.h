@@ -8,7 +8,7 @@ namespace REX::W32
 
 	struct RTTIClassHierarchyDescriptor;
 
-	struct RTTIBaseClassDescriptor2
+	struct RTTIBaseClassDescriptor
 	{
 		enum class Attribute : std::uint32_t
 		{
@@ -29,22 +29,16 @@ namespace REX::W32
 			std::int32_t pDisp;  // 0x04
 			std::int32_t vDisp;  // 0x08
 		};
-		static_assert(sizeof(PMD) == 0xC);
+		static_assert(sizeof(PMD) == 0x0C);
 
 		// members
-		RTTITypeDescriptor*                 typeDescriptor;     // 0x00
-		std::uint32_t                       numContainedBases;  // 0x08
-		PMD                                 where;              // 0x0C
-		TEnumSet<Attribute>                 attributes;         // 0x18
-		const RTTIClassHierarchyDescriptor* classDescriptor;    // 0x1C
+		std::uint32_t       typeDescriptor;     // 0x00
+		std::uint32_t       numContainedBases;  // 0x04
+		PMD                 where;              // 0x08
+		TEnumSet<Attribute> attributes;         // 0x14
+		std::uint32_t       classDescriptor;    // 0x18
 	};
-	static_assert(sizeof(RTTIBaseClassDescriptor2) == 0x28);
-
-	struct RTTIBaseClassArray
-	{
-		const RTTIBaseClassDescriptor2* arrayOfBaseClassDescriptors[];
-	};
-	static_assert(sizeof(RTTIBaseClassArray) == 0x8);
+	static_assert(sizeof(RTTIBaseClassDescriptor) == 0x1C);
 
 	struct RTTIClassHierarchyDescriptor
 	{
@@ -57,28 +51,22 @@ namespace REX::W32
 		};
 
 		// members
-		std::uint32_t                   signature;       // 0x00
-		TEnumSet<Attribute>             attributes;      // 0x04
-		std::uint32_t                   numBaseClasses;  // 0x08
-		const RTTIBaseClassDescriptor2* baseClassArray;  // 0x10
+		std::uint32_t       signature;       // 0x00
+		TEnumSet<Attribute> attributes;      // 0x04
+		std::uint32_t       numBaseClasses;  // 0x08
+		std::uint32_t       baseClassArray;  // 0x0C
 	};
-	static_assert(sizeof(RTTIClassHierarchyDescriptor) == 0x18);
+	static_assert(sizeof(RTTIClassHierarchyDescriptor) == 0x10);
 
 	struct RTTICompleteObjectLocator
 	{
-		enum class Signature : std::uint32_t
-		{
-			x86 = 0,
-			x64 = 1
-		};
-
 		// members
-		Signature                           signature;        // 0x00
+		std::uint32_t                       signature;        // 0x00
 		std::uint32_t                       offset;           // 0x04
-		std::uint32_t                       ctorDispOffset;   // 0x08
-		RTTITypeDescriptor*                 typeDescriptor;   // 0x10
-		const RTTIClassHierarchyDescriptor* classDescriptor;  // 0x18
-		const RTTICompleteObjectLocator*    self;             // 0x20
+		std::uint32_t                       cdOffset;         // 0x08
+		std::uint32_t                       typeDescriptor;   // 0x0C
+		std::uint32_t                       classDescriptor;  // 0x10
+		std::uint32_t                       self;             // 0x14
 	};
-	static_assert(sizeof(RTTICompleteObjectLocator) == 0x28);
+	static_assert(sizeof(RTTICompleteObjectLocator) == 0x18);
 }
