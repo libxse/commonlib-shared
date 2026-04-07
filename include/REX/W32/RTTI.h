@@ -61,12 +61,12 @@ namespace REX::W32
 	struct RTTICompleteObjectLocator
 	{
 		// members
-		std::uint32_t                       signature;        // 0x00
-		std::uint32_t                       offset;           // 0x04
-		std::uint32_t                       cdOffset;         // 0x08
-		std::uint32_t                       typeDescriptor;   // 0x0C
-		std::uint32_t                       classDescriptor;  // 0x10
-		std::uint32_t                       self;             // 0x14
+		std::uint32_t signature;        // 0x00
+		std::uint32_t offset;           // 0x04
+		std::uint32_t cdOffset;         // 0x08
+		std::uint32_t typeDescriptor;   // 0x0C
+		std::uint32_t classDescriptor;  // 0x10
+		std::uint32_t self;             // 0x14
 	};
 	static_assert(sizeof(RTTICompleteObjectLocator) == 0x18);
 }
