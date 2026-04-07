@@ -38,7 +38,7 @@ namespace REX::W32
 		TEnumSet<Attribute>                 attributes;         // 0x18
 		const RTTIClassHierarchyDescriptor* classDescriptor;    // 0x1C
 	};
-	static_assert(sizeof(RTTIBaseClassDescriptor) == 0x24);
+	static_assert(sizeof(RTTIBaseClassDescriptor2) == 0x28);
 
 	struct RTTIBaseClassArray
 	{
@@ -60,9 +60,9 @@ namespace REX::W32
 		std::uint32_t                   signature;       // 0x00
 		TEnumSet<Attribute>             attributes;      // 0x04
 		std::uint32_t                   numBaseClasses;  // 0x08
-		const RTTIBaseClassDescriptor2* baseClassArray;  // 0x0C
+		const RTTIBaseClassDescriptor2* baseClassArray;  // 0x10
 	};
-	static_assert(sizeof(RTTIClassHierarchyDescriptor) == 0x14);
+	static_assert(sizeof(RTTIClassHierarchyDescriptor) == 0x18);
 
 	struct RTTICompleteObjectLocator
 	{
@@ -76,9 +76,9 @@ namespace REX::W32
 		Signature                           signature;        // 0x00
 		std::uint32_t                       offset;           // 0x04
 		std::uint32_t                       ctorDispOffset;   // 0x08
-		RTTITypeDescriptor*                 typeDescriptor;   // 0x0C
-		const RTTIClassHierarchyDescriptor* classDescriptor;  // 0x14
-		const RTTICompleteObjectLocator*    self;             // 0x1C
+		RTTITypeDescriptor*                 typeDescriptor;   // 0x10
+		const RTTIClassHierarchyDescriptor* classDescriptor;  // 0x18
+		const RTTICompleteObjectLocator*    self;             // 0x20
 	};
-	static_assert(sizeof(RTTICompleteObjectLocator) == 0x24);
+	static_assert(sizeof(RTTICompleteObjectLocator) == 0x28);
 }
