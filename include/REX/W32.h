@@ -10,6 +10,7 @@
 #include "REX/W32/D3D11_2.h"
 #include "REX/W32/D3D11_3.h"
 #include "REX/W32/D3D11_4.h"
+#include "REX/W32/D3D12.h"
 #include "REX/W32/D3DCOMPILER.h"
 #include "REX/W32/DBGHELP.h"
 #include "REX/W32/DINPUT.h"
