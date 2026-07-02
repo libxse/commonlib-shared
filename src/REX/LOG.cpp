@@ -5,6 +5,8 @@
 
 #include <spdlog/spdlog.h>
 
+#include "REX/W32/MACRO_GUARD_BEGIN.h"
+
 namespace REX::Impl
 {
 	void Log(const std::source_location a_loc, const ELogLevel a_level, const std::string_view a_fmt)
@@ -172,3 +174,5 @@ namespace REX::Impl
 		REX::W32::TerminateProcess(REX::W32::GetCurrentProcess(), 1);
 	}
 }
+
+#include "REX/W32/MACRO_GUARD_END.h"
