@@ -4,10 +4,10 @@
 
 namespace REX::W32
 {
-    struct IXAudio2EngineCallback;
-    struct IXAudio2Extension;
-    struct IXAudio2VoiceCallback;
-    struct IXAudio27;
+	struct IXAudio2EngineCallback;
+	struct IXAudio2Extension;
+	struct IXAudio2VoiceCallback;
+	struct IXAudio27;
 	struct IXAudio27Voice;
 	struct IXAudio27SourceVoice;
 	struct IXAudio27SubmixVoice;
@@ -122,7 +122,7 @@ namespace REX::W32
 
 namespace REX::W32
 {
-    struct XAUDIO2_VOICE_DETAILS
+	struct XAUDIO2_VOICE_DETAILS
 	{
 		std::uint32_t creationFlags;
 		std::uint32_t inputChannels;
@@ -215,7 +215,7 @@ namespace REX::W32
 		BOOL          logTiming;
 	};
 
-    struct XAUDIO2_DEVICE_DETAILS
+	struct XAUDIO2_DEVICE_DETAILS
 	{
 		wchar_t              deviceID[256];
 		wchar_t              displayName[256];
@@ -228,7 +228,7 @@ namespace REX::W32
 
 namespace REX::W32
 {
-    struct __declspec(novtable)
+	struct __declspec(novtable)
 	IXAudio2EngineCallback
 	{
 		virtual void OnProcessingPassStart() noexcept = 0;
@@ -237,14 +237,14 @@ namespace REX::W32
 	};
 
 	struct __declspec(novtable, uuid("84ac29bb-d619-44d2-b197-e4acf7df3ed6"))
-    IXAudio2Extension : public IUnknown
-    {
-        virtual void GetProcessingQuantum(std::uint32_t* a_quantumNumerator, std::uint32_t* a_quantumDenominator) noexcept = 0;
-        virtual void GetProcessor(XAUDIO2_PROCESSOR* a_processor) noexcept = 0;
-    };
+	IXAudio2Extension : public IUnknown
+	{
+		virtual void GetProcessingQuantum(std::uint32_t* a_quantumNumerator, std::uint32_t* a_quantumDenominator) noexcept = 0;
+		virtual void GetProcessor(XAUDIO2_PROCESSOR* a_processor) noexcept = 0;
+	};
 
-    struct __declspec(novtable)
-    IXAudio2VoiceCallback
+	struct __declspec(novtable)
+	IXAudio2VoiceCallback
 	{
 		virtual void OnVoiceProcessingPassStart(std::uint32_t a_bytesRequired) noexcept = 0;
 		virtual void OnVoiceProcessingPassEnd() noexcept = 0;
@@ -255,8 +255,8 @@ namespace REX::W32
 		virtual void OnVoiceError(void* a_bufferContext, HRESULT a_error) noexcept = 0;
 	};
 
-    struct __declspec(novtable, uuid("8bcf1f58-9fe7-4583-8ac6-e2adc465c8bb"))
-    IXAudio27 : public IUnknown
+	struct __declspec(novtable, uuid("8bcf1f58-9fe7-4583-8ac6-e2adc465c8bb"))
+	IXAudio27 : public IUnknown
 	{
 		virtual HRESULT GetDeviceCount(std::uint32_t* a_count) const = 0;
 		virtual HRESULT GetDeviceDetails(std::uint32_t a_index, XAUDIO2_DEVICE_DETAILS* a_deviceDetails) const = 0;
@@ -273,8 +273,8 @@ namespace REX::W32
 		virtual void    SetDebugConfiguration(const XAUDIO2_DEBUG_CONFIGURATION* a_debugConfiguration, void* a_reserved = nullptr) noexcept = 0;
 	};
 
-    struct __declspec(novtable)
-    IXAudio27Voice
+	struct __declspec(novtable)
+	IXAudio27Voice
 	{
 		virtual void    GetVoiceDetails(XAUDIO2_VOICE_DETAILS* a_voiceDetails) const noexcept = 0;
 		virtual HRESULT SetOutputVoices(const XAUDIO2_VOICE_SENDS* a_sendList) noexcept = 0;

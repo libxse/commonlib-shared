@@ -4,7 +4,7 @@
 
 namespace REX::W32
 {
-    inline constexpr auto XAUDIO2FX_REVERB_MIN_WET_DRY_MIX{ 0.0f };
+	inline constexpr auto XAUDIO2FX_REVERB_MIN_WET_DRY_MIX{ 0.0f };
 	inline constexpr auto XAUDIO2FX_REVERB_MIN_REFLECTIONS_DELAY{ 0 };
 	inline constexpr auto XAUDIO2FX_REVERB_MIN_REVERB_DELAY{ 0 };
 	inline constexpr auto XAUDIO2FX_REVERB_MIN_REAR_DELAY{ 0 };
@@ -67,7 +67,7 @@ namespace REX::W32
 
 namespace REX::W32
 {
-    struct XAUDIO2FX_REVERB_I3DL2_PARAMETERS
+	struct XAUDIO2FX_REVERB_I3DL2_PARAMETERS
 	{
 		float        wetDryMix;
 		std::int32_t room;
@@ -84,7 +84,7 @@ namespace REX::W32
 		float        hfReference;
 	};
 
-    struct XAUDIO2FX_REVERB_PARAMETERS
+	struct XAUDIO2FX_REVERB_PARAMETERS
 	{
 		float         wetDryMix;
 		std::uint32_t reflectionsDelay;
@@ -115,5 +115,5 @@ namespace REX::W32
 
 namespace REX::W32
 {
-    inline constexpr XAUDIO2FX_REVERB_I3DL2_PARAMETERS XAUDIO2FX_I3DL2_PRESET_DEFAULT{ 100, -10000, 0, .0f, 1.f, .5f, -10000, .02f, -10000, .04f, 100.f, 100.f, 5000.f };
+	inline constexpr XAUDIO2FX_REVERB_I3DL2_PARAMETERS XAUDIO2FX_I3DL2_PRESET_DEFAULT{ 100, -10000, 0, .0f, 1.f, .5f, -10000, .02f, -10000, .04f, 100.f, 100.f, 5000.f };
 }
