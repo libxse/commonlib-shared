@@ -28,6 +28,7 @@
 #include "REX/W32/USER32.h"
 #include "REX/W32/VERSION.h"
 #include "REX/W32/WS2_32.h"
+#include "REX/W32/X3DAUDIO.h"
 #include "REX/W32/XAPO.h"
 #include "REX/W32/XAUDIO2.h"
 #include "REX/W32/XAUDIO2FX.h"
