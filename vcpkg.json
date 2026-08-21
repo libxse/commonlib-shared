@@ -1,0 +1,44 @@
+{
+  "$schema": "https://raw.githubusercontent.com/microsoft/vcpkg/master/scripts/vcpkg.schema.json",
+  "name": "commonlib-shared",
+  "description": "shared library for commonlib projects",
+  "homepage": "https://github.com/libxse/commonlib-shared",
+  "license": "GPL-3.0-or-later",
+  "supports": "windows & x64",
+  "dependencies": [
+    {
+        "name": "spdlog",
+        "default-features": false,
+        "features": [
+            "wchar"
+        ]
+    }
+  ],
+  "features": {
+    "ini": {
+        "description": "enable REX::INI settings support",
+        "dependencies": [
+            "simpleini"
+        ]
+    },
+    "json": {
+        "description": "enable REX::JSON settings support",
+        "dependencies": [
+            "glaze"
+        ]
+    },
+    "toml": {
+        "description": "enable REX::TOML settings support",
+        "dependencies": [
+            "toml11"
+        ]
+    },
+    "xbyak": {
+        "description": "enable xbyak support for Trampoline",
+        "dependencies": [
+            "xbyak"
+        ]
+    }
+  },
+  "default-features": []
+}
