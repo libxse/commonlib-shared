@@ -100,7 +100,7 @@ target_link_libraries(
         user32.lib
         version.lib
         ws2_32.lib
-        #"$<$<BOOL:${COMMONLIB_INI}>:simpleini::simpleini>"
+        "$<$<BOOL:${COMMONLIB_INI}>:simpleini::simpleini>"
         "$<$<BOOL:${COMMONLIB_JSON}>:glaze::glaze>"
         "$<$<BOOL:${COMMONLIB_TOML}>:toml11::toml11>"
         "$<$<BOOL:${COMMONLIB_XBYAK}>:xbyak::xbyak>"
