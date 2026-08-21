@@ -4,7 +4,7 @@ include(CMakeFindDependencyMacro)
 find_dependency(spdlog CONFIG)
 
 if (@COMMONLIB_INI@)
-    find_dependency(simpleini CONFIG)
+    find_dependency(SimpleIni CONFIG)
 endif()
 
 if (@COMMONLIB_JSON@)
