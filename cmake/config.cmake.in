@@ -3,18 +3,18 @@ include(CMakeFindDependencyMacro)
 
 find_dependency(spdlog CONFIG)
 
-if (COMMONLIB_INI)
+if (@COMMONLIB_INI@)
     find_dependency(simpleini CONFIG)
 endif()
 
-if (COMMONLIB_JSON)
+if (@COMMONLIB_JSON@)
     find_dependency(glaze CONFIG)
 endif()
 
-if (COMMONLIB_TOML)
+if (@COMMONLIB_TOML@)
     find_dependency(toml11 CONFIG)
 endif()
 
-if (COMMONLIB_XBYAK)
+if (@COMMONLIB_XBYAK@)
     find_dependency(xbyak CONFIG)
 endif()
