@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 4.00)
+cmake_minimum_required(VERSION 3.20)
 
 option(COMMONLIB_INI "enable REX::INI settings support" OFF)
 option(COMMONLIB_JSON "enable REX::JSON settings support" OFF)
