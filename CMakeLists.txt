@@ -34,7 +34,7 @@ if (COMMONLIB_XBYAK)
     find_package(xbyak REQUIRED CONFIG)
 endif()
 
-include(cmake/sourcelist.cmake)
+include(res/cmake/sourcelist.cmake)
 
 source_group(
     TREE "${CMAKE_CURRENT_SOURCE_DIR}"
@@ -124,7 +124,7 @@ install(
 )
 
 configure_file(
-	cmake/config.cmake.in
+	res/cmake/config.cmake.in
 	"${PROJECT_NAME}Config.cmake"
 	@ONLY
 )
