@@ -19,7 +19,7 @@ endif()
 find_package(spdlog REQUIRED CONFIG)
 
 if (COMMONLIB_INI)
-    find_package(simpleini REQUIRED CONFIG)
+    find_package(SimpleIni REQUIRED CONFIG)
 endif()
 
 if (COMMONLIB_JSON)
@@ -100,7 +100,7 @@ target_link_libraries(
         user32.lib
         version.lib
         ws2_32.lib
-        #"$<$<BOOL:${COMMONLIB_INI}>:simpleini::simpleini>"
+        "$<$<BOOL:${COMMONLIB_INI}>:SimpleIni::SimpleIni>"
         "$<$<BOOL:${COMMONLIB_JSON}>:glaze::glaze>"
         "$<$<BOOL:${COMMONLIB_TOML}>:toml11::toml11>"
         "$<$<BOOL:${COMMONLIB_XBYAK}>:xbyak::xbyak>"
