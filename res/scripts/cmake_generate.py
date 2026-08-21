@@ -29,7 +29,7 @@ def make_cmake():
 	do_make("sourcelist", "SOURCES", sources)
 
 def main():
-	root = os.path.split(os.path.dirname(os.path.realpath(__file__)))[0]
+	root = os.path.split(os.path.dirname(os.path.dirname(os.path.realpath(__file__))))[0]
 	os.chdir(root)
 	make_cmake()
 
