@@ -24,6 +24,7 @@ set(SOURCES
 	include/REX/FModule.h
 	include/REX/FModuleSection.h
 	include/REX/FSettingStore.h
+	include/REX/FTimer.h
 	include/REX/FTomlSettingStore.h
 	include/REX/FUUID.h
 	include/REX/HASH.h
@@ -51,7 +52,6 @@ set(SOURCES
 	include/REX/TAtomicRef.h
 	include/REX/TEnum.h
 	include/REX/TEnumSet.h
-	include/REX/TIMER.h
 	include/REX/TIniSetting.h
 	include/REX/TIniSettingA.h
 	include/REX/TJsonSetting.h
