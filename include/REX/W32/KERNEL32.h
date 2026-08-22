@@ -504,6 +504,8 @@ namespace REX::W32
 	std::uint32_t         GetPrivateProfileStringW(const wchar_t* a_app, const wchar_t* a_key, const wchar_t* a_default, wchar_t* a_buf, std::uint32_t a_bufLen, const wchar_t* a_name) noexcept;
 	void*                 GetProcAddress(HMODULE a_module, const char* a_name) noexcept;
 	void                  GetSystemInfo(SYSTEM_INFO* a_info) noexcept;
+	bool                  GetUserNameA(char* a_buffer, std::uint32_t* a_size) noexcept;
+	bool                  GetUserNameW(wchar_t* a_buffer, std::uint32_t* a_size) noexcept;
 	bool                  IMAGE_SNAP_BY_ORDINAL64(std::uint64_t a_ordinal) noexcept;
 	IMAGE_SECTION_HEADER* IMAGE_FIRST_SECTION(const IMAGE_NT_HEADERS64* a_header) noexcept;
 	void                  InitializeCriticalSection(CRITICAL_SECTION* a_criticalSection) noexcept;

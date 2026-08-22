@@ -333,6 +333,8 @@ REX_W32_IMPORT(std::uint32_t, GetPrivateProfileStringA, const char*, const char*
 REX_W32_IMPORT(std::uint32_t, GetPrivateProfileStringW, const wchar_t*, const wchar_t*, const wchar_t*, wchar_t*, std::uint32_t, const wchar_t*);
 REX_W32_IMPORT(void*, GetProcAddress, REX::W32::HMODULE, const char*);
 REX_W32_IMPORT(void, GetSystemInfo, REX::W32::SYSTEM_INFO*);
+REX_W32_IMPORT(REX::W32::BOOL, GetUserNameA, char*, std::uint32_t*);
+REX_W32_IMPORT(REX::W32::BOOL, GetUserNameW, wchar_t*, std::uint32_t*);
 REX_W32_IMPORT(void, InitializeCriticalSection, REX::W32::CRITICAL_SECTION*);
 REX_W32_IMPORT(REX::W32::BOOL, InitializeCriticalSectionAndSpinCount, REX::W32::CRITICAL_SECTION*, std::uint32_t);
 REX_W32_IMPORT(void, InitializeSRWLock, REX::W32::SRWLOCK*);
@@ -599,6 +601,16 @@ namespace REX::W32
 	void GetSystemInfo(SYSTEM_INFO* a_info) noexcept
 	{
 		return ::W32_IMPL_GetSystemInfo(a_info);
+	}
+
+	bool GetUserNameA(char* a_buffer, std::uint32_t* a_size) noexcept
+	{
+		return ::W32_IMPL_GetUserNameA(a_buffer, a_size);
+	}
+
+	bool GetUserNameW(wchar_t* a_buffer, std::uint32_t* a_size) noexcept
+	{
+		return ::W32_IMPL_GetUserNameW(a_buffer, a_size);
 	}
 
 	bool IMAGE_SNAP_BY_ORDINAL64(std::uint64_t a_ordinal) noexcept
