@@ -57,12 +57,12 @@ namespace REX::STR
 
 	inline bool IS_ONLY_LETTER(std::string_view a_str)
 	{
-		return std::ranges::all_of(a_str, [](unsigned char ch) {return std::isalpha(ch);});
+		return std::ranges::all_of(a_str, [](unsigned char ch) { return std::isalpha(ch); });
 	}
 
 	inline bool IS_ONLY_SPACE(std::string_view a_str)
 	{
-		return std::ranges::all_of(a_str, [](unsigned char ch) {return std::isspace(ch);});
+		return std::ranges::all_of(a_str, [](unsigned char ch) { return std::isspace(ch); });
 	}
 
 	inline std::string JOIN(const std::vector<std::string>& a_vec, std::string_view a_delimiter)

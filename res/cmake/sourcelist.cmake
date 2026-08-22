@@ -47,10 +47,13 @@ set(SOURCES
 	include/REX/REX/Singleton.h
 	include/REX/REX/StaticString.h
 	include/REX/REX/TOML.h
+	include/REX/STRING.h
 	include/REX/TAtomicRef.h
 	include/REX/TEnum.h
 	include/REX/TEnumSet.h
+	include/REX/TIMER.h
 	include/REX/TIniSetting.h
+	include/REX/TIniSettingA.h
 	include/REX/TJsonSetting.h
 	include/REX/TScopeExit.h
 	include/REX/TSetting.h
@@ -110,6 +113,7 @@ set(SOURCES
 	src/REX/PCH.h
 	src/REX/REX.cpp
 	src/REX/TIniSetting.cpp
+	src/REX/TIniSettingA.cpp
 	src/REX/TJsonSetting.cpp
 	src/REX/TTomlSetting.cpp
 	src/REX/W32.cpp
