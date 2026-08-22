@@ -4,7 +4,7 @@
 
 namespace REX
 {
-	class TIMER
+	class FTimer
 	{
 	public:
 		void Start()
