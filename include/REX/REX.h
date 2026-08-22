@@ -20,6 +20,7 @@
 #include "TEnumSet.h"
 #include "TIMER.h"
 #include "TIniSetting.h"
+#include "TIniSettingA.h"
 #include "TJsonSetting.h"
 #include "TScopeExit.h"
 #include "TSetting.h"
