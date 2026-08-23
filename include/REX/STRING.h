@@ -1,7 +1,22 @@
 #pragma once
 
+#include "REX/HASH.h"
+
 namespace REX::STR
 {
+	inline namespace literals
+	{
+		constexpr std::uint64_t operator""_h(const char* a_str, std::size_t a_len)
+		{
+			return FNV1A_64(std::string_view{ a_str, a_len });
+		}
+	}
+
+	constexpr std::uint64_t CONST_HASH(std::string_view a_str)
+	{
+		return FNV1A_64(a_str);
+	}
+
 	inline std::string CAPITALIZE(std::string_view a_str, unsigned char word_delim = ' ')
 	{
 		std::string result(a_str);
