@@ -1,6 +1,6 @@
 #pragma once
 
-#include "REX/HASH.h"
+#include "HASH.h"
 
 namespace REX::STR
 {
