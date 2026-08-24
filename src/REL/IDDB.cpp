@@ -144,6 +144,7 @@ namespace REL
 		REX::W32::GetModuleFileNameW(REX::W32::GetCurrentModule(), buffer, REX::W32::MAX_PATH);
 		std::filesystem::path plugin(buffer);
 
+		m_name = plugin.filename().string();
 		auto loader = plugin.parent_path().parent_path();
 		auto loaderName = loader.filename().wstring();
 		std::transform(loaderName.begin(), loaderName.end(), loaderName.begin(), std::towupper);
@@ -155,8 +156,10 @@ namespace REL
 
 		if (m_loader == Loader::None)
 			REX::FAIL(
+				"{}\n\n"
 				"Failed to determine Address Library loader!\n"
-				"Ensure the plugin is installed in the correct directory.");
+				"Ensure the plugin is installed in the correct directory.",
+				m_name);
 
 		const auto mod = REX::FModule::GetExecutingModule();
 		const auto version = mod.GetFileVersion().wstring(L"-");
@@ -174,11 +177,12 @@ namespace REL
 
 		if (m_path.empty())
 			REX::FAIL(
-				"Failed to determine Address Library path!\n\n"
+				"{}\n\n"
+				"Failed to determine Address Library path!\n"
 				"Redownload the latest Address Library for your game version.\n"
 				"Loader: {}\n"
 				"Game Version: {}",
-				g_loaderMap[m_loader].first, mod.GetFileVersion().string());
+				m_name, g_loaderMap[m_loader].first, mod.GetFileVersion().string());
 
 		if (m_format == Format::V0) {
 			load_v0();
@@ -189,9 +193,10 @@ namespace REL
 		const auto format = stream.readout<std::uint32_t>();
 		if (format < 1 || (format > 2 && format < 5) || format > 5)
 			REX::FAIL(
+				"{}\n\n"
 				"Unsupported Address Library format: {}\n"
 				"The plugin needs to be updated and recompiled for the current game version.\n",
-				format);
+				m_name, format);
 
 		m_format = static_cast<Format>(format);
 		if (m_format == Format::V1 || m_format == Format::V2) {
@@ -225,11 +230,12 @@ namespace REL
 			const auto modVersion = mod.GetFileVersion();
 			if (header.game_version() != modVersion) {
 				REX::FAIL(
-					"Address Library version mismatch!\n\n"
+					"{}\n\n"
+					"Address Library version mismatch!\n"
 					"Redownload the latest Address Library for your game version.\n"
 					"Expected Version: {}\n"
 					"Actual Version: {}",
-					modVersion.string(), header.game_version().string());
+					m_name, modVersion.string(), header.game_version().string());
 			}
 
 			const auto mapName = std::format("COMMONLIB_IDDB_OFFSETS_{}", modVersion.string("_"));
@@ -264,11 +270,12 @@ namespace REL
 			const auto modVersion = mod.GetFileVersion();
 			if (header.game_version() != modVersion) {
 				REX::FAIL(
-					"Address Library version mismatch!\n\n"
+					"{}\n\n"
+					"Address Library version mismatch!\n"
 					"Redownload the latest Address Library for your game version.\n"
 					"Expected Version: {}\n"
 					"Actual Version: {}",
-					modVersion.string(), header.game_version().string());
+					m_name, modVersion.string(), header.game_version().string());
 			}
 
 			const auto mapName = std::format("COMMONLIB_IDDB_OFFSETS_{}", modVersion.string("_"));
@@ -323,8 +330,10 @@ namespace REL
 					break;
 				default:
 					REX::FAIL(
+						"{}\n\n"
 						"Unhandled type while loading Address Library!\n"
-						"The plugin needs to be updated and recompiled for the current game version.\n");
+						"The plugin needs to be updated and recompiled for the current game version.\n",
+						m_name);
 			}
 
 			const std::uint64_t tmp = (hi & 8) != 0 ? (prevOffset / a_header.pointer_size()) : prevOffset;
@@ -356,8 +365,10 @@ namespace REL
 					break;
 				default:
 					REX::FAIL(
+						"{}\n\n"
 						"Unhandled type while loading Address Library!\n"
-						"The plugin needs to be updated and recompiled for the current game version.\n");
+						"The plugin needs to be updated and recompiled for the current game version.\n",
+						m_name);
 			}
 
 			if ((hi & 8) != 0) {
@@ -393,18 +404,20 @@ namespace REL
 				auto sha = REX::SHA512({ m_mmap.data(), m_mmap.size() });
 				if (!sha)
 					REX::FAIL(
-						"Failed to hash Address Library file!\n\n"
+						"{}\n\n"
+						"Failed to hash Address Library file!\n"
 						"You are using a version of Address Library that is corrupted or invalid.\n"
 						"Redownload the latest Address Library for your game version.\n"
 						"Game Version: {}",
-						modVersion.string());
+						m_name, modVersion.string());
 				if (*sha == check.second)
 					REX::FAIL(
-						"Invalid Address Library loaded!\n\n"
+						"{}\n\n"
+						"Invalid Address Library loaded!\n"
 						"You are using a version of Address Library that is corrupted or invalid.\n"
 						"Redownload the latest Address Library for your game version.\n"
 						"Game Version: {}",
-						modVersion.string());
+						m_name, modVersion.string());
 			}
 		}
 	}
@@ -427,11 +440,12 @@ namespace REL
 
 			if (it == m_v0.end()) {
 				REX::FAIL(
-					"Failed to find offset for Address Library ID!\n\n"
+					"{}\n\n"
+					"Failed to find offset for Address Library ID!\n"
 					"The plugin needs to be updated and recompiled for the current game version.\n"
 					"Invalid ID: {}\n"
 					"Game Version: {}",
-					a_id, mod.GetFileVersion().string());
+					m_name, a_id, mod.GetFileVersion().string());
 			}
 
 			return static_cast<std::size_t>(it->offset);
@@ -443,11 +457,12 @@ namespace REL
 		const auto offset = static_cast<std::uint64_t>(m_v5[a_id]);
 		if (!offset) {
 			REX::FAIL(
-				"Failed to find offset for Address Library ID!\n\n"
+				"{}\n\n"
+				"Failed to find offset for Address Library ID!\n"
 				"The plugin needs to be updated and recompiled for the current game version.\n"
 				"Invalid ID: {}\n"
 				"Game Version: {}",
-				a_id, mod.GetFileVersion().string());
+				m_name, a_id, mod.GetFileVersion().string());
 		}
 
 		return offset;

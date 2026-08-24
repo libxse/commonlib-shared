@@ -60,6 +60,7 @@ namespace REL
 		// clang-format on
 
 	private:
+		std::string              m_name;
 		std::filesystem::path    m_path;
 		Loader                   m_loader{ Loader::None };
 		Format                   m_format{ Format::None };
