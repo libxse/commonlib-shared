@@ -6,6 +6,36 @@
 
 namespace REX
 {
+	template <class T>
+	constexpr std::uint32_t FNV1A_32(const T& a_data)
+	{
+		constexpr std::uint32_t basis = 0x811C9DC5;
+		constexpr std::uint64_t prime = 0x01000193;
+
+		std::uint32_t hash = basis;
+		for (const auto& ch : a_data) {
+			hash ^= ch;
+			hash *= prime;
+		}
+
+		return hash;
+	}
+
+	template <class T>
+	constexpr std::uint64_t FNV1A_64(const T& a_data)
+	{
+		constexpr std::uint64_t basis = 0xCBF29CE484222325;
+		constexpr std::uint64_t prime = 0x00000100000001B3;
+
+		std::uint64_t hash = basis;
+		for (const auto& ch : a_data) {
+			hash ^= ch;
+			hash *= prime;
+		}
+
+		return hash;
+	}
+
 	inline std::optional<std::string> SHA512(std::span<const std::byte> a_data)
 	{
 		REX::W32::BCRYPT_ALG_HANDLE algorithm;
@@ -45,5 +75,22 @@ namespace REX
 		}
 
 		return { std::move(result) };
+	}
+
+	constexpr std::uint64_t SZUDZIK_PAIR(const std::uint32_t a_x, const std::uint32_t a_y)
+	{
+		return a_x >= a_y ? static_cast<std::uint64_t>((a_x * a_x) + a_x + a_y) : static_cast<std::uint64_t>((a_y * a_y) + a_x);
+	}
+
+	inline std::pair<std::uint32_t, std::uint32_t> SZUDZIK_UNPAIR(const std::uint64_t a_z)
+	{
+		const std::uint64_t sqrtz = static_cast<std::uint64_t>(std::floor(std::sqrt(a_z)));
+		const std::uint64_t sqz = sqrtz * sqrtz;
+
+		if ((a_z - sqz) >= sqrtz) {
+			return { static_cast<std::uint32_t>(sqrtz), static_cast<std::uint32_t>(a_z - sqz - sqrtz) };
+		} else {
+			return { static_cast<std::uint32_t>(a_z - sqz), static_cast<std::uint32_t>(sqrtz) };
+		}
 	}
 }
