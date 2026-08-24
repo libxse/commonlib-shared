@@ -18,3 +18,7 @@ endif()
 if (@COMMONLIB_XBYAK@)
     find_dependency(xbyak CONFIG)
 endif()
+
+if (@COMMONLIB_RANDOM@)
+    find_dependency(xoshiro-cpp CONFIG)
+endif()
