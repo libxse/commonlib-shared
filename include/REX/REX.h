@@ -17,6 +17,7 @@
 #include "LOG.h"
 #include "STRING.h"
 #include "TAtomicRef.h"
+#include "TConstexprMap.h"
 #include "TEnum.h"
 #include "TEnumSet.h"
 #include "TIniSetting.h"
