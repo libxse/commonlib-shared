@@ -4,6 +4,7 @@
 #include "CONVERT.h"
 #include "FIniSettingStore.h"
 #include "FJsonSettingStore.h"
+#include "FLOAT.h"
 #include "FMemoryMap.h"
 #include "FModule.h"
 #include "FModuleSection.h"
