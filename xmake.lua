@@ -33,6 +33,11 @@ option("commonlib_xbyak", function()
     set_description("enable xbyak support for Trampoline")
 end)
 
+option("commonlib_random", function ()
+    set_default(false)
+    set_description("enable REX::TRandom support")
+end)
+
 -- add packages
 add_requires("spdlog v1.16.0", { configs = { header_only = false, wchar = true, std_format = true } })
 
@@ -41,6 +46,11 @@ if has_config("commonlib_ini") then add_requires("simpleini v4.25") end
 if has_config("commonlib_json") then add_requires("glaze v7.0.0") end
 if has_config("commonlib_toml") then add_requires("toml11 v4.4.0") end
 if has_config("commonlib_xbyak") then add_requires("xbyak v7.06") end
+
+if has_config("commonlib_random") then
+    add_repositories("xse-xmake-xrepo https://github.com/libxse/xse-xmake-repo")
+    add_requires("xoshiro-cpp 2021.08.04")
+end
 
 target("commonlib-shared", function()
     -- set target kind
@@ -73,8 +83,13 @@ target("commonlib-shared", function()
         add_defines("COMMONLIB_OPTION_XBYAK=1", { public = true })
     end
 
+    if has_config("commonlib_random") then
+        add_packages("xoshiro-cpp", { public = true })
+        add_defines("COMMONLIB_OPTION_RANDOM=1", { public = true })
+    end
+
     -- add options
-    add_options("commonlib_ini", "commonlib_json", "commonlib_toml", "commonlib_xbyak", { public = true })
+    add_options("commonlib_ini", "commonlib_json", "commonlib_toml", "commonlib_xbyak", "commonlib_random", { public = true })
 
     -- add system links
     add_syslinks("advapi32", "bcrypt", "d3d11", "d3dcompiler", "dbghelp", "dxgi", "ole32", "shell32", "user32", "version", "ws2_32")

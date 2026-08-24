@@ -38,6 +38,12 @@
         "dependencies": [
             "xbyak"
         ]
+    },
+    "random": {
+        "description": "enable REX::TRandom support",
+        "dependencies": [
+            "xoshiro-cpp"
+        ]
     }
   },
   "default-features": []

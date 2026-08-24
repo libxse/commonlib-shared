@@ -4,6 +4,7 @@ option(COMMONLIB_INI "enable REX::INI settings support" OFF)
 option(COMMONLIB_JSON "enable REX::JSON settings support" OFF)
 option(COMMONLIB_TOML "enable REX::TOML settings support" OFF)
 option(COMMONLIB_XBYAK "enable xbyak support for Trampoline" OFF)
+option(COMMONLIB_RANDOM "enable REX::TRandom support" OFF)
 
 project(
     commonlib-shared
@@ -34,6 +35,10 @@ if (COMMONLIB_XBYAK)
     find_package(xbyak REQUIRED CONFIG)
 endif()
 
+if (COMMONLIB_RANDOM)
+    find_package(xoshiro-cpp REQUIRED CONFIG)
+endif()
+
 include(res/cmake/sourcelist.cmake)
 
 source_group(
@@ -56,6 +61,7 @@ target_compile_definitions(
 		"$<$<BOOL:${COMMONLIB_JSON}>:COMMONLIB_OPTION_JSON=1>"
 		"$<$<BOOL:${COMMONLIB_TOML}>:COMMONLIB_OPTION_TOML=1>"
 		"$<$<BOOL:${COMMONLIB_XBYAK}>:COMMONLIB_OPTION_XBYAK=1>"
+        "$<$<BOOL:${COMMONLIB_RANDOM}>:COMMONLIB_OPTION_RANDOM=1>"
 )
 
 target_compile_features(
@@ -104,6 +110,7 @@ target_link_libraries(
         "$<$<BOOL:${COMMONLIB_JSON}>:glaze::glaze>"
         "$<$<BOOL:${COMMONLIB_TOML}>:toml11::toml11>"
         "$<$<BOOL:${COMMONLIB_XBYAK}>:xbyak::xbyak>"
+        "$<$<BOOL:${COMMONLIB_RANDOM}>:xoshiro-cpp::xoshiro-cpp>"
 )
 
 target_precompile_headers(
