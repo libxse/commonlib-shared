@@ -35,7 +35,7 @@ namespace REL
 	std::uint64_t Offset2ID::get_id(std::size_t a_offset) const
 	{
 		if (_offset2id.empty()) {
-			REX::FAIL("No Address Library has been loaded!");
+			REX::FAIL("No Address Library has been loaded!"sv);
 		}
 
 		const value_type elem{ 0, a_offset };

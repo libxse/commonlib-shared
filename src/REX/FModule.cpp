@@ -26,7 +26,7 @@ namespace REX
 	{
 		char path[W32::MAX_PATH];
 		if (!W32::GetModuleFileNameA(reinterpret_cast<W32::HMODULE>(m_base), path, W32::MAX_PATH)) {
-			REX::FAIL("failed to obtain module file name");
+			REX::FAIL("Failed to obtain module file name."sv);
 		}
 
 		return std::filesystem::path(path).string();
@@ -50,7 +50,7 @@ namespace REX
 	{
 		const auto dosHeader = reinterpret_cast<W32::IMAGE_DOS_HEADER*>(m_base);
 		if (dosHeader->magic != W32::IMAGE_DOS_SIGNATURE) {
-			REX::ERROR("Invalid IMAGE_DOS_HEADER");
+			REX::ERROR("Invalid IMAGE_DOS_HEADER"sv);
 			return nullptr;
 		}
 

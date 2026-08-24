@@ -148,9 +148,8 @@ namespace REL
 					REX::FAIL(
 						a_loc,
 						"A pattern has failed to match.\n"
-						"This means the plugin is incompatible with either the "
-						"current version of the game ({}), or another "
-						"installed mod.",
+						"This means the plugin is incompatible with either the"
+						"current version of the game ({}), or another installed mod.",
 						modVersion.string());
 				}
 			}

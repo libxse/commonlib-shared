@@ -99,7 +99,7 @@ namespace REL
 	void Trampoline::create(const std::size_t a_size, void* a_module)
 	{
 		if (a_size == 0) {
-			REX::FAIL("Cannot create a trampoline with a zero size");
+			REX::FAIL("Cannot create a trampoline with a zero size."sv);
 		}
 
 		if (!a_module) {
@@ -110,7 +110,7 @@ namespace REL
 
 		auto mem = Impl::AllocTrampoline(a_size, reinterpret_cast<std::uintptr_t>(a_module));
 		if (!mem) {
-			REX::FAIL("Failed to create trampoline");
+			REX::FAIL("Failed to create trampoline."sv);
 		}
 
 		set_trampoline(mem, a_size, [](void* a_mem, std::size_t) {
@@ -137,7 +137,7 @@ namespace REL
 	void* Trampoline::allocate(const std::size_t a_size)
 	{
 		if (a_size > free_size()) {
-			REX::FAIL("Failed to handle allocation request\nAllocate Size: {}\nFree Size: {}", a_size, free_size());
+			REX::FAIL("Failed to handle allocation request!\nAllocate Size: {}\nFree Size: {}"sv, a_size, free_size());
 		}
 
 		auto mem = m_data + m_size;
