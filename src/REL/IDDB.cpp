@@ -396,13 +396,15 @@ namespace REL
 						"Failed to hash Address Library file!\n\n"
 						"You are using a version of Address Library that is corrupted or invalid.\n"
 						"Redownload the latest Address Library for your game version.\n"
-						"Game Version: {}", modVersion.string());
+						"Game Version: {}",
+						modVersion.string());
 				if (*sha == check.second)
 					REX::FAIL(
 						"Invalid Address Library loaded!\n\n"
 						"You are using a version of Address Library that is corrupted or invalid.\n"
 						"Redownload the latest Address Library for your game version.\n"
-						"Game Version: {}", modVersion.string());
+						"Game Version: {}",
+						modVersion.string());
 			}
 		}
 	}
