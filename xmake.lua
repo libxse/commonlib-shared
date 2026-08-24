@@ -46,11 +46,7 @@ if has_config("commonlib_ini") then add_requires("simpleini v4.25") end
 if has_config("commonlib_json") then add_requires("glaze v7.0.0") end
 if has_config("commonlib_toml") then add_requires("toml11 v4.4.0") end
 if has_config("commonlib_xbyak") then add_requires("xbyak v7.06") end
-
-if has_config("commonlib_random") then
-    add_repositories("xse-xmake-xrepo https://github.com/libxse/xse-xmake-repo")
-    add_requires("xoshiro-cpp 2021.08.04")
-end
+if has_config("commonlib_random") then add_requires("xoshiro-cpp 2021.08.04") end
 
 target("commonlib-shared", function()
     -- set target kind
