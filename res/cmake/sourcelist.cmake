@@ -20,6 +20,7 @@ set(SOURCES
 	include/REX/CONVERT.h
 	include/REX/FIniSettingStore.h
 	include/REX/FJsonSettingStore.h
+	include/REX/FLOAT.h
 	include/REX/FMemoryMap.h
 	include/REX/FModule.h
 	include/REX/FModuleSection.h
@@ -50,11 +51,13 @@ set(SOURCES
 	include/REX/REX/TOML.h
 	include/REX/STRING.h
 	include/REX/TAtomicRef.h
+	include/REX/TConstexprMap.h
 	include/REX/TEnum.h
 	include/REX/TEnumSet.h
 	include/REX/TIniSetting.h
 	include/REX/TIniSettingA.h
 	include/REX/TJsonSetting.h
+	include/REX/TRandom.h
 	include/REX/TScopeExit.h
 	include/REX/TSetting.h
 	include/REX/TSingleton.h
@@ -115,6 +118,7 @@ set(SOURCES
 	src/REX/TIniSetting.cpp
 	src/REX/TIniSettingA.cpp
 	src/REX/TJsonSetting.cpp
+	src/REX/TRandom.cpp
 	src/REX/TTomlSetting.cpp
 	src/REX/W32.cpp
 )
