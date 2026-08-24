@@ -5,7 +5,7 @@
 namespace REX
 {
 	template <typename T, typename U, std::size_t S>
-	struct TConstexprMap
+	struct TStaticMap
 	{
 		[[nodiscard]] constexpr T at(const U& a_key) const
 		{
