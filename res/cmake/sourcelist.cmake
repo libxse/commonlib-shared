@@ -51,7 +51,6 @@ set(SOURCES
 	include/REX/REX/TOML.h
 	include/REX/STRING.h
 	include/REX/TAtomicRef.h
-	include/REX/TConstexprMap.h
 	include/REX/TEnum.h
 	include/REX/TEnumSet.h
 	include/REX/TIniSetting.h
@@ -61,6 +60,7 @@ set(SOURCES
 	include/REX/TScopeExit.h
 	include/REX/TSetting.h
 	include/REX/TSingleton.h
+	include/REX/TStaticMap.h
 	include/REX/TStaticString.h
 	include/REX/TTomlSetting.h
 	include/REX/W32.h
