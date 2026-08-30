@@ -239,11 +239,14 @@ rule("commonlib.plugin", function()
         import("core.project.depend")
         import("core.project.task")
 
-        depend.on_changed(function()
-            local srcfiles, dstfiles = target:installfiles()
-            if srcfiles and #srcfiles > 0 and dstfiles and #dstfiles > 0 then
-                task.run("install")
-            end
-        end, { changed = target:is_rebuilt(), files = { target:targetfile() } })
+        local install = target:values("commonlib.plugin.install")
+        if install or install == nil then
+            depend.on_changed(function()
+                local srcfiles, dstfiles = target:installfiles()
+                if srcfiles and #srcfiles > 0 and dstfiles and #dstfiles > 0 then
+                    task.run("install")
+                end
+            end, { changed = target:is_rebuilt(), files = { target:targetfile() } })
+        end
     end)
 end)
