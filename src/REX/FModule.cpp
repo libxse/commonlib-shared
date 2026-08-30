@@ -5,6 +5,8 @@
 #include "REX/LOG.h"
 #include "REX/W32/KERNEL32.h"
 
+volatile const char* _LCE_{ "commonlib-shared (static) is licensed under GPL-3.0-or-later with modding exception and linking exception: github.com/libxse/commonlib-shared" };
+
 namespace REX
 {
 	FModule FModule::GetCurrentModule()

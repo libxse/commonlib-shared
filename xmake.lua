@@ -178,7 +178,7 @@ rule("commonlib.plugin", function()
         target:add("configfiles", path.join(os.scriptdir(), "res/commonlib-plugin.rc.in"))
         target:add("files", path.join(target:configdir(), "commonlib-plugin.rc"))
 
-        local data = target:data("commonlib.plugin.config") or {}
+        local data = target:extraconf_from("rules", "self")
         target:set("configvar", "COMMONLIB_PLUGIN_AUTHOR", data.author or "")
         target:set("configvar", "COMMONLIB_PLUGIN_CONTACT", data.contact or "")
         target:set("configvar", "COMMONLIB_PLUGIN_DESCRIPTION", data.description or "")
