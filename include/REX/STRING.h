@@ -163,7 +163,7 @@ namespace REX::STR
 		} else if constexpr (std::is_same_v<T, float>) {
 			return static_cast<T>(std::stof(a_str, nullptr));
 		} else if constexpr (std::is_same_v<T, std::int64_t>) {
-			return static_cast<T>(std::stol(a_str, nullptr, base));
+			return static_cast<T>(std::stoll(a_str, nullptr, base));
 		} else if constexpr (std::is_same_v<T, std::uint64_t>) {
 			return static_cast<T>(std::stoull(a_str, nullptr, base));
 		} else if constexpr (std::is_signed_v<T>) {
