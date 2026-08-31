@@ -263,8 +263,8 @@ rule("commonlib.archive", function()
             return
         end
 
-        if not os.exists(path.join(os.getenv("XSE_BSARCH_PATH"), "BSArch64.exe")) then
-            cprint("${dim}%s missing \"%%XSE_BRANCH_PATH%%\\BSArch64.exe\" .. ${color.failure}${text.failure}", target:name())
+        if not os.exists(path.join(os.getenv("XSE_BSARCH_PATH"), "BSArch.exe")) then
+            cprint("${dim}%s missing \"%%XSE_BRANCH_PATH%%\\BSArch.exe\" .. ${color.failure}${text.failure}", target:name())
             return
         end
 
@@ -311,7 +311,7 @@ rule("commonlib.archive", function()
             if data.options.share then table.append(args, "-share") end
             if data.options.multi_threaded then table.append(args, "-mt") end
         end
-        os.vrunv(path.join(os.getenv("XSE_BSARCH_PATH"), "BSArch64.exe"), args)
+        os.vrunv(path.join(os.getenv("XSE_BSARCH_PATH"), "BSArch.exe"), args)
 
         if data.install then
             local parent = project.target(data.install)
