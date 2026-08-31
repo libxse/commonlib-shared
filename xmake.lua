@@ -250,3 +250,79 @@ rule("commonlib.plugin", function()
         end
     end)
 end)
+
+rule("commonlib.archive", function()
+    on_config(function(target)
+        target:set("kind", "phony")
+
+        target:set("targetdir", "$(builddir)/archive")
+        os.mkdir(target:targetdir())
+
+        if not os.getenv("XSE_BSARCH_PATH") then
+            cprint("${dim}%s missing env XSE_BSARCH_PATH .. ${color.failure}${text.failure}", target:name())
+            return
+        end
+
+        if not os.exists(path.join(os.getenv("XSE_BSARCH_PATH"), "BSArch64.exe")) then
+            cprint("${dim}%s missing \"%%XSE_BRANCH_PATH%%\\BSArch64.exe\" .. ${color.failure}${text.failure}", target:name())
+            return
+        end
+
+        target:data_set("commonlib.archive.pass", true)
+    end)
+
+    on_build(function(target)
+        import("core.project.project")
+
+        local pass = target:data("commonlib.archive.pass")
+        if not pass then
+            cprint("${dim}%s .. failed archive config checks, skipping build", target:name())
+            return
+        end
+
+        local data = target:data("commonlib.archive.config") or {}
+        local suffix = target:data("commonlib.archive.suffix") or ""
+        local extension = target:data("commonlib.archive.extension") or ".bsa"
+        local archivename = (data.name or target:name()) .. suffix .. extension
+        cprint("${dim}archiving %s .. ", archivename)
+
+        local tempdir = path.join(os.tmpdir(), "archive", project.name() or "", target:name())
+        os.tryrm(tempdir)
+        os.mkdir(tempdir)
+
+        local srcfiles, dstfiles = target:extrafiles(tempdir)
+        if srcfiles and #srcfiles > 0 and dstfiles and #dstfiles > 0 then
+            for idx, srcfile in ipairs(srcfiles) do
+                os.trycp(srcfile, dstfiles[idx])
+            end
+        else
+            return
+        end
+
+        local archivedir = path.absolute(target:targetdir())
+        local archivefile = path.join(archivedir, archivename)
+        os.tryrm(archivefile)
+
+        local args = { "pack", tempdir, archivefile, target:data("commonlib.archive.format") }
+        if data.options then
+            if data.options.archive_flags then table.append(args, format("-af:%s", tostring(data.options.archive_flags))) end
+            if data.options.file_flags then table.append(args, format("-ff:%s", tostring(data.options.file_flags))) end
+            if data.options.compress then table.append(args, "-z") end
+            if data.options.share then table.append(args, "-share") end
+            if data.options.multi_threaded then table.append(args, "-mt") end
+        end
+        os.vrunv(path.join(os.getenv("XSE_BSARCH_PATH"), "BSArch64.exe"), args)
+
+        if data.install then
+            local parent = project.target(data.install)
+            if parent then
+                parent:add("installfiles", archivefile, { prefixdir = data.installdir or "" })
+            end
+        end
+
+        cprint("${dim}archiving %s to %s ... ${color.success}${text.success}", archivename, archivedir)
+    end)
+
+    on_install(function(target)
+    end)
+end)
