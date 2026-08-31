@@ -326,3 +326,111 @@ rule("commonlib.archive", function()
     on_install(function(target)
     end)
 end)
+
+rule("commonlib.papyrus", function()
+    on_config(function(target)
+        target:set("kind", "phony")
+
+        target:set("targetdir", "$(builddir)/papyrus")
+        os.mkdir(target:targetdir())
+
+        if not os.getenv("XSE_CAPRICA_PATH") then
+            cprint("${dim}%s missing env XSE_CAPRICA_PATH .. ${color.failure}${text.failure}", target:name())
+            return
+        end
+
+        if not os.exists(path.join(os.getenv("XSE_CAPRICA_PATH"), "Caprica.exe")) then
+            cprint("${dim}%s missing \"%%XSE_CAPRICA_PATH%%\\Caprica.exe\" .. ${color.failure}${text.failure}", target:name())
+            return
+        end
+
+        target:data_set("commonlib.papyrus.pass", true)
+    end)
+
+    on_build(function(target)
+        import("core.project.project")
+
+        local pass = target:data("commonlib.papyrus.pass")
+        if not pass then
+            cprint("${dim}%s failed papyrus config checks, skipping build .. ${color.failure}${text.failure}", target:name())
+            return
+        end
+
+        local data = target:data("commonlib.papyrus.config") or {}
+        if not data.options then data.options = {} end
+        cprint("${dim}compiling %s .. ", target:name())
+
+        local tempdir = path.join(os.tmpdir(), "papyrus", project.name() or "", target:name())
+        os.tryrm(tempdir)
+
+        local rootdir = path.join(tempdir, "Scripts")
+        os.mkdir(rootdir)
+
+        local srcfiles, dstfiles = target:extrafiles(rootdir)
+        if srcfiles and #srcfiles > 0 and dstfiles and #dstfiles > 0 then
+            for idx, srcfile in ipairs(srcfiles) do
+                os.trycp(srcfile, dstfiles[idx])
+            end
+        else
+            return
+        end
+
+        local args = { tempdir, format("--game=%s", target:data("commonlib.papyrus.game")), "--recurse", "--ignorecwd" }
+        local imports = { rootdir }
+        if data.options.imports then
+            if type(data.options.imports) ~= "table" then
+                cprint("${dim}%s options.imports is defined, but not a table .. ${color.failure}${text.failure}", target:name())
+                return
+            end
+            table.join2(imports, data.options.imports)
+        end
+
+        if not data.options.skip_default_imports then
+            local gamevar = target:data("commonlib.papyrus.gamevar")
+            if not os.getenv(gamevar) then
+                cprint("${dim}%s missing env %s .. ${color.failure}${text.failure}", target:name(), gamevar)
+                return
+            end
+
+            local gamepath = os.getenv(gamevar)
+            local defaults = target:data("commonlib.papyrus.defaults") or {}
+            for _, default in ipairs(defaults) do
+                table.append(imports, path.join(gamepath, default))
+            end
+        end
+
+        table.append(args, format("--import=%s", table.concat(imports, ";")))
+        table.append(args, format("--flags=%s", target:data("commonlib.papyrus.flags")))
+
+        local scriptdir = path.absolute(target:targetdir())
+        table.append(args, format("--output=%s", scriptdir))
+
+        if data.options.optimize then table.append(args, "--optimize") end
+        if data.options.release then table.append(args, "--release") end
+        if data.options.final then table.append(args, "--final") end
+        if data.options.anonymize then table.append(args, "--anonymize") end
+        if data.options.parallel_compile then table.append(args, "--parallel-compile=1") end
+        if data.options.strict then table.append(args, "--strict") end
+        if data.options.language_extensions then table.append(args, "--enable-language-extensions=1") end
+        os.execv(path.join(os.getenv("XSE_CAPRICA_PATH"), "Caprica.exe"), args)
+
+        if data.archive then
+            local parent = project.target(data.archive)
+            if parent then
+                parent:add("extrafiles", format("%s/(**)", scriptdir))
+            end
+        end
+
+        if data.install then
+            local parent = project.target(data.install)
+            if parent then
+                parent:add("installfiles", format("%s/(**)", scriptdir), { prefixdir = data.installdir or "" })
+            end
+        end
+
+        cprint("${dim}compiling %s to %s ... ${color.success}${text.success}", target:name(), scriptdir)
+    end)
+
+    on_install(function(target)
+    end)
+end)
