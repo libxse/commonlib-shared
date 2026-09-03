@@ -284,6 +284,14 @@ rule("commonlib.archive", function()
         end
 
         local data = target:data("commonlib.archive.config") or {}
+        if not data.options then
+            data.options = {
+                compress = true,
+                share = true,
+                multi_threaded = true
+            }
+        end
+
         local suffix = target:data("commonlib.archive.suffix") or ""
         local extension = target:data("commonlib.archive.extension") or ".bsa"
         local archivename = (data.name or target:name()) .. suffix .. extension
@@ -307,13 +315,42 @@ rule("commonlib.archive", function()
         os.tryrm(archivefile)
 
         local args = { "pack", tempdir, archivefile, target:data("commonlib.archive.format") }
-        if data.options then
-            if data.options.archive_flags then table.append(args, format("-af:%s", tostring(data.options.archive_flags))) end
-            if data.options.file_flags then table.append(args, format("-ff:%s", tostring(data.options.file_flags))) end
-            if data.options.compress then table.append(args, "-z") end
-            if data.options.share then table.append(args, "-share") end
-            if data.options.multi_threaded then table.append(args, "-mt") end
+        if data.options.compress then
+            if type(data.options.compress) == "boolean" and data.options.compress == true then
+                table.append(args, "-z")
+            elseif data.options.compress == "zlib" then
+                table.append(args, "-z:zlib")
+            elseif data.options.compress == "lz4" then
+                table.append(args, "-z:lz4")
+            elseif data.options.compress == "lz4f" then
+                table.append(args, "-z:lz4f")
+            end
         end
+
+        if data.options.share then
+            if data.options.shared == true then
+                table.append(args, "-share:yes")
+            else
+                table.append(args, "-share:no")
+            end
+        end
+
+        if data.options.multi_threaded then
+            if data.options.multi_threaded == true then
+                table.append(args, "-mt:yes")
+            else
+                table.append(args, "-mt:no")
+            end
+        end
+
+        if data.options.archive_flags then
+            table.append(args, format("-af:%s", tostring(data.options.archive_flags)))
+        end
+
+        if data.options.file_flags then
+            table.append(args, format("-ff:%s", tostring(data.options.file_flags)))
+        end
+
         os.vrunv(path.join(os.getenv("XSE_BSARCH_PATH"), "BSArch.exe"), args)
 
         if data.install then
@@ -385,7 +422,10 @@ rule("commonlib.papyrus", function()
                 cprint("${dim}%s options.imports is defined, but not a table .. ${color.failure}${text.failure}", target:name())
                 return
             end
-            table.join2(imports, data.options.imports)
+
+            for _, import in ipairs(data.options.imports) do
+                table.append(imports, import)
+            end
         end
 
         if not data.options.skip_default_imports then
