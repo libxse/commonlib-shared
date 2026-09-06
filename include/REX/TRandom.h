@@ -11,14 +11,17 @@ namespace REX
 	class TRandom
 	{
 	public:
+		using result_type = std::uint64_t;
+
 		TRandom();
 		TRandom(std::uint32_t a_seed);
 		TRandom(std::uint64_t a_seed);
 
-		static constexpr T min() { return std::numeric_limits<T>::min(); }
-		static constexpr T max() { return std::numeric_limits<T>::max(); }
+		static constexpr result_type min() noexcept { return std::numeric_limits<result_type>::min(); }
+		static constexpr result_type max() noexcept { return std::numeric_limits<result_type>::max(); }
+		result_type                  operator()() noexcept;
 
-		T Generate(T a_min = min(), T a_max = max());
+		T Generate(T a_min = std::numeric_limits<T>::min(), T a_max = std::numeric_limits<T>::max());
 
 	protected:
 		std::byte m_rng[32];
@@ -29,13 +32,16 @@ namespace REX
 	class TRandomDistribution
 	{
 	public:
+		using result_type = std::uint64_t;
+
 		TRandomDistribution() = delete;
 		TRandomDistribution(std::vector<std::uint32_t>& a_weights);
 		TRandomDistribution(std::uint32_t a_seed, std::vector<std::uint32_t>& a_weights);
 		TRandomDistribution(std::uint64_t a_seed, std::vector<std::uint32_t>& a_weights);
 
-		static constexpr T min() { return std::numeric_limits<T>::min(); }
-		static constexpr T max() { return std::numeric_limits<T>::max(); }
+		static constexpr result_type min() noexcept { return std::numeric_limits<result_type>::min(); }
+		static constexpr result_type max() noexcept { return std::numeric_limits<result_type>::max(); }
+		result_type                  operator()() noexcept;
 
 		T Generate();
 
