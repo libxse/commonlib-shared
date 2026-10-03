@@ -15,10 +15,15 @@ namespace REX::Impl
 	}
 
 	template <>
-	void IniSettingSave<std::vector<std::string>>(void* a_data, std::string_view a_section, std::string_view a_key, std::vector<std::string>& a_value, std::string_view a_delimiter)
+	void IniSettingSave<std::vector<std::string>>(void* a_data, std::string_view a_section, std::string_view a_key, std::vector<std::string>& a_value, std::string_view a_description, std::string_view a_delimiter)
 	{
 		auto& data = *static_cast<CSimpleIniA*>(a_data);
-		data.SetValue(a_section.data(), a_key.data(), REX::STR::JOIN(a_value, a_delimiter).c_str());
+		if (a_description.empty()) {
+			data.SetValue(a_section.data(), a_key.data(), REX::STR::JOIN(a_value, a_delimiter).c_str());
+		} else {
+			auto description = ";"s.append(a_description);
+			data.SetValue(a_section.data(), a_key.data(), REX::STR::JOIN(a_value, a_delimiter).c_str(), description.c_str());
+		}
 	}
 }
 #endif

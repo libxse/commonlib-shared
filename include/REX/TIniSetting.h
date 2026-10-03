@@ -11,7 +11,7 @@ namespace REX::Impl
 	void IniSettingLoad(void* a_data, std::string_view a_section, std::string_view a_key, T& a_value, T& a_valueDefault);
 
 	template <class T>
-	void IniSettingSave(void* a_data, std::string_view a_section, std::string_view a_key, T& a_value);
+	void IniSettingSave(void* a_data, std::string_view a_section, std::string_view a_key, T& a_value, std::string_view a_description);
 }
 
 namespace REX
@@ -21,10 +21,20 @@ namespace REX
 		public TSetting<T>
 	{
 	public:
+		TIniSetting(std::string_view a_section, std::string_view a_key, T a_default, std::string_view a_description) :
+			TSetting<T>(a_default),
+			m_section(a_section),
+			m_key(a_key),
+			m_description(a_description)
+		{
+			S::GetSingleton()->Add(this);
+		}
+
 		TIniSetting(std::string_view a_section, std::string_view a_key, T a_default) :
 			TSetting<T>(a_default),
 			m_section(a_section),
-			m_key(a_key)
+			m_key(a_key),
+			m_description()
 		{
 			S::GetSingleton()->Add(this);
 		}
@@ -32,7 +42,8 @@ namespace REX
 		TIniSetting(std::string_view a_key, T a_default) :
 			TSetting<T>(a_default),
 			m_section(),
-			m_key(a_key)
+			m_key(a_key),
+			m_description()
 		{
 			S::GetSingleton()->Add(this);
 		}
@@ -50,12 +61,15 @@ namespace REX
 
 		virtual void Save(void* a_data) override
 		{
-			Impl::IniSettingSave<T>(a_data, m_section, m_key, this->m_value);
+			Impl::IniSettingSave<T>(a_data, m_section, m_key, this->m_value, m_description);
 		}
+
+		std::string_view GetDescription() const { return m_description; }
 
 	private:
 		std::string_view m_section;
 		std::string_view m_key;
+		std::string_view m_description;
 	};
 }
 

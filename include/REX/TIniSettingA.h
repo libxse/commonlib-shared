@@ -12,7 +12,7 @@ namespace REX::Impl
 	void IniSettingLoad(void* a_data, std::string_view a_section, std::string_view a_key, T& a_value, T& a_valueDefault, std::string_view a_delimiter);
 
 	template <class T>
-	void IniSettingSave(void* a_data, std::string_view a_section, std::string_view a_key, T& a_value, std::string_view a_delimiter);
+	void IniSettingSave(void* a_data, std::string_view a_section, std::string_view a_key, T& a_value, std::string_view a_description, std::string_view a_delimiter);
 }
 
 namespace REX
@@ -22,10 +22,21 @@ namespace REX
 		public TSetting<std::vector<T>>
 	{
 	public:
+		TIniSettingA(std::string_view a_section, std::string_view a_key, std::string a_default, std::string_view a_description, std::string_view a_delimiter = R"(|)"sv) :
+			TSetting<std::vector<T>>(REX::STR::SPLIT(a_default, a_delimiter)),
+			m_section(a_section),
+			m_key(a_key),
+			m_description(a_description),
+			m_delimiter(a_delimiter)
+		{
+			S::GetSingleton()->Add(this);
+		}
+
 		TIniSettingA(std::string_view a_section, std::string_view a_key, std::string a_default, std::string_view a_delimiter = R"(|)"sv) :
 			TSetting<std::vector<T>>(REX::STR::SPLIT(a_default, a_delimiter)),
 			m_section(a_section),
 			m_key(a_key),
+			m_description(),
 			m_delimiter(a_delimiter)
 		{
 			S::GetSingleton()->Add(this);
@@ -35,6 +46,7 @@ namespace REX
 			TSetting<std::vector<T>>(REX::STR::SPLIT(a_default, a_delimiter)),
 			m_section(),
 			m_key(a_key),
+			m_description(),
 			m_delimiter(a_delimiter)
 		{
 			S::GetSingleton()->Add(this);
@@ -53,12 +65,15 @@ namespace REX
 
 		virtual void Save(void* a_data) override
 		{
-			Impl::IniSettingSave<std::vector<T>>(a_data, m_section, m_key, this->m_value, m_delimiter);
+			Impl::IniSettingSave<std::vector<T>>(a_data, m_section, m_key, this->m_value, m_description, m_delimiter);
 		}
+
+		std::string_view GetDescription() const { return m_description; }
 
 	private:
 		std::string_view m_section;
 		std::string_view m_key;
+		std::string_view m_description;
 		std::string_view m_delimiter;
 	};
 }

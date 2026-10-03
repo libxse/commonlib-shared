@@ -78,73 +78,123 @@ namespace REX::Impl
 	}
 
 	template <>
-	void IniSettingSave<bool>(void* a_data, std::string_view a_section, std::string_view a_key, bool& a_value)
+	void IniSettingSave<bool>(void* a_data, std::string_view a_section, std::string_view a_key, bool& a_value, std::string_view a_description)
 	{
 		auto& data = *static_cast<CSimpleIniA*>(a_data);
-		data.SetBoolValue(a_section.data(), a_key.data(), a_value);
+		if (a_description.empty()) {
+			data.SetBoolValue(a_section.data(), a_key.data(), a_value);
+		} else {
+			auto description = ";"s.append(a_description);
+			data.SetBoolValue(a_section.data(), a_key.data(), a_value, description.c_str());
+		}
 	}
 
 	template <>
-	void IniSettingSave<float>(void* a_data, std::string_view a_section, std::string_view a_key, float& a_value)
+	void IniSettingSave<float>(void* a_data, std::string_view a_section, std::string_view a_key, float& a_value, std::string_view a_description)
 	{
 		auto& data = *static_cast<CSimpleIniA*>(a_data);
-		data.SetDoubleValue(a_section.data(), a_key.data(), a_value);
+		if (a_description.empty()) {
+			data.SetDoubleValue(a_section.data(), a_key.data(), a_value);
+		} else {
+			auto description = ";"s.append(a_description);
+			data.SetDoubleValue(a_section.data(), a_key.data(), a_value, description.c_str());
+		}
 	}
 
 	template <>
-	void IniSettingSave<double>(void* a_data, std::string_view a_section, std::string_view a_key, double& a_value)
+	void IniSettingSave<double>(void* a_data, std::string_view a_section, std::string_view a_key, double& a_value, std::string_view a_description)
 	{
 		auto& data = *static_cast<CSimpleIniA*>(a_data);
-		data.SetDoubleValue(a_section.data(), a_key.data(), a_value);
+		if (a_description.empty()) {
+			data.SetDoubleValue(a_section.data(), a_key.data(), a_value);
+		} else {
+			auto description = ";"s.append(a_description);
+			data.SetDoubleValue(a_section.data(), a_key.data(), a_value, description.c_str());
+		}
 	}
 
 	template <>
-	void IniSettingSave<std::uint8_t>(void* a_data, std::string_view a_section, std::string_view a_key, std::uint8_t& a_value)
+	void IniSettingSave<std::uint8_t>(void* a_data, std::string_view a_section, std::string_view a_key, std::uint8_t& a_value, std::string_view a_description)
 	{
 		auto& data = *static_cast<CSimpleIniA*>(a_data);
-		data.SetLongValue(a_section.data(), a_key.data(), a_value);
+		if (a_description.empty()) {
+			data.SetLongValue(a_section.data(), a_key.data(), a_value);
+		} else {
+			auto description = ";"s.append(a_description);
+			data.SetLongValue(a_section.data(), a_key.data(), a_value, description.c_str());
+		}
 	}
 
 	template <>
-	void IniSettingSave<std::uint16_t>(void* a_data, std::string_view a_section, std::string_view a_key, std::uint16_t& a_value)
+	void IniSettingSave<std::uint16_t>(void* a_data, std::string_view a_section, std::string_view a_key, std::uint16_t& a_value, std::string_view a_description)
 	{
 		auto& data = *static_cast<CSimpleIniA*>(a_data);
-		data.SetLongValue(a_section.data(), a_key.data(), a_value);
+		if (a_description.empty()) {
+			data.SetLongValue(a_section.data(), a_key.data(), a_value);
+		} else {
+			auto description = ";"s.append(a_description);
+			data.SetLongValue(a_section.data(), a_key.data(), a_value, description.c_str());
+		}
 	}
 
 	template <>
-	void IniSettingSave<std::uint32_t>(void* a_data, std::string_view a_section, std::string_view a_key, std::uint32_t& a_value)
+	void IniSettingSave<std::uint32_t>(void* a_data, std::string_view a_section, std::string_view a_key, std::uint32_t& a_value, std::string_view a_description)
 	{
 		auto& data = *static_cast<CSimpleIniA*>(a_data);
-		data.SetLongValue(a_section.data(), a_key.data(), a_value);
+		if (a_description.empty()) {
+			data.SetLongValue(a_section.data(), a_key.data(), a_value);
+		} else {
+			auto description = ";"s.append(a_description);
+			data.SetLongValue(a_section.data(), a_key.data(), a_value, description.c_str());
+		}
 	}
 
 	template <>
-	void IniSettingSave<std::int8_t>(void* a_data, std::string_view a_section, std::string_view a_key, std::int8_t& a_value)
+	void IniSettingSave<std::int8_t>(void* a_data, std::string_view a_section, std::string_view a_key, std::int8_t& a_value, std::string_view a_description)
 	{
 		auto& data = *static_cast<CSimpleIniA*>(a_data);
-		data.SetLongValue(a_section.data(), a_key.data(), a_value);
+		if (a_description.empty()) {
+			data.SetLongValue(a_section.data(), a_key.data(), a_value);
+		} else {
+			auto description = ";"s.append(a_description);
+			data.SetLongValue(a_section.data(), a_key.data(), a_value, description.c_str());
+		}
 	}
 
 	template <>
-	void IniSettingSave<std::int16_t>(void* a_data, std::string_view a_section, std::string_view a_key, std::int16_t& a_value)
+	void IniSettingSave<std::int16_t>(void* a_data, std::string_view a_section, std::string_view a_key, std::int16_t& a_value, std::string_view a_description)
 	{
 		auto& data = *static_cast<CSimpleIniA*>(a_data);
-		data.SetLongValue(a_section.data(), a_key.data(), a_value);
+		if (a_description.empty()) {
+			data.SetLongValue(a_section.data(), a_key.data(), a_value);
+		} else {
+			auto description = ";"s.append(a_description);
+			data.SetLongValue(a_section.data(), a_key.data(), a_value, description.c_str());
+		}
 	}
 
 	template <>
-	void IniSettingSave<std::int32_t>(void* a_data, std::string_view a_section, std::string_view a_key, std::int32_t& a_value)
+	void IniSettingSave<std::int32_t>(void* a_data, std::string_view a_section, std::string_view a_key, std::int32_t& a_value, std::string_view a_description)
 	{
 		auto& data = *static_cast<CSimpleIniA*>(a_data);
-		data.SetLongValue(a_section.data(), a_key.data(), a_value);
+		if (a_description.empty()) {
+			data.SetLongValue(a_section.data(), a_key.data(), a_value);
+		} else {
+			auto description = ";"s.append(a_description);
+			data.SetLongValue(a_section.data(), a_key.data(), a_value, description.c_str());
+		}
 	}
 
 	template <>
-	void IniSettingSave<std::string>(void* a_data, std::string_view a_section, std::string_view a_key, std::string& a_value)
+	void IniSettingSave<std::string>(void* a_data, std::string_view a_section, std::string_view a_key, std::string& a_value, std::string_view a_description)
 	{
 		auto& data = *static_cast<CSimpleIniA*>(a_data);
-		data.SetValue(a_section.data(), a_key.data(), a_value.c_str());
+		if (a_description.empty()) {
+			data.SetValue(a_section.data(), a_key.data(), a_value.c_str());
+		} else {
+			auto description = ";"s.append(a_description);
+			data.SetValue(a_section.data(), a_key.data(), a_value.c_str(), description.c_str());
+		}
 	}
 }
 #endif
