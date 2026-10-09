@@ -35,37 +35,37 @@
 			return dist(*reinterpret_cast<XoshiroCpp::Xoshiro256StarStar*>(m_rng));                          \
 		}
 
-#	define REX_DEFINE_RANDOM_DIST_FUNCTIONS(T)                                                                    \
-		template <>                                                                                                \
-		TRandomDistribution<T>::TRandomDistribution(std::vector<std::uint32_t>& a_weights) :                       \
-			m_dist(a_weights.begin(), a_weights.end())                                                             \
-		{                                                                                                          \
-			XoshiroCpp::Xoshiro256StarStar rng(std::chrono::steady_clock::now().time_since_epoch().count());       \
-			std::memcpy(&m_rng, &rng, sizeof(m_rng));                                                              \
-		}                                                                                                          \
-		template <>                                                                                                \
-		TRandomDistribution<T>::TRandomDistribution(std::uint32_t a_seed, std::vector<std::uint32_t>& a_weights) : \
-			m_dist(a_weights.begin(), a_weights.end())                                                             \
-		{                                                                                                          \
-			XoshiroCpp::Xoshiro256StarStar rng(a_seed);                                                            \
-			std::memcpy(&m_rng, &rng, sizeof(m_rng));                                                              \
-		}                                                                                                          \
-		template <>                                                                                                \
-		TRandomDistribution<T>::TRandomDistribution(std::uint64_t a_seed, std::vector<std::uint32_t>& a_weights) : \
-			m_dist(a_weights.begin(), a_weights.end())                                                             \
-		{                                                                                                          \
-			XoshiroCpp::Xoshiro256StarStar rng(a_seed);                                                            \
-			std::memcpy(&m_rng, &rng, sizeof(m_rng));                                                              \
-		}                                                                                                          \
-		template <>                                                                                                \
-		TRandomDistribution<T>::result_type TRandomDistribution<T>::operator()() noexcept                          \
-		{                                                                                                          \
-			return (*reinterpret_cast<XoshiroCpp::Xoshiro256StarStar*>(m_rng))();                                  \
-		}                                                                                                          \
-		template <>                                                                                                \
-		T TRandomDistribution<T>::Generate()                                                                       \
-		{                                                                                                          \
-			return m_dist(*reinterpret_cast<XoshiroCpp::Xoshiro256StarStar*>(m_rng));                              \
+#	define REX_DEFINE_RANDOM_DIST_FUNCTIONS(T)                                                                          \
+		template <>                                                                                                      \
+		TRandomDistribution<T>::TRandomDistribution(const std::vector<std::uint32_t>& a_weights) :                       \
+			m_dist(a_weights.begin(), a_weights.end())                                                                   \
+		{                                                                                                                \
+			XoshiroCpp::Xoshiro256StarStar rng(std::chrono::steady_clock::now().time_since_epoch().count());             \
+			std::memcpy(&m_rng, &rng, sizeof(m_rng));                                                                    \
+		}                                                                                                                \
+		template <>                                                                                                      \
+		TRandomDistribution<T>::TRandomDistribution(std::uint32_t a_seed, const std::vector<std::uint32_t>& a_weights) : \
+			m_dist(a_weights.begin(), a_weights.end())                                                                   \
+		{                                                                                                                \
+			XoshiroCpp::Xoshiro256StarStar rng(a_seed);                                                                  \
+			std::memcpy(&m_rng, &rng, sizeof(m_rng));                                                                    \
+		}                                                                                                                \
+		template <>                                                                                                      \
+		TRandomDistribution<T>::TRandomDistribution(std::uint64_t a_seed, const std::vector<std::uint32_t>& a_weights) : \
+			m_dist(a_weights.begin(), a_weights.end())                                                                   \
+		{                                                                                                                \
+			XoshiroCpp::Xoshiro256StarStar rng(a_seed);                                                                  \
+			std::memcpy(&m_rng, &rng, sizeof(m_rng));                                                                    \
+		}                                                                                                                \
+		template <>                                                                                                      \
+		TRandomDistribution<T>::result_type TRandomDistribution<T>::operator()() noexcept                                \
+		{                                                                                                                \
+			return (*reinterpret_cast<XoshiroCpp::Xoshiro256StarStar*>(m_rng))();                                        \
+		}                                                                                                                \
+		template <>                                                                                                      \
+		T TRandomDistribution<T>::Generate()                                                                             \
+		{                                                                                                                \
+			return m_dist(*reinterpret_cast<XoshiroCpp::Xoshiro256StarStar*>(m_rng));                                    \
 		}
 
 namespace REX
