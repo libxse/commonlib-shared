@@ -438,7 +438,7 @@ namespace REL
                     return a_lhs.id < a_rhs.id;
                 });
 
-			if (it == m_v0.end()) {
+			if (it == m_v0.end() || it->id != a_id) {
 				REX::FAIL(
 					"{}\n\n"
 					"Failed to find offset for Address Library ID!\n"
@@ -454,7 +454,7 @@ namespace REL
 		if (m_v5.empty())
 			REX::FAIL("No Address Library has been loaded!"sv);
 
-		const auto offset = static_cast<std::uint64_t>(m_v5[a_id]);
+		const auto offset = a_id < m_v5.size() ? static_cast<std::uint64_t>(m_v5[a_id]) : 0;
 		if (!offset) {
 			REX::FAIL(
 				"{}\n\n"
