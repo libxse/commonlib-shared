@@ -278,11 +278,21 @@ namespace REL
 					m_name, modVersion.string(), header.game_version().string());
 			}
 
-			const auto mapName = std::format("COMMONLIB_IDDB_OFFSETS_{}", modVersion.string("_"));
+			// v0/v2 loaders store id/offset pairs under COMMONLIB_IDDB_OFFSETS_*, so the raw v5 file needs its own name
+			const auto mapName = std::format("COMMONLIB_IDDB_OFFSETS_V5_{}", modVersion.string("_"));
 			if (!m_mmap.create(false, m_path, mapName))
 				REX::FAIL(L"Failed to create Address Library MemoryMap!\nError: {}\nPath: {}", REX::W32::GetLastError(), m_path.wstring());
 
 			validate_file();
+
+			static_assert(sizeof(HEADER_V5) == 0x60);
+			if (std::memcmp(m_mmap.data(), std::addressof(header), sizeof(HEADER_V5)) != 0)
+				REX::FAIL(
+					"{}\n\n"
+					"Address Library MemoryMap {} does not match {}!\n"
+					"Another plugin created it with a different layout.\n"
+					"Game Version: {}",
+					m_name, mapName, m_path.filename().string(), modVersion.string());
 
 			m_v5 = { reinterpret_cast<std::uint32_t*>(m_mmap.data() + sizeof(HEADER_V5)), header.offset_count() };
 
