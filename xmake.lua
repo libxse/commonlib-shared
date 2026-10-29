@@ -178,6 +178,21 @@ rule("commonlib.plugin", function()
         target:add("configfiles", path.join(os.scriptdir(), "res/commonlib-plugin.rc.in"))
         target:add("files", path.join(target:configdir(), "commonlib-plugin.rc"))
 
+        -- Windows version components are unsigned 16-bit integers.
+        local function build_number(value)
+            if value == nil then return 0 end
+            if type(value) == "string" then value = os.date(value, os.time()) end
+            local number = tonumber(value)
+            assert(number and number >= 0 and number <= 65535 and number == math.floor(number),
+                "version build number must be an integer between 0 and 65535")
+            return number
+        end
+
+        local _, plugin_build = target:version()
+        local project_build = project.extraconf("target.version", project.version(), "build")
+        target:set("configvar", "COMMONLIB_PLUGIN_VERSION_BUILD", build_number(plugin_build))
+        target:set("configvar", "COMMONLIB_PROJECT_VERSION_BUILD", build_number(project_build))
+
         local data = target:data("commonlib.plugin.config") or {}
         target:set("configvar", "COMMONLIB_PLUGIN_AUTHOR", data.author or "")
         target:set("configvar", "COMMONLIB_PLUGIN_CONTACT", data.contact or "")
