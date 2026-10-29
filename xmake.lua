@@ -415,7 +415,7 @@ rule("commonlib.papyrus", function()
             return
         end
 
-        local args = { tempdir, format("--game=%s", target:data("commonlib.papyrus.game")), "--recurse", "--ignorecwd" }
+        local args = { rootdir, format("--game=%s", target:data("commonlib.papyrus.game")), "--recurse", "--ignorecwd" }
         local imports = { rootdir }
         if data.options.imports then
             if type(data.options.imports) ~= "table" then
@@ -446,7 +446,7 @@ rule("commonlib.papyrus", function()
         table.append(args, format("--flags=%s", target:data("commonlib.papyrus.flags")))
 
         local scriptdir = path.absolute(target:targetdir())
-        table.append(args, format("--output=%s", scriptdir))
+        table.append(args, format("--output=%s", path.join(scriptdir, "Scripts")))
 
         if data.options.optimize then table.append(args, "--optimize") end
         if data.options.release then table.append(args, "--release") end
