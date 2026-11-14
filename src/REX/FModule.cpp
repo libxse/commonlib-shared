@@ -62,7 +62,7 @@ namespace REX
 
 		for (auto import = importDesc; import->characteristics != 0; ++import) {
 			auto name = ADJUST_POINTER<const char>(dosHeader, import->name);
-			if (a_library.size() == strlen(name) && _strnicmp(a_library.data(), name, a_library.size()) != 0) {
+			if (a_library.size() != strlen(name) || _strnicmp(a_library.data(), name, a_library.size()) != 0) {
 				continue;
 			}
 
