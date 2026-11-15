@@ -354,6 +354,7 @@ REX_W32_IMPORT(REX::W32::BOOL, QueryPerformanceCounter, std::int64_t*);
 REX_W32_IMPORT(REX::W32::BOOL, QueryPerformanceFrequency, std::int64_t*);
 REX_W32_IMPORT(void, ReleaseSRWLockShared, REX::W32::SRWLOCK*);
 REX_W32_IMPORT(void, ReleaseSRWLockExclusive, REX::W32::SRWLOCK*);
+REX_W32_IMPORT(REX::W32::BOOL, ReleaseSemaphore, REX::W32::HANDLE, std::uint32_t, std::uint32_t*);
 REX_W32_IMPORT(std::uint32_t, ResumeThread, REX::W32::HANDLE);
 REX_W32_IMPORT(std::uint32_t, SetCriticalSectionSpinCount, REX::W32::CRITICAL_SECTION*, std::uint32_t);
 REX_W32_IMPORT(REX::W32::BOOL, SetEnvironmentVariableA, const char*, const char*);
@@ -759,6 +760,11 @@ namespace REX::W32
 	void ReleaseSRWLockExclusive(SRWLOCK* a_lock) noexcept
 	{
 		::W32_IMPL_ReleaseSRWLockExclusive(a_lock);
+	}
+
+	bool ReleaseSemaphore(HANDLE a_semaphore, std::uint32_t a_releaseCount, std::uint32_t* a_previousCount) noexcept
+	{
+		return ::W32_IMPL_ReleaseSemaphore(a_semaphore, a_releaseCount, a_previousCount);
 	}
 
 	std::uint32_t ResumeThread(HANDLE a_handle) noexcept
