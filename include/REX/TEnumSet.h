@@ -179,9 +179,9 @@ namespace REX
 
 	template <class... Args>
 	TEnumSet(Args...) -> TEnumSet<
-						  std::common_type_t<Args...>,
-						  std::underlying_type_t<
-							  std::common_type_t<Args...>>>;
+		std::common_type_t<Args...>,
+		std::underlying_type_t<
+			std::common_type_t<Args...>>>;
 }
 
 namespace REX
@@ -208,9 +208,9 @@ namespace REX
 
 	template <class... Args>
 	EnumSet(Args...) -> EnumSet<
-						 std::common_type_t<Args...>,
-						 std::underlying_type_t<
-							 std::common_type_t<Args...>>>;
+		std::common_type_t<Args...>,
+		std::underlying_type_t<
+			std::common_type_t<Args...>>>;
 
 #pragma warning(pop)
 }

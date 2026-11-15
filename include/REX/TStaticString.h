@@ -45,7 +45,7 @@ namespace REX
 		template <std::size_t POS = 0, std::size_t COUNT = NPOS>
 		consteval auto substr() const noexcept
 		{
-			return TStaticString < T, COUNT != NPOS ? COUNT : N - POS > (this->data() + POS);
+			return TStaticString<T, COUNT != NPOS ? COUNT : N - POS>(this->data() + POS);
 		}
 
 		char_type c[N] = {};
