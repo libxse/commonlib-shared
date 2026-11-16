@@ -535,6 +535,7 @@ namespace REX::W32
 	bool                  QueryPerformanceFrequency(std::int64_t* a_frequency) noexcept;
 	void                  ReleaseSRWLockShared(SRWLOCK* a_lock) noexcept;
 	void                  ReleaseSRWLockExclusive(SRWLOCK* a_lock) noexcept;
+	bool                  ReleaseSemaphore(HANDLE a_semaphore, std::uint32_t a_releaseCount, std::uint32_t* a_previousCount) noexcept;
 	std::uint32_t         ResumeThread(HANDLE a_handle) noexcept;
 	std::uint32_t         SetCriticalSectionSpinCount(CRITICAL_SECTION* a_criticalSection, std::uint32_t a_spinCount) noexcept;
 	bool                  SetEnvironmentVariableA(const char* a_name, const char* a_value) noexcept;
